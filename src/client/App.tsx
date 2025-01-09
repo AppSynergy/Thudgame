@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetch("/api")
+      .then((res) => res.text())
+      .then((data) => setMessage(data));
+  }, []);
 
   return (
     <>
       <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
+      <div className="card">{message}</div>
       <p className="read-the-docs">Hello, thud!</p>
     </>
   );

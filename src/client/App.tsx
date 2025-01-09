@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ThudBoard from "./ThudBoard";
 import "./App.css";
 
 function App() {
@@ -21,6 +22,9 @@ function App() {
       <h1>Vite + React</h1>
       <div className="card">{message}</div>
       <p className="read-the-docs">Hello, thud!</p>
+      <div>
+        <ThudBoard />
+      </div>
     </>
   );
 }

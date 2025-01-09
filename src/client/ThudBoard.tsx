@@ -1,23 +1,26 @@
+import { board, ThudSquare } from "../game/thud";
 import "./ThudBoard.css";
 
 export default function ThudBoard() {
-  const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-
-  function drawSquare(key: number) {
-    return <div key={key} className="thudSquare"></div>;
-  }
-
-  function drawRow(key: number) {
-    const row = numbers.map(drawSquare);
-
+  function drawSquare(square: ThudSquare, key: number) {
     return (
-      <div key={key} className="thudRow">
-        {row}
+      <div key={key} className="thudSquare">
+        {square.algebraic}
       </div>
     );
   }
 
-  const squares = numbers.map(drawRow);
+  function drawRow(row: ThudSquare[], key: number) {
+    const thudRow = row.map(drawSquare);
+
+    return (
+      <div key={key} className="thudRow">
+        {thudRow}
+      </div>
+    );
+  }
+
+  const squares = board().map(drawRow);
 
   return <div className="thudBoard">{squares}</div>;
 }

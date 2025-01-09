@@ -25,9 +25,8 @@ function App() {
 
   return (
     <>
-      <h1>Vite + React</h1>
       <div className="card">{message}</div>
-      <p className="read-the-docs">Hello, thud!</p>
+      <p>Hello, thud!</p>
       <div>
         <ThudBoard board={board} />
       </div>

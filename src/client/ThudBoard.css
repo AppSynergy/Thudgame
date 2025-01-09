@@ -6,12 +6,11 @@
 
 .thudRow {
   display: flex;
-  flex-grow: 1;
 }
 
 .thudSquare {
-  min-width: 2em;
-  min-height: 2em;
+  min-width: 4em;
+  min-height: 4em;
   border: 1px solid darkslateblue;
 }
 
@@ -23,4 +22,21 @@
 .thudSquare.dark {
   background-color: darkolivegreen;
   color: white;
+}
+
+.thudSquare .label {
+  text-align: start;
+}
+
+.thudSquare .piece {
+  font-weight: bold;
+  font-size: 1.4em;
+}
+
+.thudSquare .piece.dwarf {
+  background-color: saddlebrown;
+}
+
+.thudSquare .piece.troll {
+  background-color: darkgreen;
 }

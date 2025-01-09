@@ -1,4 +1,9 @@
-import { ThudBoard as ThudBoardType, ThudSquare } from "../game/thud";
+import {
+  ThudBoard as ThudBoardType,
+  ThudSquare,
+  DWARF,
+  TROLL,
+} from "../game/thud";
 import "./ThudBoard.css";
 
 interface ThudBoardProps {
@@ -13,9 +18,22 @@ export default function ThudBoard({ board }: ThudBoardProps) {
       alternateColors % 2 == 0 ? "dark" : "light";
     alternateColors += 1;
 
+    let piece;
+    let pieceClassName;
+    if (square.piece) {
+      if (square.piece == DWARF) {
+        piece = DWARF;
+        pieceClassName = "dwarf";
+      } else if (square.piece == TROLL) {
+        piece = TROLL;
+        pieceClassName = "troll";
+      }
+    }
+
     return (
       <div key={key} className={`thudSquare ${alternateColorsClassName}`}>
-        {square.algebraic}
+        <div className="label">{square.algebraic}</div>
+        <div className={`piece ${pieceClassName}`}>{square.piece}</div>
       </div>
     );
   }

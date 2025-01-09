@@ -1,21 +1,22 @@
-import { Piece, DWARF, TROLL } from "../game/thud";
+import { startTransition } from "react";
+import { DWARF, TROLL, ThudSquare } from "../game/thud";
 
 interface ThudPieceProps {
-  piece?: Piece;
-  availableMovesAction?: () => void;
+  square: ThudSquare;
+  availableMovesAction?: (square: ThudSquare | null) => void;
 }
 
 export default function ThudPiece({
-  piece,
+  square,
   availableMovesAction,
 }: ThudPieceProps) {
   let pieceIcon;
   let pieceClassName;
-  if (piece) {
-    if (piece == DWARF) {
+  if (square.piece) {
+    if (square.piece == DWARF) {
       pieceIcon = DWARF;
       pieceClassName = "dwarf";
-    } else if (piece == TROLL) {
+    } else if (square.piece == TROLL) {
       pieceIcon = TROLL;
       pieceClassName = "troll";
     }
@@ -23,7 +24,9 @@ export default function ThudPiece({
 
   function clickPiece() {
     if (availableMovesAction) {
-      availableMovesAction();
+      startTransition(() => {
+        availableMovesAction(square);
+      });
     }
   }
 

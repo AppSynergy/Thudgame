@@ -24,7 +24,7 @@ interface InternalMove {
   piece: Piece;
 }
 
-interface Move {
+export interface Move {
   from: Square;
   to: Square;
   piece: Piece;

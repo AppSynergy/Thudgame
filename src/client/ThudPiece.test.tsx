@@ -3,13 +3,13 @@ import ThudPiece from "./ThudPiece";
 import "@testing-library/jest-dom";
 
 test("renders a dwarf", () => {
-  render(<ThudPiece piece="d" />);
+  render(<ThudPiece square={{ piece: "d", algebraic: "g6" }} />);
   const words = screen.getByText(/d/);
   expect(words).toBeInTheDocument();
 });
 
 test("renders a troll", () => {
-  render(<ThudPiece piece="T" />);
+  render(<ThudPiece square={{ piece: "T", algebraic: "g6" }} />);
   const words = screen.getByText(/T/);
   expect(words).toBeInTheDocument();
 });

@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import "./App.css";
 
 function App() {
   const [message, setMessage] = useState("");
 
+  async function getMessage() {
+    const { data, status } = await axios.get("/api");
+    if (status == 200) {
+      setMessage(data);
+    }
+  }
+
   useEffect(() => {
-    fetch("/api")
-      .then((res) => res.text())
-      .then((data) => setMessage(data));
+    getMessage();
   }, []);
 
   return (

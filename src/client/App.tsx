@@ -18,6 +18,8 @@ function App() {
     getMessage();
   }, []);
 
+  // TODO move to api
+  // TODO redraw board
   const thud = Thud();
   const board = thud.board();
 

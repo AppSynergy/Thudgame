@@ -46,6 +46,7 @@ interface ThudGame {
 export function Thud(): ThudGame {
   // Internal representation of board
   let _board = new Array<Piece>(128);
+  let _turn = DWARF;
 
   // TODO proper starting locations. Here's one of each piece.
   _board[0] = DWARF;
@@ -87,9 +88,13 @@ export function Thud(): ThudGame {
 
   // TODO make a move
   function move(move: Move) {
-    const internalMove = internalMoveFromMove(move);
-    _board[internalMove.to] = _board[internalMove.from];
-    delete _board[internalMove.from];
+    if (_turn == move.piece) {
+      const internalMove = internalMoveFromMove(move);
+      _board[internalMove.to] = _board[internalMove.from];
+      delete _board[internalMove.from];
+    }
+
+    _turn = _turn == DWARF ? TROLL : DWARF;
   }
 
   return { board, moves, move };

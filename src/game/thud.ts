@@ -3,7 +3,7 @@ import { boardOx88, algebraic, Square } from "./0x88";
 export const TROLL = "T";
 export const DWARF = "d";
 
-type Piece = "T" | "d";
+export type Piece = "T" | "d";
 type Side = Piece;
 
 export interface ThudSquare {

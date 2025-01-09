@@ -1,12 +1,20 @@
-import { Thud, ThudSquare } from "../game/thud";
+import { ThudBoard as ThudBoardType, ThudSquare } from "../game/thud";
 import "./ThudBoard.css";
 
-export default function ThudBoard() {
-  const thud = Thud();
+interface ThudBoardProps {
+  board: ThudBoardType;
+}
+
+export default function ThudBoard({ board }: ThudBoardProps) {
+  let alternateColors = 0;
 
   function drawSquare(square: ThudSquare, key: number) {
+    const alternateColorsClassName =
+      alternateColors % 2 == 0 ? "dark" : "light";
+    alternateColors += 1;
+
     return (
-      <div key={key} className="thudSquare">
+      <div key={key} className={`thudSquare ${alternateColorsClassName}`}>
         {square.algebraic}
       </div>
     );
@@ -14,6 +22,7 @@ export default function ThudBoard() {
 
   function drawRow(row: ThudSquare[], key: number) {
     const thudRow = row.map(drawSquare);
+    alternateColors += 1;
 
     return (
       <div key={key} className="thudRow">
@@ -22,7 +31,5 @@ export default function ThudBoard() {
     );
   }
 
-  const squares = thud.board().map(drawRow);
-
-  return <div className="thudBoard">{squares}</div>;
+  return <div className="thudBoard">{board.map(drawRow)}</div>;
 }

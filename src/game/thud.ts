@@ -11,6 +11,8 @@ export interface ThudSquare {
   piece?: Piece;
 }
 
+export type ThudBoard = ThudSquare[][];
+
 interface InternalMove {
   from: number;
   to: number;

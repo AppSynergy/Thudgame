@@ -13,6 +13,11 @@ export interface ThudSquare {
 
 export type ThudBoard = ThudSquare[][];
 
+// TODO improve Thud Board Notation
+// Current turn, then an X, then dwarf and troll positions.
+// Any other character is an empty space.
+export const DEFAULT_POSITION = "dxdoT";
+
 interface InternalMove {
   from: number;
   to: number;
@@ -40,17 +45,14 @@ interface ThudGame {
   board: () => ThudSquare[][];
   moves: (side: Side) => Move[];
   move: (move: Move) => void;
+  load: (position: string) => void;
+  reset: () => void;
 }
 
-// TODO maybe this is a class instead
-export function Thud(): ThudGame {
+export function Thud(position?: string): ThudGame {
   // Internal representation of board
   let _board = new Array<Piece>(128);
   let _turn = DWARF;
-
-  // TODO proper starting locations. Here's one of each piece.
-  _board[0] = DWARF;
-  _board[2] = TROLL;
 
   // Data from drawing the current board
   function board() {
@@ -97,5 +99,35 @@ export function Thud(): ThudGame {
     _turn = _turn == DWARF ? TROLL : DWARF;
   }
 
-  return { board, moves, move };
+  // Loard a board position.
+  function load(position: string) {
+    const [turn, pieces] = position.split("x");
+    if (turn && (turn == DWARF || turn == TROLL)) {
+      _turn = turn;
+    }
+
+    if (pieces) {
+      const piecePositions = pieces.split("");
+      for (let i = 0; i < piecePositions.length; i++) {
+        if (piecePositions[i] == DWARF) {
+          _board[i] = DWARF;
+        } else if (piecePositions[i] == TROLL) {
+          _board[i] = TROLL;
+        }
+      }
+    }
+  }
+
+  // Reset the board to starting position
+  function reset() {
+    load(DEFAULT_POSITION);
+  }
+
+  if (position) {
+    load(position);
+  } else {
+    reset();
+  }
+
+  return { board, moves, move, load, reset };
 }

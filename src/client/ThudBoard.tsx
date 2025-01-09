@@ -1,3 +1,5 @@
+"use client";
+import { useActionState } from "react";
 import { ThudBoard as ThudBoardType, ThudSquare } from "../game/thud";
 import ThudPiece from "./ThudPiece";
 import "./ThudBoard.css";
@@ -7,6 +9,17 @@ interface ThudBoardProps {
 }
 
 export default function ThudBoard({ board }: ThudBoardProps) {
+  // TODO implement available moves
+  async function showAvailableMoves(previousState: number) {
+    return previousState + 1;
+  }
+
+  // TODO implement available moves
+  const [availableMovesState, availableMovesAction] = useActionState(
+    showAvailableMoves,
+    0
+  );
+
   let alternateColors = 0;
 
   function drawSquare(square: ThudSquare, key: number) {
@@ -17,7 +30,10 @@ export default function ThudBoard({ board }: ThudBoardProps) {
     return (
       <div key={key} className={`thudSquare ${alternateColorsClassName}`}>
         <div className="label">{square.algebraic}</div>
-        <ThudPiece piece={square.piece} />
+        <ThudPiece
+          piece={square.piece}
+          availableMovesAction={availableMovesAction}
+        />
       </div>
     );
   }
@@ -33,5 +49,10 @@ export default function ThudBoard({ board }: ThudBoardProps) {
     );
   }
 
-  return <div className="thudBoard">{board.map(drawRow)}</div>;
+  return (
+    <>
+      {availableMovesState}
+      <div className="thudBoard">{board.map(drawRow)}</div>
+    </>
+  );
 }

@@ -2,9 +2,13 @@ import { Piece, DWARF, TROLL } from "../game/thud";
 
 interface ThudPieceProps {
   piece?: Piece;
+  availableMovesAction?: () => void;
 }
 
-export default function ThudPiece({ piece }: ThudPieceProps) {
+export default function ThudPiece({
+  piece,
+  availableMovesAction,
+}: ThudPieceProps) {
   let pieceIcon;
   let pieceClassName;
   if (piece) {
@@ -17,5 +21,15 @@ export default function ThudPiece({ piece }: ThudPieceProps) {
     }
   }
 
-  return <div className={`piece ${pieceClassName}`}>{pieceIcon}</div>;
+  function clickPiece() {
+    if (availableMovesAction) {
+      availableMovesAction();
+    }
+  }
+
+  return (
+    <div onClick={clickPiece} className={`piece ${pieceClassName}`}>
+      {pieceIcon}
+    </div>
+  );
 }

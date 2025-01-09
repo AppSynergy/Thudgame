@@ -7,7 +7,7 @@ export type Piece = "T" | "d";
 type Side = Piece;
 
 export interface ThudSquare {
-  algebraic: string;
+  algebraic: Square;
   piece?: Piece;
 }
 

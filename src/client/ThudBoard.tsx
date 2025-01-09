@@ -39,7 +39,7 @@ export default function ThudBoard({ board, moves }: ThudBoardProps) {
   }
 
   // Keep track of the selected piece.
-  const [availableMovesState, availableMovesAction] = useActionState(
+  const [selectedPiece, availableMovesAction] = useActionState(
     showAvailableMoves,
     null
   );
@@ -48,12 +48,19 @@ export default function ThudBoard({ board, moves }: ThudBoardProps) {
 
   // Draw a single square of the board.
   function drawSquare(square: ThudSquare, key: number) {
-    const alternateColorsClassName =
-      alternateColors % 2 == 0 ? "dark" : "light";
+    let className = alternateColors % 2 == 0 ? "dark" : "light";
     alternateColors += 1;
 
+    if (availableMoves?.map((m) => m.to).includes(square.algebraic)) {
+      className += " canMoveHere";
+    }
+
+    if (selectedPiece?.algebraic == square.algebraic) {
+      className += " selected";
+    }
+
     return (
-      <div key={key} className={`thudSquare ${alternateColorsClassName}`}>
+      <div key={key} className={`thudSquare ${className}`}>
         <div className="label">{square.algebraic}</div>
         <ThudPiece
           square={square}
@@ -78,7 +85,7 @@ export default function ThudBoard({ board, moves }: ThudBoardProps) {
   // TODO highlight all the available moves
   return (
     <>
-      {availableMovesState?.algebraic ?? "No piece selected"}--&gt;
+      {selectedPiece?.algebraic ?? "No piece selected"}--&gt;
       {availableMoves?.map((move) => move.to)}
       <div className="thudBoard">{board.map(drawRow)}</div>
     </>

@@ -24,13 +24,26 @@
   color: white;
 }
 
+.thudSquare.dark.canMoveHere,
+.thudSquare.light.canMoveHere {
+  background-color: darkorange;
+  cursor: pointer;
+}
+
 .thudSquare .label {
   text-align: start;
+  position: absolute;
 }
 
 .thudSquare .piece {
   font-weight: bold;
   font-size: 1.4em;
+  cursor: pointer;
+  vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .thudSquare .piece.dwarf {
@@ -39,4 +52,8 @@
 
 .thudSquare .piece.troll {
   background-color: darkgreen;
+}
+
+.thudSquare.selected .piece {
+  background-color: tomato;
 }

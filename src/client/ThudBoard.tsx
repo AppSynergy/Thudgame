@@ -1,17 +1,23 @@
+import "./ThudBoard.css";
+
 export default function ThudBoard() {
-  function drawSquare() {
+  const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+
+  function drawSquare(key: number) {
+    return <div key={key} className="thudSquare"></div>;
+  }
+
+  function drawRow(key: number) {
+    const row = numbers.map(drawSquare);
+
     return (
-      <div className="w-9 h-9 bg-stone-200 border-2 border-stone-700"></div>
+      <div key={key} className="thudRow">
+        {row}
+      </div>
     );
   }
 
-  function drawRow() {
-    const row = Array.from(Array(15)).map(drawSquare);
+  const squares = numbers.map(drawRow);
 
-    return <div className="flex">{row}</div>;
-  }
-
-  const squares = Array.from(Array(15)).map(drawRow);
-
-  return <div className="thudboard">{squares}</div>;
+  return <div className="thudBoard">{squares}</div>;
 }

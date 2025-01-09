@@ -1,0 +1,15 @@
+.thudBoard {
+  display: flex;
+  flex-direction: column;
+  background-color: steelblue;
+}
+
+.thudRow {
+  display: flex;
+}
+
+.thudSquare {
+  min-width: 2em;
+  min-height: 2em;
+  border: 1px solid darkslateblue;
+}

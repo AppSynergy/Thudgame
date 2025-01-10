@@ -4,10 +4,10 @@ import { Move, Side, ThudSquare as ThudSquareType } from "../game/thud";
 import ThudPiece from "./ThudPiece";
 
 interface ThudSquareProps {
-  currentSide: Side;
+  yourSide: Side;
   square: ThudSquareType;
   alternateColorsClassName: string;
-  selectedPiece: ThudSquareType | null;
+  selectedPieceSquare: ThudSquareType | null;
   availableMoves: Move[] | null;
   availableMovesAction: (square: ThudSquareType | null) => void;
   makeMoveAction: (move: Move) => void;
@@ -15,9 +15,9 @@ interface ThudSquareProps {
 
 // Draw a single square of the board.
 export default function ThudSquare({
-  currentSide,
+  yourSide,
   square,
-  selectedPiece,
+  selectedPieceSquare,
   alternateColorsClassName,
   availableMoves,
   availableMovesAction,
@@ -35,12 +35,12 @@ export default function ThudSquare({
     canMoveHere = true;
   }
 
-  if (currentSide == square.piece) {
+  if (yourSide == square.piece) {
     className += " selectable";
-  }
 
-  if (selectedPiece?.algebraic == square.algebraic) {
-    className += " selected";
+    if (selectedPieceSquare?.algebraic == square.algebraic) {
+      className += " selected";
+    }
   }
 
   // Draw the piece if there is one on this square.
@@ -48,7 +48,7 @@ export default function ThudSquare({
   if (square.piece) {
     piece = (
       <ThudPiece
-        currentSide={currentSide}
+        yourSide={yourSide}
         square={square}
         availableMovesAction={availableMovesAction}
       />
@@ -56,12 +56,11 @@ export default function ThudSquare({
   }
 
   function clickSquare() {
-    if (canMoveHere) {
-      // TODO a real move
+    if (selectedPieceSquare?.piece && canMoveHere) {
       const move: Move = {
-        from: "a8",
-        to: "a7",
-        piece: "d",
+        from: selectedPieceSquare.algebraic,
+        to: square.algebraic,
+        piece: selectedPieceSquare.piece,
       };
       startTransition(() => {
         makeMoveAction(move);

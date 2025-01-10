@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Move, Thud, DWARF } from "../game/thud";
+import { Move, Side, Thud, DWARF, TROLL } from "../game/thud";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
 
@@ -19,28 +19,47 @@ function App() {
   }, []);
 
   // TODO play as either side
-  const currentSide = DWARF;
+  const currentSide = DWARF as Side;
 
-  // TODO move to api
+  // TODO move to api?
   const thud = Thud();
-  let board = thud.board();
-  let moves = thud.moves(currentSide);
+  const [yourSide, setYourSide] = useState(currentSide);
+  const [activeSide, setActiveSide] = useState(currentSide);
+  const [board, setBoard] = useState(thud.board());
+  const [moves, setMoves] = useState(thud.moves(yourSide));
 
-  // TODO redraw board properly
+  function toggleSide(side: Side) {
+    return side == DWARF ? TROLL : DWARF;
+  }
+
+  // Handles move logic
   function move(move: Move) {
     thud.move(move);
-    board = thud.board();
-    moves = thud.moves(currentSide);
+
+    // TODO for now play as both sides.
+    const otherSide = toggleSide(activeSide);
+    setYourSide(otherSide);
+    setActiveSide(otherSide);
+
+    // TODO we only need to update two squares, is this efficient?
+    setBoard(thud.board());
+    const nextMoves = thud.moves(otherSide);
+
+    console.warn({ nextMoves });
+    if (nextMoves) {
+      setMoves(nextMoves);
+    }
   }
 
   return (
     <>
-      <div className="card">{message}</div>
+      <p>{message}</p>
       <p>Hello, thud!</p>
       <div>
         <ThudBoard
           board={board}
-          currentSide={currentSide}
+          activeSide={activeSide}
+          yourSide={yourSide}
           moves={moves}
           move={move}
         />

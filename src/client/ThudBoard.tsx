@@ -1,6 +1,7 @@
 "use client";
 import { useActionState, useState } from "react";
 import {
+  DWARF,
   filterAvailableMoves,
   Move,
   Side,
@@ -12,14 +13,16 @@ import "./ThudBoard.css";
 
 interface ThudBoardProps {
   board: ThudBoardType;
-  currentSide: Side;
+  activeSide: Side;
+  yourSide: Side;
   moves: Move[];
   move: (move: Move) => void;
 }
 
 export default function ThudBoard({
   board,
-  currentSide,
+  activeSide,
+  yourSide,
   moves,
   move,
 }: ThudBoardProps) {
@@ -41,16 +44,23 @@ export default function ThudBoard({
     return currentSquare;
   }
 
-  // Keep track of the selected piece.
-  const [selectedPiece, availableMovesAction] = useActionState(
+  // Enable moving to a valid square.
+  function makeMove(_previousMove: Move | null, currentMove: Move) {
+    if (activeSide == yourSide) {
+      move(currentMove);
+      setAvailableMoves(null);
+    }
+
+    return currentMove;
+  }
+
+  // Action for selecting pieces.
+  const [selectedPieceSquare, availableMovesAction] = useActionState(
     showAvailableMoves,
     null
   );
 
-  // Enable moving to a valid square.
-  async function makeMove() {
-    await move;
-  }
+  // Action for making moves.
   const [_moveBeingMade, makeMoveAction] = useActionState(makeMove, null);
 
   // Dark and light coloured squares.
@@ -65,9 +75,9 @@ export default function ThudBoard({
     return (
       <ThudSquare
         key={keyIndex}
-        currentSide={currentSide}
+        yourSide={yourSide}
         square={square}
-        selectedPiece={selectedPiece}
+        selectedPieceSquare={selectedPieceSquare}
         alternateColorsClassName={alternateColorsClassName}
         availableMoves={availableMoves}
         availableMovesAction={availableMovesAction}
@@ -88,8 +98,14 @@ export default function ThudBoard({
     );
   }
 
+  function sideToText(side: Side) {
+    return side == DWARF ? "dwarfs" : "trolls";
+  }
+
   return (
     <>
+      <p>Your side is the {sideToText(yourSide)}.</p>
+      <p>{sideToText(activeSide)} to move next.</p>
       <div className="thudBoard">{board.map(drawRow)}</div>
     </>
   );

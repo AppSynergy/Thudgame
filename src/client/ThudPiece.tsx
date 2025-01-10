@@ -4,17 +4,18 @@ import { DWARF, TROLL, Side, ThudSquare } from "../game/thud";
 
 interface ThudPieceProps {
   square: ThudSquare;
-  currentSide: Side;
+  yourSide: Side;
   availableMovesAction?: (square: ThudSquare | null) => void;
 }
 
 export default function ThudPiece({
   square,
-  currentSide,
+  yourSide,
   availableMovesAction,
 }: ThudPieceProps) {
   let pieceIcon;
   let pieceClassName;
+
   if (square.piece) {
     if (square.piece == DWARF) {
       pieceIcon = DWARF;
@@ -26,7 +27,7 @@ export default function ThudPiece({
   }
 
   function clickPiece() {
-    if (currentSide == square.piece && availableMovesAction) {
+    if (yourSide == square.piece && availableMovesAction) {
       startTransition(() => {
         availableMovesAction(square);
       });

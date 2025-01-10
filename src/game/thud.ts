@@ -1,4 +1,4 @@
-import { boardOx88, algebraic, Square } from "./0x88";
+import { boardOx88, algebraic, Square as Ox88Square } from "./0x88";
 
 export const TROLL = "T";
 export const DWARF = "d";
@@ -6,6 +6,7 @@ export const DWARF = "d";
 export type Piece = "T" | "d";
 export type Side = Piece;
 
+export type Square = Ox88Square;
 export interface ThudSquare {
   algebraic: Square;
   piece?: Piece;

@@ -1,4 +1,9 @@
-import { boardOx88, algebraic, Square as Ox88Square } from "./0x88";
+import {
+  boardOx88,
+  algebraic,
+  Square as Ox88Square,
+  PIECE_OFFSETS,
+} from "./lib0x88";
 
 export const TROLL = "T";
 export const DWARF = "d";
@@ -7,6 +12,7 @@ export type Piece = "T" | "d";
 export type Side = Piece;
 
 export type Square = Ox88Square;
+
 export interface ThudSquare {
   algebraic: Square;
   piece?: Piece;
@@ -33,13 +39,58 @@ export interface Move {
   notation?: string;
 }
 
-function internalMoveFromMove(move: Move): InternalMove {
-  // TODO convert to InternalMove
-  // TODO check if move is legal?
-  if (move.piece == DWARF) {
-    return { piece: move.piece, from: 0, to: 1 };
+// TODO this method is copy pasted a bit and is probably gibberish
+export function findMoves(board: Piece[], piece: Piece, square: Square) {
+  let from: number;
+  let moves = [];
+
+  // illegal square, return empty moves
+  if (!(square in boardOx88)) {
+    return [];
+  } else {
+    from = boardOx88[square];
   }
-  return { piece: move.piece, from: 2, to: 3 };
+
+  // did we run off the end of the board
+  if (from & 0x88) {
+    square += 7;
+    return [];
+  }
+
+  let to: number;
+
+  for (let j = 0, len = PIECE_OFFSETS[piece].length; j < len; j++) {
+    const offset = PIECE_OFFSETS[piece][j];
+    to = from;
+
+    while (true) {
+      from += offset;
+      if (from & 0x88) break;
+
+      if (!board[to]) {
+        moves.push({ piece, from, to });
+      } else {
+        // own color, stop loop
+        if (board[to] === piece) break;
+
+        moves.push({ piece, from, to });
+
+        break;
+      }
+
+      // break, if troll for some reason
+      if (piece === "T") break;
+    }
+  }
+}
+
+function internalMoveFromMove(move: Move): InternalMove {
+  // TODO check if move is legal?
+  return {
+    piece: move.piece,
+    from: boardOx88[move.from],
+    to: boardOx88[move.to],
+  };
 }
 
 // Filter all available moves to produce just the moves from a given square.
@@ -67,7 +118,7 @@ export function Thud(position?: string): ThudGame {
   let _turn = DWARF;
 
   // Data from drawing the current board
-  function board() {
+  function board(): ThudBoard {
     const output = [];
     let row = [];
 
@@ -95,7 +146,11 @@ export function Thud(position?: string): ThudGame {
   // TODO compute legal moves
   function moves(side: Side): Move[] {
     if (side == DWARF) {
-      return [{ piece: DWARF, from: "a8", to: "b8" }];
+      return [
+        { piece: DWARF, from: "a8", to: "b8" },
+        { piece: DWARF, from: "a8", to: "b7" },
+        { piece: DWARF, from: "a8", to: "a7" },
+      ];
     }
     return [{ piece: TROLL, from: "c8", to: "d8" }];
   }

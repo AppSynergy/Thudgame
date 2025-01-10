@@ -22,20 +22,34 @@ export const boardOx88: Record<Square, number> = {
   a1: 112, b1: 113, c1: 114, d1: 115, e1: 116, f1: 117, g1: 118, h1: 119
 }
 
+export const PIECE_OFFSETS = {
+  T: [-17, -16, -15, 1, 17, 16, 15, -1],
+  d: [-17, -16, -15, 1, 17, 16, 15, -1],
+};
+
 // Extracts the zero-based rank of an 0x88 square.
-function rank(square: number): number {
+export function rank(square: number): number {
   return square >> 4;
 }
 
 // Extracts the zero-based file of an 0x88 square.
-function file(square: number): number {
+export function file(square: number): number {
   return square & 0xf;
+}
+
+// Rank in SAN
+export function rankSan(square: number): string {
+  const r = rank(square);
+  return "87654321".substring(r, r + 1);
+}
+
+// File in SAN
+export function fileSan(square: number): string {
+  const f = file(square);
+  return "abcdefgh".substring(f, f + 1);
 }
 
 // Converts a 0x88 square to algebraic notation.
 export function algebraic(square: number): Square {
-  const f = file(square);
-  const r = rank(square);
-  return ("abcdefgh".substring(f, f + 1) +
-    "87654321".substring(r, r + 1)) as Square;
+  return (fileSan(square) + rankSan(square)) as Square;
 }

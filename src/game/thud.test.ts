@@ -1,4 +1,11 @@
-import { filterAvailableMoves, Thud, DWARF, TROLL } from "./thud";
+import {
+  findMoves,
+  filterAvailableMoves,
+  Piece,
+  Thud,
+  DWARF,
+  TROLL,
+} from "./thud";
 
 test("each side can find a legal opening move", () => {
   const thud = Thud();
@@ -59,4 +66,14 @@ test("can load positions", () => {
   const thud = Thud("TxT");
 
   expect(thud.board()[0][0]).toStrictEqual({ algebraic: "a8", piece: "T" });
+});
+
+test("finding moves", () => {
+  const board = new Array<Piece>(128);
+  board[33] = "d";
+
+  // TODO fix and check correct square.
+  const moves = findMoves(board, DWARF, "d5");
+
+  expect(moves).toStrictEqual("some badly copy pasted nonsense");
 });

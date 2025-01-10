@@ -10,7 +10,7 @@ function App() {
   async function getMessage() {
     const { data, status } = await axios.get("/api");
     if (status == 200) {
-      setMessage(data);
+      setMessage(data.message);
     }
   }
 

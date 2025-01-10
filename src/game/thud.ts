@@ -41,6 +41,16 @@ function internalMoveFromMove(move: Move): InternalMove {
   return { piece: move.piece, from: 2, to: 3 };
 }
 
+export function filterAvailableMoves(moves: Move[], algebraic: string): Move[] {
+  let output = [];
+  for (let i = 0; i < moves.length; i++) {
+    if (algebraic == moves[i].from) {
+      output.push(moves[i]);
+    }
+  }
+  return output;
+}
+
 interface ThudGame {
   board: () => ThudSquare[][];
   moves: (side: Side) => Move[];

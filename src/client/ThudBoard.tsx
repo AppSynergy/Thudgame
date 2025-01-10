@@ -1,23 +1,14 @@
 "use client";
 import { useActionState, useState } from "react";
 import {
+  filterAvailableMoves,
   Move,
   Side,
   ThudBoard as ThudBoardType,
-  ThudSquare,
+  ThudSquare as ThudSquareType,
 } from "../game/thud";
-import ThudPiece from "./ThudPiece";
+import ThudSquare from "./ThudSquare";
 import "./ThudBoard.css";
-
-function filterAvailableMoves(moves: Move[], algebraic: string): Move[] {
-  let output = [];
-  for (let i = 0; i < moves.length; i++) {
-    if (algebraic == moves[i].from) {
-      output.push(moves[i]);
-    }
-  }
-  return output;
-}
 
 interface ThudBoardProps {
   board: ThudBoardType;
@@ -34,8 +25,8 @@ export default function ThudBoard({
 
   // If we select one of our pieces, show the available moves.
   async function showAvailableMoves(
-    previousSquare: ThudSquare | null,
-    currentSquare: ThudSquare | null
+    previousSquare: ThudSquareType | null,
+    currentSquare: ThudSquareType | null
   ) {
     if (previousSquare == currentSquare) {
       setAvailableMoves(null);
@@ -54,51 +45,35 @@ export default function ThudBoard({
     null
   );
 
+  // Dark and light coloured squares.
   let alternateColors = 0;
 
   // Draw a single square of the board.
-  function drawSquare(square: ThudSquare, key: number) {
-    let className = alternateColors % 2 == 0 ? "dark" : "light";
+  function drawSquare(square: ThudSquareType, keyIndex: number) {
     alternateColors += 1;
-
-    if (availableMoves?.map((m) => m.to).includes(square.algebraic)) {
-      className += " canMoveHere";
-    }
-
-    if (currentSide == square.piece) {
-      className += " selectable";
-    }
-
-    if (selectedPiece?.algebraic == square.algebraic) {
-      className += " selected";
-    }
-
-    let piece = null;
-    if (square.piece) {
-      piece = (
-        <ThudPiece
-          currentSide={currentSide}
-          square={square}
-          availableMovesAction={availableMovesAction}
-        />
-      );
-    }
+    const alternateColorsClassName =
+      alternateColors % 2 == 0 ? "dark" : "light";
 
     return (
-      <div key={key} className={`thudSquare ${className}`}>
-        <div className="label">{square.algebraic}</div>
-        {piece}
-      </div>
+      <ThudSquare
+        key={keyIndex}
+        currentSide={currentSide}
+        square={square}
+        selectedPiece={selectedPiece}
+        alternateColorsClassName={alternateColorsClassName}
+        availableMoves={availableMoves}
+        availableMovesAction={availableMovesAction}
+      />
     );
   }
 
   // Draw a single row of the board.
-  function drawRow(row: ThudSquare[], key: number) {
+  function drawRow(row: ThudSquareType[], keyIndex: number) {
     const thudRow = row.map(drawSquare);
     alternateColors += 1;
 
     return (
-      <div key={key} className="thudRow">
+      <div key={keyIndex} className="thudRow">
         {thudRow}
       </div>
     );

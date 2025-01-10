@@ -1,3 +1,4 @@
+"use client";
 import { startTransition } from "react";
 import { DWARF, TROLL, Side, ThudSquare } from "../game/thud";
 

@@ -32,7 +32,7 @@ function App() {
       <div className="card">{message}</div>
       <p>Hello, thud!</p>
       <div>
-        <ThudBoard board={board} moves={moves} />
+        <ThudBoard board={board} currentSide={currentSide} moves={moves} />
       </div>
     </>
   );

@@ -1,6 +1,11 @@
 "use client";
 import { useActionState, useState } from "react";
-import { Move, ThudBoard as ThudBoardType, ThudSquare } from "../game/thud";
+import {
+  Move,
+  Side,
+  ThudBoard as ThudBoardType,
+  ThudSquare,
+} from "../game/thud";
 import ThudPiece from "./ThudPiece";
 import "./ThudBoard.css";
 
@@ -16,10 +21,15 @@ function filterAvailableMoves(moves: Move[], algebraic: string): Move[] {
 
 interface ThudBoardProps {
   board: ThudBoardType;
+  currentSide: Side;
   moves: Move[];
 }
 
-export default function ThudBoard({ board, moves }: ThudBoardProps) {
+export default function ThudBoard({
+  board,
+  currentSide,
+  moves,
+}: ThudBoardProps) {
   const [availableMoves, setAvailableMoves] = useState<Move[] | null>(null);
 
   // If we select one of our pieces, show the available moves.
@@ -55,17 +65,29 @@ export default function ThudBoard({ board, moves }: ThudBoardProps) {
       className += " canMoveHere";
     }
 
+    if (currentSide == square.piece) {
+      className += " selectable";
+    }
+
     if (selectedPiece?.algebraic == square.algebraic) {
       className += " selected";
+    }
+
+    let piece = null;
+    if (square.piece) {
+      piece = (
+        <ThudPiece
+          currentSide={currentSide}
+          square={square}
+          availableMovesAction={availableMovesAction}
+        />
+      );
     }
 
     return (
       <div key={key} className={`thudSquare ${className}`}>
         <div className="label">{square.algebraic}</div>
-        <ThudPiece
-          square={square}
-          availableMovesAction={availableMovesAction}
-        />
+        {piece}
       </div>
     );
   }

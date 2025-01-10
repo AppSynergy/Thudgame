@@ -4,7 +4,7 @@ export const TROLL = "T";
 export const DWARF = "d";
 
 export type Piece = "T" | "d";
-type Side = Piece;
+export type Side = Piece;
 
 export interface ThudSquare {
   algebraic: Square;

@@ -33,17 +33,22 @@
 .thudSquare .label {
   text-align: start;
   position: absolute;
+  cursor: default;
 }
 
 .thudSquare .piece {
   font-weight: bold;
   font-size: 1.4em;
-  cursor: pointer;
   vertical-align: middle;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  cursor: default;
+}
+
+.thudSquare.selectable .piece {
+  cursor: pointer;
 }
 
 .thudSquare .piece.dwarf {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Thud, DWARF } from "../game/thud";
+import { Move, Thud, DWARF } from "../game/thud";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
 
@@ -22,17 +22,28 @@ function App() {
   const currentSide = DWARF;
 
   // TODO move to api
-  // TODO redraw board
   const thud = Thud();
-  const board = thud.board();
-  const moves = thud.moves(currentSide);
+  let board = thud.board();
+  let moves = thud.moves(currentSide);
+
+  // TODO redraw board properly
+  function move(move: Move) {
+    thud.move(move);
+    board = thud.board();
+    moves = thud.moves(currentSide);
+  }
 
   return (
     <>
       <div className="card">{message}</div>
       <p>Hello, thud!</p>
       <div>
-        <ThudBoard board={board} currentSide={currentSide} moves={moves} />
+        <ThudBoard
+          board={board}
+          currentSide={currentSide}
+          moves={moves}
+          move={move}
+        />
       </div>
     </>
   );

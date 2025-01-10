@@ -1,4 +1,5 @@
 "use client";
+import { startTransition } from "react";
 import { Move, Side, ThudSquare as ThudSquareType } from "../game/thud";
 import ThudPiece from "./ThudPiece";
 
@@ -9,6 +10,7 @@ interface ThudSquareProps {
   selectedPiece: ThudSquareType | null;
   availableMoves: Move[] | null;
   availableMovesAction: (square: ThudSquareType | null) => void;
+  makeMoveAction: (move: Move) => void;
 }
 
 // Draw a single square of the board.
@@ -19,8 +21,10 @@ export default function ThudSquare({
   alternateColorsClassName,
   availableMoves,
   availableMovesAction,
+  makeMoveAction,
 }: ThudSquareProps) {
   let className = alternateColorsClassName;
+  let canMoveHere = false;
 
   // Classes for the user interface.
   if (
@@ -28,6 +32,7 @@ export default function ThudSquare({
     availableMoves?.map((m: Move) => m.to).includes(square.algebraic)
   ) {
     className += " canMoveHere";
+    canMoveHere = true;
   }
 
   if (currentSide == square.piece) {
@@ -50,8 +55,22 @@ export default function ThudSquare({
     );
   }
 
+  function clickSquare() {
+    if (canMoveHere) {
+      // TODO a real move
+      const move: Move = {
+        from: "a8",
+        to: "a7",
+        piece: "d",
+      };
+      startTransition(() => {
+        makeMoveAction(move);
+      });
+    }
+  }
+
   return (
-    <div className={`thudSquare ${className}`}>
+    <div onClick={clickSquare} className={`thudSquare ${className}`}>
       <div className="label">{square.algebraic}</div>
       {piece}
     </div>

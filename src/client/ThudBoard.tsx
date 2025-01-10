@@ -14,12 +14,14 @@ interface ThudBoardProps {
   board: ThudBoardType;
   currentSide: Side;
   moves: Move[];
+  move: (move: Move) => void;
 }
 
 export default function ThudBoard({
   board,
   currentSide,
   moves,
+  move,
 }: ThudBoardProps) {
   const [availableMoves, setAvailableMoves] = useState<Move[] | null>(null);
 
@@ -45,6 +47,12 @@ export default function ThudBoard({
     null
   );
 
+  // Enable moving to a valid square.
+  async function makeMove() {
+    await move;
+  }
+  const [_moveBeingMade, makeMoveAction] = useActionState(makeMove, null);
+
   // Dark and light coloured squares.
   let alternateColors = 0;
 
@@ -63,6 +71,7 @@ export default function ThudBoard({
         alternateColorsClassName={alternateColorsClassName}
         availableMoves={availableMoves}
         availableMovesAction={availableMovesAction}
+        makeMoveAction={makeMoveAction}
       />
     );
   }

@@ -29,7 +29,7 @@ export default function ThudBoard({
   const [availableMoves, setAvailableMoves] = useState<Move[] | null>(null);
 
   // If we select one of our pieces, show the available moves.
-  async function showAvailableMoves(
+  function showAvailableMoves(
     previousSquare: ThudSquareType | null,
     currentSquare: ThudSquareType | null
   ) {

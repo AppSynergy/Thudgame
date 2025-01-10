@@ -45,7 +45,6 @@ function App() {
     setBoard(thud.board());
     const nextMoves = thud.moves(otherSide);
 
-    console.warn({ nextMoves });
     if (nextMoves) {
       setMoves(nextMoves);
     }

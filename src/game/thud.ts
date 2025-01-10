@@ -42,7 +42,8 @@ function internalMoveFromMove(move: Move): InternalMove {
   return { piece: move.piece, from: 2, to: 3 };
 }
 
-export function filterAvailableMoves(moves: Move[], algebraic: string): Move[] {
+// Filter all available moves to produce just the moves from a given square.
+export function filterAvailableMoves(moves: Move[], algebraic: Square): Move[] {
   let output = [];
   for (let i = 0; i < moves.length; i++) {
     if (algebraic == moves[i].from) {

@@ -79,11 +79,8 @@ export default function ThudBoard({
     );
   }
 
-  // TODO highlight all the available moves
   return (
     <>
-      {selectedPiece?.algebraic ?? "No piece selected"}--&gt;
-      {availableMoves?.map((move) => move.to)}
       <div className="thudBoard">{board.map(drawRow)}</div>
     </>
   );

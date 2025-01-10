@@ -22,6 +22,7 @@ export default function ThudSquare({
 }: ThudSquareProps) {
   let className = alternateColorsClassName;
 
+  // Classes for the user interface.
   if (
     availableMoves &&
     availableMoves?.map((m: Move) => m.to).includes(square.algebraic)
@@ -37,6 +38,7 @@ export default function ThudSquare({
     className += " selected";
   }
 
+  // Draw the piece if there is one on this square.
   let piece = null;
   if (square.piece) {
     piece = (

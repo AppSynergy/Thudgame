@@ -37,7 +37,7 @@ test("can click on a square to move there", () => {
       square={squareWithNoPiece}
       selectedPieceSquare={squareWithTroll}
       alternateColorsClassName="dark"
-      availableMoves={[{ from: "d4", piece: TROLL, to: "e4" }] as Move[]}
+      availableMoves={[{ from: "e5", piece: TROLL, to: "e4" }] as Move[]}
       availableMovesAction={jest.fn()}
       makeMoveAction={mockMoveAction}
     />

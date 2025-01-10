@@ -5,6 +5,7 @@ import ThudSquare from "./ThudSquare";
 
 const squareWithTroll: ThudSquareType = { piece: TROLL, algebraic: "e5" };
 const squareWithNoPiece: ThudSquareType = { algebraic: "e4" };
+const availableMove = { from: "e5", piece: TROLL, to: "e4" } as Move;
 
 test("renders an empty square", () => {
   render(
@@ -27,8 +28,33 @@ test("renders an empty square", () => {
   expect(label).toBeInTheDocument();
 });
 
+test("highlights a possible move", async () => {
+  const mockAvailableMovesAction = jest.fn();
+
+  render(
+    <ThudSquare
+      key={22}
+      yourSide={TROLL}
+      square={squareWithTroll}
+      selectedPieceSquare={squareWithTroll}
+      alternateColorsClassName="dark"
+      availableMoves={[availableMove]}
+      availableMovesAction={mockAvailableMovesAction}
+      makeMoveAction={jest.fn()}
+    />
+  );
+
+  fireEvent.click(screen.getByText(/T/));
+
+  expect(mockAvailableMovesAction).toHaveBeenCalledTimes(1);
+  expect(mockAvailableMovesAction).toHaveBeenCalledWith({
+    algebraic: "e5",
+    piece: "T",
+  });
+});
+
 test("can click on a square to move there", () => {
-  const mockMoveAction = jest.fn();
+  const mockMakeMoveAction = jest.fn();
 
   render(
     <ThudSquare
@@ -37,9 +63,9 @@ test("can click on a square to move there", () => {
       square={squareWithNoPiece}
       selectedPieceSquare={squareWithTroll}
       alternateColorsClassName="dark"
-      availableMoves={[{ from: "e5", piece: TROLL, to: "e4" }] as Move[]}
+      availableMoves={[availableMove]}
       availableMovesAction={jest.fn()}
-      makeMoveAction={mockMoveAction}
+      makeMoveAction={mockMakeMoveAction}
     />
   );
 
@@ -48,8 +74,8 @@ test("can click on a square to move there", () => {
     fireEvent.click(square);
   }
 
-  expect(mockMoveAction).toHaveBeenCalledTimes(1);
-  expect(mockMoveAction).toHaveBeenCalledWith({
+  expect(mockMakeMoveAction).toHaveBeenCalledTimes(1);
+  expect(mockMakeMoveAction).toHaveBeenCalledWith({
     from: "e5",
     piece: "T",
     to: "e4",

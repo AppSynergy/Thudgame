@@ -1,4 +1,4 @@
-import { Thud, DWARF, TROLL } from "./thud";
+import { filterAvailableMoves, Thud, DWARF, TROLL } from "./thud";
 
 test("each side can find a legal opening move", () => {
   const thud = Thud();
@@ -38,4 +38,25 @@ test("dwarves and trolls can both move", () => {
 
   expect(boardAtStart).not.toEqual(boardAfterSecondMove);
   expect(boardAfterFirstMove).not.toEqual(boardAfterSecondMove);
+});
+
+test("can filter available moves", () => {
+  const result = filterAvailableMoves(
+    [
+      { piece: TROLL, from: "c8", to: "c2" },
+      { piece: TROLL, from: "d2", to: "d8" },
+      { piece: TROLL, from: "e4", to: "e8" },
+    ],
+    "d2"
+  );
+
+  expect(result).toEqual(
+    expect.arrayContaining([{ piece: TROLL, from: "d2", to: "d8" }])
+  );
+});
+
+test("can load positions", () => {
+  const thud = Thud("TxT");
+
+  expect(thud.board()[0][0]).toStrictEqual({ algebraic: "a8", piece: "T" });
 });

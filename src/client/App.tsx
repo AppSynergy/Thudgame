@@ -1,6 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { Move, Side, Thud, DWARF, TROLL } from "../game/thud";
+import {
+  sideToText,
+  toggleSide,
+  Move,
+  Side,
+  Thud,
+  ThudBoard as ThudBoardType,
+  DWARF,
+} from "../game/thud";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
 
@@ -14,55 +22,89 @@ function App() {
     }
   }
 
+  // TODO play as either side
+  const currentSide = DWARF as Side;
+
+  // States
+  const [moveCount, setMoveCount] = useState(0);
+  const [yourSide, setYourSide] = useState(currentSide);
+  const [activeSide, setActiveSide] = useState(currentSide);
+  const [board, setBoard] = useState<ThudBoardType | null>(null);
+  const [moves, setMoves] = useState<Move[] | null>(null);
+  const [loss, setLoss] = useState<Side | null>(null);
+  const thud = useMemo(() => Thud(), []);
+
+  // Effects
+  // Connect to server effect
   useEffect(() => {
     getMessage();
   }, []);
 
-  // TODO play as either side
-  const currentSide = DWARF as Side;
+  // Initialize game effect
+  useEffect(() => {
+    setBoard(thud.board());
+  }, [thud]);
 
-  // TODO move to api?
-  const thud = Thud();
-  const [yourSide, setYourSide] = useState(currentSide);
-  const [activeSide, setActiveSide] = useState(currentSide);
-  const [board, setBoard] = useState(thud.board());
-  const [moves, setMoves] = useState(thud.moves(yourSide));
+  // Calculate possible moves effect
+  useEffect(() => {
+    setMoves(thud.moves(yourSide));
+  }, [thud, yourSide]);
 
-  function toggleSide(side: Side) {
-    return side == DWARF ? TROLL : DWARF;
+  // Callbacks
+  // Handles move logic
+  const move = useCallback(
+    (move: Move) => {
+      thud.move(move);
+
+      // TODO for now play as both sides.
+      const otherSide = toggleSide(activeSide);
+      setYourSide(otherSide);
+      setActiveSide(otherSide);
+
+      // TODO we only need to update two squares, is this efficient?
+      setBoard(thud.board());
+
+      const nextMoves = thud.moves(otherSide);
+      if (nextMoves) {
+        setMoves(nextMoves);
+      } else {
+        setLoss(otherSide);
+      }
+
+      setMoveCount(moveCount + 1);
+    },
+    [thud, activeSide, moveCount]
+  );
+
+  // Layout
+  let thudBoard;
+  if (board && moves) {
+    thudBoard = (
+      <ThudBoard
+        board={board}
+        activeSide={activeSide}
+        yourSide={yourSide}
+        moves={moves}
+        move={move}
+      />
+    );
   }
 
-  // Handles move logic
-  function move(move: Move) {
-    thud.move(move);
-
-    // TODO for now play as both sides.
-    const otherSide = toggleSide(activeSide);
-    setYourSide(otherSide);
-    setActiveSide(otherSide);
-
-    // TODO we only need to update two squares, is this efficient?
-    setBoard(thud.board());
-    const nextMoves = thud.moves(otherSide);
-
-    if (nextMoves) {
-      setMoves(nextMoves);
-    }
+  let winnerLoserText = "Neither side has lost yet.";
+  if (loss) {
+    const losingSide = sideToText(loss);
+    winnerLoserText = losingSide + " lose!";
   }
 
   return (
     <>
       <p>{message}</p>
       <p>Hello, thud!</p>
-      <div>
-        <ThudBoard
-          board={board}
-          activeSide={activeSide}
-          yourSide={yourSide}
-          moves={moves}
-          move={move}
-        />
-      </div>
+      <p>Move number: {moveCount}</p>
+      <p>Your side is the {sideToText(yourSide)}.</p>
+      <p>{sideToText(activeSide)} to move next.</p>
+      <p>{winnerLoserText}</p>
+      <div>{thudBoard}</div>
     </>
   );
 }

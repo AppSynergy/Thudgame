@@ -1,7 +1,6 @@
 "use client";
 import { useActionState, useState } from "react";
 import {
-  DWARF,
   filterAvailableMoves,
   Move,
   Side,
@@ -61,6 +60,7 @@ export default function ThudBoard({
   );
 
   // Action for making moves.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_moveBeingMade, makeMoveAction] = useActionState(makeMove, null);
 
   // Dark and light coloured squares.
@@ -98,14 +98,8 @@ export default function ThudBoard({
     );
   }
 
-  function sideToText(side: Side) {
-    return side == DWARF ? "dwarfs" : "trolls";
-  }
-
   return (
     <>
-      <p>Your side is the {sideToText(yourSide)}.</p>
-      <p>{sideToText(activeSide)} to move next.</p>
       <div className="thudBoard">{board.map(drawRow)}</div>
     </>
   );

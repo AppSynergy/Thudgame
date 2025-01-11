@@ -12,6 +12,14 @@ export const DWARF = "d";
 export type Piece = "T" | "d";
 export type Side = Piece;
 
+export function toggleSide(side: Side): Side {
+  return side == DWARF ? TROLL : DWARF;
+}
+
+export function sideToText(side: Side): string {
+  return side == DWARF ? "Dwarfs" : "Trolls";
+}
+
 export type Square = Ox88Square;
 
 export interface ThudSquare {
@@ -24,7 +32,7 @@ export type ThudBoard = ThudSquare[][];
 // TODO improve Thud Board Notation
 // Current turn, then an X, then dwarf and troll positions.
 // Any other character is an empty space.
-export const DEFAULT_POSITION = "dxdoT";
+export const DEFAULT_POSITION = "dxdoTddT";
 
 interface InternalMove {
   from: number;
@@ -79,14 +87,13 @@ export function findMovesForSinglePiece(
   piece: Piece,
   square: Square
 ): InternalMove[] {
-  let from: number;
-  const moves = [];
-
   // pieces must be on the board
   if (!(square in boardOx88)) {
     return [];
   }
-  from = boardOx88[square];
+
+  const moves = [];
+  const from: number = boardOx88[square];
 
   let to: number;
   for (let j = 0, len = PIECE_OFFSETS[piece].length; j < len; j++) {
@@ -121,7 +128,7 @@ export function findMovesForSinglePiece(
 
 // Filter all available moves to produce just the moves from a given square.
 export function filterAvailableMoves(moves: Move[], algebraic: Square): Move[] {
-  let output = [];
+  const output = [];
   for (let i = 0; i < moves.length; i++) {
     if (algebraic == moves[i].from) {
       output.push(moves[i]);
@@ -140,7 +147,7 @@ interface ThudGame {
 
 export function Thud(position?: string): ThudGame {
   // Internal representation of board
-  let iboard = new Array<Piece>(128);
+  const iboard = new Array<Piece>(128);
   let iturn = DWARF;
 
   // Data from drawing the current board

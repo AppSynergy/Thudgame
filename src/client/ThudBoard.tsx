@@ -69,8 +69,6 @@ export default function ThudBoard({
   // Draw a single square of the board.
   function drawSquare(square: ThudSquareType, keyIndex: number) {
     alternateColors += 1;
-    const alternateColorsClassName =
-      alternateColors % 2 == 0 ? "dark" : "light";
 
     return (
       <ThudSquare
@@ -78,7 +76,7 @@ export default function ThudBoard({
         yourSide={yourSide}
         square={square}
         selectedPieceSquare={selectedPieceSquare}
-        alternateColorsClassName={alternateColorsClassName}
+        alternateColors={alternateColors}
         availableMoves={availableMoves}
         availableMovesAction={availableMovesAction}
         makeMoveAction={makeMoveAction}

@@ -1,13 +1,20 @@
 "use client";
 import { startTransition } from "react";
-import { Move, Side, ThudSquare as ThudSquareType } from "../game/thud";
+import classNames from "classnames";
+import {
+  Move,
+  Side,
+  ThudSquare as ThudSquareType,
+  DWARF,
+  TROLL,
+} from "../game/thud";
 import ThudPiece from "./ThudPiece";
 import "./ThudSquare.css";
 
 interface ThudSquareProps {
   yourSide: Side;
   square: ThudSquareType;
-  alternateColorsClassName: string;
+  alternateColors: number;
   selectedPieceSquare: ThudSquareType | null;
   availableMoves: Move[] | null;
   availableMovesAction: (square: ThudSquareType | null) => void;
@@ -19,29 +26,18 @@ export default function ThudSquare({
   yourSide,
   square,
   selectedPieceSquare,
-  alternateColorsClassName,
+  alternateColors,
   availableMoves,
   availableMovesAction,
   makeMoveAction,
 }: ThudSquareProps) {
-  let className = alternateColorsClassName;
+  // Check whether we can move to this square.
   let canMoveHere = false;
-
-  // Classes for the user interface.
   if (
     availableMoves &&
     availableMoves?.map((m: Move) => m.to).includes(square.algebraic)
   ) {
-    className += " canMoveHere";
     canMoveHere = true;
-  }
-
-  if (yourSide == square.piece) {
-    className += " selectable";
-
-    if (selectedPieceSquare?.algebraic == square.algebraic) {
-      className += " selected";
-    }
   }
 
   // Draw the piece if there is one on this square.
@@ -69,8 +65,19 @@ export default function ThudSquare({
     }
   }
 
+  const thudSquareClassNames = classNames({
+    thudSquare: true,
+    canMoveHere: canMoveHere && !square.piece,
+    canHurlHere: canMoveHere && yourSide === DWARF && square.piece === TROLL,
+    dark: alternateColors % 2 === 0,
+    light: alternateColors % 2 === 1,
+    selectable: yourSide === square.piece,
+    selected:
+      square.piece && selectedPieceSquare?.algebraic == square.algebraic,
+  });
+
   return (
-    <div onClick={clickSquare} className={`thudSquare ${className}`}>
+    <div onClick={clickSquare} className={thudSquareClassNames}>
       <div className="label">{square.algebraic}</div>
       {piece}
     </div>

@@ -1,0 +1,23 @@
+.thudSquare .piece {
+  font-weight: bold;
+  font-size: 1.4em;
+  vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+  text-align: center;
+}
+
+.piece .pieceBackground {
+  background-color: darkslategray;
+  color: wheat;
+  margin: 25%;
+  height: 50%;
+  width: 50%;
+}
+
+.thudSquare.canHurlHere .piece,
+.thudSquare.selectable .piece {
+  cursor: pointer;
+}

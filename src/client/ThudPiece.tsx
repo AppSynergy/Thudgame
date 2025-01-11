@@ -1,6 +1,7 @@
 "use client";
 import { startTransition } from "react";
-import { DWARF, TROLL, Side, ThudSquare } from "../game/thud";
+import { Side, ThudSquare } from "../game/thud";
+import "./ThudPiece.css";
 
 interface ThudPieceProps {
   square: ThudSquare;
@@ -13,19 +14,6 @@ export default function ThudPiece({
   yourSide,
   availableMovesAction,
 }: ThudPieceProps) {
-  let pieceIcon;
-  let pieceClassName;
-
-  if (square.piece) {
-    if (square.piece == DWARF) {
-      pieceIcon = DWARF;
-      pieceClassName = "dwarf";
-    } else if (square.piece == TROLL) {
-      pieceIcon = TROLL;
-      pieceClassName = "troll";
-    }
-  }
-
   function clickPiece() {
     if (yourSide == square.piece && availableMovesAction) {
       startTransition(() => {
@@ -35,8 +23,8 @@ export default function ThudPiece({
   }
 
   return (
-    <div onClick={clickPiece} className={`piece ${pieceClassName}`}>
-      {pieceIcon}
+    <div onClick={clickPiece} className="piece">
+      <div className="pieceBackground">{square.piece}</div>
     </div>
   );
 }

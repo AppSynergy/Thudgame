@@ -98,9 +98,13 @@ export function findMovesForSinglePiece(
   let to: number;
   for (let j = 0, len = PIECE_OFFSETS[piece].length; j < len; j++) {
     const offset = PIECE_OFFSETS[piece][j];
+    let distance = 0;
     to = from;
     while (true) {
+      // check moves in a given direction
       to += offset;
+      distance += 1;
+
       // only check squares on the board
       if (to & 0x88) break;
 
@@ -111,8 +115,14 @@ export function findMovesForSinglePiece(
         // we can't move on top of our own pieces
         if (board[to] == piece) break;
 
-        // but trolls can capture dwarfs
-        if (board[to] != piece) {
+        // a single dwarf can hurl one square and capture
+        if (piece === DWARF && distance == 1) {
+          moves.push({ piece, from, to });
+        }
+
+        // TODO no they can't, read the rules
+        // trolls can capture dwarfs
+        if (piece === TROLL && board[to] !== DWARF) {
           moves.push({ piece, from, to });
         }
         break;

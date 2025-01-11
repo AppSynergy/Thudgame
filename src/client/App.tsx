@@ -52,7 +52,7 @@ function App() {
   }, [thud, yourSide]);
 
   // Callbacks
-  // Handles common move logic
+  // Callback - Handles common move logic
   const moveCommon = useCallback(() => {
     setMoveCount(moveCount + 1);
 
@@ -72,7 +72,7 @@ function App() {
     }
   }, [thud, activeSide, moveCount]);
 
-  // Handles AI move logic
+  // Callback - Handles AI move logic
   const moveAI = useCallback(() => {
     if (moves && opponent) {
       const move = opponent.decideMove(moves);
@@ -83,14 +83,14 @@ function App() {
     moveCommon();
   }, [thud, moves, moveCommon, opponent]);
 
-  // AI moves effect
+  // Effect - AI moves effect
   useEffect(() => {
     if (opponent && activeSide != yourSide) {
       moveAI();
     }
   }, [opponent, moveAI, activeSide, yourSide]);
 
-  // Handles user move logic
+  // Callback - Handles user move logic
   const moveUser = useCallback(
     (move: Move) => {
       if (!loss) {
@@ -104,7 +104,7 @@ function App() {
     [thud, loss, moveCommon, activeSide, playBothSides]
   );
 
-  // Handles resetting a new game
+  // Callback - Handles resetting a new game
   const resetGame = useCallback(() => {
     setMoveCount(0);
     setLoss(null);
@@ -114,7 +114,7 @@ function App() {
     setThud(Thud());
   }, []);
 
-  // Handles new game buttons
+  // Callback - Handles new game buttons
   const startNewGame = useCallback(
     (side: Side, opponentName: string | null) => {
       if (opponentName) {

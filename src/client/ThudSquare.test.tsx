@@ -69,6 +69,7 @@ test("can click on a square to move there", () => {
     />
   );
 
+  // TODO get by testing id
   const square = screen.getByText(/e4/).closest("div.thudSquare");
   if (square) {
     fireEvent.click(square);

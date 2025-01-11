@@ -1,0 +1,54 @@
+.thudSquare {
+  min-width: 4em;
+  min-height: 4em;
+  border: 1px solid darkslateblue;
+}
+
+.thudSquare.light {
+  background-color: aliceblue;
+  color: black;
+}
+
+.thudSquare.dark {
+  background-color: darkolivegreen;
+  color: white;
+}
+
+.thudSquare.dark.canMoveHere,
+.thudSquare.light.canMoveHere {
+  background-color: darkorange;
+  cursor: pointer;
+}
+
+.thudSquare .label {
+  text-align: start;
+  position: absolute;
+  cursor: default;
+}
+
+.thudSquare .piece {
+  font-weight: bold;
+  font-size: 1.4em;
+  vertical-align: middle;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  cursor: default;
+}
+
+.thudSquare.selectable .piece {
+  cursor: pointer;
+}
+
+.thudSquare .piece.dwarf {
+  background-color: saddlebrown;
+}
+
+.thudSquare .piece.troll {
+  background-color: darkgreen;
+}
+
+.thudSquare.selected .piece {
+  background-color: tomato;
+}

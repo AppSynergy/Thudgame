@@ -2,6 +2,7 @@
 import { startTransition } from "react";
 import { Move, Side, ThudSquare as ThudSquareType } from "../game/thud";
 import ThudPiece from "./ThudPiece";
+import "./ThudSquare.css";
 
 interface ThudSquareProps {
   yourSide: Side;

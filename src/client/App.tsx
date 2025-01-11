@@ -97,15 +97,17 @@ function App() {
   }
 
   return (
-    <>
-      <p>{message}</p>
-      <p>Hello, thud!</p>
-      <p>Move number: {moveCount}</p>
-      <p>Your side is the {sideToText(yourSide)}.</p>
-      <p>{sideToText(activeSide)} to move next.</p>
-      <p>{winnerLoserText}</p>
-      <div>{thudBoard}</div>
-    </>
+    <div className="game">
+      <div className="messages">
+        <p>{message}</p>
+        <p>Hello, thud!</p>
+        <p>Move number: {moveCount}</p>
+        <p>Your side is the {sideToText(yourSide)}.</p>
+        <p>{sideToText(activeSide)} to move next.</p>
+        <p>{winnerLoserText}</p>
+      </div>
+      <div className="thudBoardWrapper">{thudBoard}</div>
+    </div>
   );
 }
 

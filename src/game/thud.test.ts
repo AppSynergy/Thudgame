@@ -1,5 +1,6 @@
 import {
   findMoves,
+  findMovesForSinglePiece,
   filterAvailableMoves,
   Piece,
   Thud,
@@ -7,20 +8,8 @@ import {
   TROLL,
 } from "./thud";
 
-test("each side can find a legal opening move", () => {
-  const thud = Thud();
-
-  // TODO correctly setup and shaped board
-  expect(thud.moves(DWARF)).toEqual(
-    expect.arrayContaining([{ piece: DWARF, from: "a8", to: "b8" }])
-  );
-  expect(thud.moves(TROLL)).toEqual(
-    expect.arrayContaining([{ piece: TROLL, from: "c8", to: "d8" }])
-  );
-});
-
 test("dwarves go first", () => {
-  const thud = Thud();
+  const thud = Thud("dxdoT");
   const boardAtStart = thud.board();
 
   // TODO correctly setup and shaped board
@@ -31,7 +20,7 @@ test("dwarves go first", () => {
 });
 
 test("dwarves and trolls can both move", () => {
-  const thud = Thud();
+  const thud = Thud("dxdoT");
   const boardAtStart = thud.board();
 
   // TODO correctly setup and shaped board
@@ -73,7 +62,7 @@ test("finding troll moves", () => {
   board[34] = "d";
   const square = "d5"; // 51
 
-  const moves = findMoves(board, TROLL, square);
+  const moves = findMovesForSinglePiece(board, TROLL, square);
 
   expect(moves.length).toEqual(8);
   expect(moves).toEqual(
@@ -92,11 +81,11 @@ test("finding troll moves", () => {
 
 test("troll can't move on top of other troll", () => {
   const board = new Array<Piece>(128);
-  board[34] = "T";
-  board[35] = "T";
+  board[34] = "T"; // d6
+  board[35] = "T"; // e6
   const square = "d5"; // 51
 
-  const moves = findMoves(board, TROLL, square);
+  const moves = findMovesForSinglePiece(board, TROLL, square);
 
   expect(moves.length).toEqual(6);
   expect(moves).toEqual(
@@ -104,5 +93,27 @@ test("troll can't move on top of other troll", () => {
       { from: 51, piece: "T", to: 34 },
       { from: 51, piece: "T", to: 35 },
     ])
+  );
+});
+
+test("finding moves for multiple trolls", () => {
+  const board = new Array<Piece>(128);
+  board[34] = "T"; // d6
+  board[35] = "T"; // e6
+
+  const moves = findMoves(board, TROLL);
+
+  expect(moves).toEqual(["fish"]);
+});
+
+test("each side can find a legal opening move", () => {
+  const thud = Thud("dxdoT");
+
+  // TODO correctly setup and shaped board
+  expect(thud.moves(DWARF)).toEqual(
+    expect.arrayContaining([{ piece: DWARF, from: "a8", to: "b8" }])
+  );
+  expect(thud.moves(TROLL)).toEqual(
+    expect.arrayContaining([{ piece: TROLL, from: "c8", to: "d8" }])
   );
 });

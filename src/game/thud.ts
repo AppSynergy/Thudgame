@@ -1,5 +1,6 @@
 import {
   boardOx88,
+  boardOx88Inverse,
   algebraic,
   Square as Ox88Square,
   PIECE_OFFSETS,
@@ -39,9 +40,24 @@ export interface Move {
   notation?: string;
 }
 
+// Find all possible moves for a given side.
+export function findMoves(board: Piece[], side: Side): InternalMove[] {
+  let output: InternalMove[] = [];
+  for (let i = 0; i < board.length; i++) {
+    if (!board[i]) break;
+    if (board[i] == side) {
+      const square = boardOx88Inverse[i];
+      console.log({ board, side, square });
+      // output = output.concat(findMovesForSinglePiece(board, side, square));
+    }
+  }
+  console.log({ output });
+  return output;
+}
+
 // Find possible moves for a given piece.
 // TODO dwarf working?
-export function findMoves(
+export function findMovesForSinglePiece(
   board: Piece[],
   piece: Piece,
   square: Square
@@ -85,11 +101,18 @@ export function findMoves(
 }
 
 function internalMoveFromMove(move: Move): InternalMove {
-  // TODO check if move is legal?
   return {
     piece: move.piece,
     from: boardOx88[move.from],
     to: boardOx88[move.to],
+  };
+}
+
+function moveFromInternalMove(imove: InternalMove): Move {
+  return {
+    piece: imove.piece,
+    from: boardOx88Inverse[imove.from],
+    to: boardOx88Inverse[imove.to],
   };
 }
 
@@ -114,8 +137,8 @@ interface ThudGame {
 
 export function Thud(position?: string): ThudGame {
   // Internal representation of board
-  let _board = new Array<Piece>(128);
-  let _turn = DWARF;
+  let iboard = new Array<Piece>(128);
+  let iturn = DWARF;
 
   // Data from drawing the current board
   function board(): ThudBoard {
@@ -123,14 +146,14 @@ export function Thud(position?: string): ThudGame {
     let row = [];
 
     for (let i = boardOx88.a8; i <= boardOx88.h1; i++) {
-      if (_board[i] == null) {
+      if (iboard[i] == null) {
         row.push({
           algebraic: algebraic(i),
         });
       } else {
         row.push({
           algebraic: algebraic(i),
-          piece: _board[i],
+          piece: iboard[i],
         });
       }
       if ((i + 1) & 0x88) {
@@ -143,43 +166,37 @@ export function Thud(position?: string): ThudGame {
     return output;
   }
 
-  // TODO compute legal moves
+  // Find all the legal moves for a piece.
   function moves(side: Side): Move[] {
-    if (side == DWARF) {
-      return [
-        { piece: DWARF, from: "a8", to: "b8" },
-        { piece: DWARF, from: "a8", to: "b7" },
-        { piece: DWARF, from: "a8", to: "a7" },
-      ];
-    }
-    return [{ piece: TROLL, from: "c8", to: "d8" }];
+    const found = findMoves(iboard, side);
+    return found.map((m) => moveFromInternalMove(m));
   }
 
-  // TODO make a move
+  // Move a single piece.
   function move(move: Move) {
-    if (_turn == move.piece) {
+    if (iturn == move.piece) {
       const internalMove = internalMoveFromMove(move);
-      _board[internalMove.to] = _board[internalMove.from];
-      delete _board[internalMove.from];
+      iboard[internalMove.to] = iboard[internalMove.from];
+      delete iboard[internalMove.from];
     }
 
-    _turn = _turn == DWARF ? TROLL : DWARF;
+    iturn = iturn == DWARF ? TROLL : DWARF;
   }
 
   // Loard a board position.
   function load(position: string) {
     const [turn, pieces] = position.split("x");
     if (turn && (turn == DWARF || turn == TROLL)) {
-      _turn = turn;
+      iturn = turn;
     }
 
     if (pieces) {
       const piecePositions = pieces.split("");
       for (let i = 0; i < piecePositions.length; i++) {
         if (piecePositions[i] == DWARF) {
-          _board[i] = DWARF;
+          iboard[i] = DWARF;
         } else if (piecePositions[i] == TROLL) {
-          _board[i] = TROLL;
+          iboard[i] = TROLL;
         }
       }
     }

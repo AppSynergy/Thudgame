@@ -22,6 +22,10 @@ export const boardOx88: Record<Square, number> = {
   a1: 112, b1: 113, c1: 114, d1: 115, e1: 116, f1: 117, g1: 118, h1: 119
 }
 
+export const boardOx88Inverse = Object.fromEntries(
+  Object.entries(boardOx88).map(([key, value]) => [value, key])
+) as Record<number, Square>;
+
 export const PIECE_OFFSETS = {
   T: [-17, -16, -15, 1, 17, 16, 15, -1],
   d: [-17, -16, -15, 1, 17, 16, 15, -1],

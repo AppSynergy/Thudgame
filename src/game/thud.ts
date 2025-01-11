@@ -44,14 +44,15 @@ export interface Move {
 export function findMoves(board: Piece[], side: Side): InternalMove[] {
   let output: InternalMove[] = [];
   for (let i = 0; i < board.length; i++) {
-    if (!board[i]) break;
-    if (board[i] == side) {
-      const square = boardOx88Inverse[i];
-      console.log({ board, side, square });
-      // output = output.concat(findMovesForSinglePiece(board, side, square));
+    if (board[i] === undefined) continue;
+    if (board[i] !== side) continue;
+
+    const square = boardOx88Inverse[i];
+    const found = findMovesForSinglePiece(board, side, square);
+    if (found) {
+      output = output.concat(found);
     }
   }
-  console.log({ output });
   return output;
 }
 
@@ -77,6 +78,8 @@ export function findMovesForSinglePiece(
     to = from;
     while (true) {
       to += offset;
+      // only check squares on the board
+      if (to & 0x88) break;
 
       // if square is empty
       if (!board[to]) {

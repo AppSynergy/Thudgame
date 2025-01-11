@@ -103,17 +103,42 @@ test("finding moves for multiple trolls", () => {
 
   const moves = findMoves(board, TROLL);
 
-  expect(moves).toEqual(["fish"]);
+  // TODO I assume this is correct, check
+  expect(moves.length).toEqual(14);
+  expect(moves).toEqual(
+    expect.arrayContaining([
+      { piece: "T", from: 34, to: 17 },
+      { piece: "T", from: 34, to: 18 },
+      { piece: "T", from: 34, to: 19 },
+      { piece: "T", from: 34, to: 51 },
+      { piece: "T", from: 34, to: 50 },
+      { piece: "T", from: 34, to: 49 },
+      { piece: "T", from: 34, to: 33 },
+      { piece: "T", from: 35, to: 18 },
+      { piece: "T", from: 35, to: 19 },
+      { piece: "T", from: 35, to: 20 },
+      { piece: "T", from: 35, to: 36 },
+      { piece: "T", from: 35, to: 52 },
+      { piece: "T", from: 35, to: 51 },
+      { piece: "T", from: 35, to: 50 },
+    ])
+  );
 });
 
 test("each side can find a legal opening move", () => {
   const thud = Thud("dxdoT");
 
   // TODO correctly setup and shaped board
-  expect(thud.moves(DWARF)).toEqual(
+  const dwarfMoves = thud.moves(DWARF);
+  const trollMoves = thud.moves(TROLL);
+
+  // TODO check dwarf exact moves
+  expect(dwarfMoves.length).toEqual(16);
+  expect(trollMoves.length).toEqual(5);
+  expect(dwarfMoves).toEqual(
     expect.arrayContaining([{ piece: DWARF, from: "a8", to: "b8" }])
   );
-  expect(thud.moves(TROLL)).toEqual(
+  expect(trollMoves).toEqual(
     expect.arrayContaining([{ piece: TROLL, from: "c8", to: "d8" }])
   );
 });

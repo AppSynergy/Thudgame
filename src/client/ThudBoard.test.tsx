@@ -16,11 +16,13 @@ test("renders a thud board", () => {
     />
   );
 
-  const dwarf = screen.getByText("d");
-  expect(dwarf).toBeInTheDocument();
+  const dwarf = screen.getAllByText("d");
+  expect(dwarf.length).toEqual(3);
+  expect(dwarf[0]).toBeInTheDocument();
 
-  const troll = screen.getByText("T");
-  expect(troll).toBeInTheDocument();
+  const troll = screen.getAllByText("T");
+  expect(troll.length).toEqual(2);
+  expect(troll[1]).toBeInTheDocument();
 
   // TODO get by testing id
   const emptySquare = screen.getByText(/e4/).closest("div.thudSquare");
@@ -28,7 +30,7 @@ test("renders a thud board", () => {
 
   // TODO transition or something for action coverage
   // TODO get by testing id
-  const dwarfSquare = dwarf.closest("div.thudSquare");
+  const dwarfSquare = dwarf[0].closest("div.thudSquare");
   if (dwarfSquare && emptySquare) {
     fireEvent.click(dwarfSquare);
     fireEvent.click(emptySquare);

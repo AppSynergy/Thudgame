@@ -1,4 +1,4 @@
-import { ThudAi } from "./types";
+import { ThudAi } from "./";
 import { Move } from "../game/thud";
 
 export default {

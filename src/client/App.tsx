@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import ai, { ThudAi } from "../ai";
 import {
   sideToText,
   toggleSide,
@@ -26,7 +27,7 @@ function App() {
   // States
   const [moveCount, setMoveCount] = useState(0);
   const [playBothSides, setPlayBothSides] = useState(true);
-  const [opponent, setOpponent] = useState<string | null>(null);
+  const [opponent, setOpponent] = useState<ThudAi | null>(null);
   const [yourSide, setYourSide] = useState<Side>(DWARF);
   const [activeSide, setActiveSide] = useState<Side>(DWARF);
   const [board, setBoard] = useState<ThudBoardType | null>(null);
@@ -51,36 +52,62 @@ function App() {
   }, [thud, yourSide]);
 
   // Callbacks
-  // Handles move logic
-  const move = useCallback(
-    (move: Move) => {
-      thud.move(move);
-      setMoveCount(moveCount + 1);
+  // Handles common move logic
+  const moveCommon = useCallback(() => {
+    setMoveCount(moveCount + 1);
 
-      // Swap the active side
-      const otherSide = toggleSide(activeSide);
-      setActiveSide(otherSide);
-      if (playBothSides) {
-        setYourSide(otherSide);
+    // TODO we only need to update two squares, is this efficient?
+    setBoard(thud.board());
+
+    // Swap the active side
+    const otherSide = toggleSide(activeSide);
+    setActiveSide(otherSide);
+
+    // Get available moves or lose.
+    const nextMoves = thud.moves(otherSide);
+    if (nextMoves.length > 0) {
+      setMoves(nextMoves);
+    } else {
+      setLoss(otherSide);
+    }
+  }, [thud, activeSide, moveCount]);
+
+  // Handles AI move logic
+  const moveAI = useCallback(() => {
+    if (moves && opponent) {
+      const move = opponent.decideMove(moves);
+      if (move) {
+        thud.move(move);
       }
+    }
+    moveCommon();
+  }, [thud, moves, moveCommon, opponent]);
 
-      // TODO we only need to update two squares, is this efficient?
-      setBoard(thud.board());
+  // AI moves effect
+  useEffect(() => {
+    if (opponent && activeSide != yourSide) {
+      moveAI();
+    }
+  }, [opponent, moveAI, activeSide, yourSide]);
 
-      // Get available moves or lose.
-      const nextMoves = thud.moves(otherSide);
-      if (nextMoves) {
-        setMoves(nextMoves);
-      } else {
-        setLoss(otherSide);
+  // Handles user move logic
+  const moveUser = useCallback(
+    (move: Move) => {
+      if (!loss) {
+        thud.move(move);
+        if (playBothSides) {
+          setYourSide(toggleSide(activeSide));
+        }
+        moveCommon();
       }
     },
-    [thud, activeSide, moveCount, playBothSides]
+    [thud, loss, moveCommon, activeSide, playBothSides]
   );
 
   // Handles resetting a new game
   const resetGame = useCallback(() => {
     setMoveCount(0);
+    setLoss(null);
     setActiveSide(DWARF);
     // TODO or Thud.reset()?
     // TODO selects and move highlights are still on
@@ -89,9 +116,9 @@ function App() {
 
   // Handles new game buttons
   const startNewGame = useCallback(
-    (side: Side, opponent: string | null) => {
-      if (opponent) {
-        setOpponent(opponent);
+    (side: Side, opponentName: string | null) => {
+      if (opponentName) {
+        setOpponent(ai[opponentName]);
         setPlayBothSides(false);
       } else {
         setOpponent(null);
@@ -112,14 +139,14 @@ function App() {
         activeSide={activeSide}
         yourSide={yourSide}
         moves={moves}
-        move={move}
+        move={moveUser}
       />
     );
   }
 
   let opponentText = "You are playing both sides.";
   if (opponent) {
-    opponentText = "You are playing against " + opponent + ".";
+    opponentText = "You are playing against " + opponent.name + ".";
   }
 
   let winnerLoserText = "Neither side has lost yet.";

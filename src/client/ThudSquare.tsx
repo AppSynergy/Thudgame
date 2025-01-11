@@ -4,6 +4,7 @@ import classNames from "classnames";
 import {
   Move,
   Side,
+  Square,
   ThudSquare as ThudSquareType,
   DWARF,
   TROLL,
@@ -31,13 +32,24 @@ export default function ThudSquare({
   availableMovesAction,
   makeMoveAction,
 }: ThudSquareProps) {
-  // Check whether we can move to this square.
+  // Check whether we can move to this square, or capture a dwarf here.
   let canMoveHere = false;
-  if (
-    availableMoves &&
-    availableMoves?.map((m: Move) => m.to).includes(square.algebraic)
-  ) {
-    canMoveHere = true;
+  let canCaptureHere = false;
+  if (availableMoves) {
+    if (availableMoves.map((m) => m.to).includes(square.algebraic)) {
+      canMoveHere = true;
+    }
+    // TODO nice try, but this doesn't seem to work
+    if (
+      availableMoves
+        .reduce((ms, m) => {
+          ms.concat(m?.capturable as Square[]);
+          return ms;
+        }, [] as Square[])
+        .includes(square.algebraic)
+    ) {
+      canCaptureHere = true;
+    }
   }
 
   // Draw the piece if there is one on this square.
@@ -69,6 +81,7 @@ export default function ThudSquare({
     thudSquare: true,
     canMoveHere: canMoveHere && !square.piece,
     canHurlHere: canMoveHere && yourSide === DWARF && square.piece === TROLL,
+    canCaptureHere: canCaptureHere && yourSide === TROLL,
     dark: alternateColors % 2 === 0,
     light: alternateColors % 2 === 1,
     selectable: yourSide === square.piece,

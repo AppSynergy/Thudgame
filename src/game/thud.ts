@@ -38,14 +38,14 @@ interface InternalMove {
   from: number;
   to: number;
   piece: Piece;
+  capturable?: number[];
 }
 
 export interface Move {
   from: Square;
   to: Square;
   piece: Piece;
-  captured?: boolean;
-  notation?: string;
+  capturable?: Square[];
 }
 
 function internalMoveFromMove(move: Move): InternalMove {
@@ -57,11 +57,15 @@ function internalMoveFromMove(move: Move): InternalMove {
 }
 
 function moveFromInternalMove(imove: InternalMove): Move {
-  return {
+  const output: Move = {
     piece: imove.piece,
     from: boardOx88Inverse[imove.from],
     to: boardOx88Inverse[imove.to],
   };
+  if (imove.piece === TROLL) {
+    output.capturable = imove.capturable?.map((c) => boardOx88Inverse[c]);
+  }
+  return output;
 }
 
 // Find all possible moves for a given side.
@@ -96,8 +100,8 @@ export function findMovesForSinglePiece(
   const from: number = boardOx88[square];
 
   let to: number;
-  for (let j = 0, len = PIECE_OFFSETS[piece].length; j < len; j++) {
-    const offset = PIECE_OFFSETS[piece][j];
+  for (let j = 0, len = PIECE_OFFSETS.length; j < len; j++) {
+    const offset = PIECE_OFFSETS[j];
     let distance = 0;
     to = from;
     while (true) {
@@ -110,19 +114,25 @@ export function findMovesForSinglePiece(
 
       // if square is empty
       if (!board[to]) {
-        moves.push({ piece, from, to });
-      } else {
-        // we can't move on top of our own pieces
-        if (board[to] == piece) break;
-
-        // a single dwarf can hurl one square and capture
-        if (piece === DWARF && distance == 1) {
+        if (piece === TROLL) {
+          // trolls can capture one nearby dwarf
+          const nearbyDwarfs = PIECE_OFFSETS.reduce((xs, x) => {
+            const d = to + x;
+            if (board[d] === DWARF) xs.push(d);
+            return xs;
+          }, [] as number[]);
+          moves.push({ piece, from, to, capturable: nearbyDwarfs });
+        } else {
+          // dwarves can move
           moves.push({ piece, from, to });
         }
+      } else {
+        // we can't move on top of our own pieces
+        if (board[to] === piece) break;
 
-        // TODO no they can't, read the rules
-        // trolls can capture dwarfs
-        if (piece === TROLL && board[to] !== DWARF) {
+        // a single dwarf can hurl one square and capture a troll
+        // trolls can not capture dwarfs directly
+        if (piece === DWARF && distance == 1) {
           moves.push({ piece, from, to });
         }
         break;

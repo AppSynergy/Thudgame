@@ -30,6 +30,11 @@
   cursor: pointer;
 }
 
+.thudSquare.dark.canCaptureHere,
+.thudSquare.light.canCaptureHere {
+  background-color: darkred;
+}
+
 .thudSquare .label {
   text-align: start;
   position: absolute;

@@ -39,49 +39,49 @@ export interface Move {
   notation?: string;
 }
 
-// TODO this method is copy pasted a bit and is probably gibberish
-export function findMoves(board: Piece[], piece: Piece, square: Square) {
+// Find possible moves for a given piece.
+// TODO dwarf working?
+export function findMoves(
+  board: Piece[],
+  piece: Piece,
+  square: Square
+): InternalMove[] {
   let from: number;
-  let moves = [];
+  const moves = [];
 
-  // illegal square, return empty moves
+  // pieces must be on the board
   if (!(square in boardOx88)) {
     return [];
-  } else {
-    from = boardOx88[square];
   }
-
-  // did we run off the end of the board
-  if (from & 0x88) {
-    square += 7;
-    return [];
-  }
+  from = boardOx88[square];
 
   let to: number;
-
   for (let j = 0, len = PIECE_OFFSETS[piece].length; j < len; j++) {
     const offset = PIECE_OFFSETS[piece][j];
     to = from;
-
     while (true) {
-      from += offset;
-      if (from & 0x88) break;
+      to += offset;
 
+      // if square is empty
       if (!board[to]) {
         moves.push({ piece, from, to });
       } else {
-        // own color, stop loop
-        if (board[to] === piece) break;
+        // we can't move on top of our own pieces
+        if (board[to] == piece) break;
 
-        moves.push({ piece, from, to });
-
+        // but trolls can capture dwarfs
+        if (board[to] != piece) {
+          moves.push({ piece, from, to });
+        }
         break;
       }
 
-      // break, if troll for some reason
+      // trolls can only move one square
       if (piece === "T") break;
     }
   }
+
+  return moves;
 }
 
 function internalMoveFromMove(move: Move): InternalMove {

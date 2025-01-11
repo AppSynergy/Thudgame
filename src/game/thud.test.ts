@@ -68,12 +68,41 @@ test("can load positions", () => {
   expect(thud.board()[0][0]).toStrictEqual({ algebraic: "a8", piece: "T" });
 });
 
-test("finding moves", () => {
+test("finding troll moves", () => {
   const board = new Array<Piece>(128);
-  board[33] = "d";
+  board[34] = "d";
+  const square = "d5"; // 51
 
-  // TODO fix and check correct square.
-  const moves = findMoves(board, DWARF, "d5");
+  const moves = findMoves(board, TROLL, square);
 
-  expect(moves).toStrictEqual("some badly copy pasted nonsense");
+  expect(moves.length).toEqual(8);
+  expect(moves).toEqual(
+    expect.arrayContaining([
+      { from: 51, piece: "T", to: 34 },
+      { from: 51, piece: "T", to: 35 },
+      { from: 51, piece: "T", to: 36 },
+      { from: 51, piece: "T", to: 50 },
+      { from: 51, piece: "T", to: 52 },
+      { from: 51, piece: "T", to: 66 },
+      { from: 51, piece: "T", to: 67 },
+      { from: 51, piece: "T", to: 68 },
+    ])
+  );
+});
+
+test("troll can't move on top of other troll", () => {
+  const board = new Array<Piece>(128);
+  board[34] = "T";
+  board[35] = "T";
+  const square = "d5"; // 51
+
+  const moves = findMoves(board, TROLL, square);
+
+  expect(moves.length).toEqual(6);
+  expect(moves).toEqual(
+    expect.not.arrayContaining([
+      { from: 51, piece: "T", to: 34 },
+      { from: 51, piece: "T", to: 35 },
+    ])
+  );
 });

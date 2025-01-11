@@ -23,9 +23,14 @@ test("renders a thud board", () => {
   expect(troll).toBeInTheDocument();
 
   // TODO get by testing id
+  const emptySquare = screen.getByText(/e4/).closest("div.thudSquare");
+  expect(emptySquare).toBeInTheDocument();
+
+  // TODO transition or something for action coverage
+  // TODO get by testing id
   const dwarfSquare = dwarf.closest("div.thudSquare");
-  if (dwarfSquare) {
+  if (dwarfSquare && emptySquare) {
     fireEvent.click(dwarfSquare);
-    fireEvent.click(dwarfSquare);
+    fireEvent.click(emptySquare);
   }
 });

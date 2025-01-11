@@ -40,6 +40,22 @@ export interface Move {
   notation?: string;
 }
 
+function internalMoveFromMove(move: Move): InternalMove {
+  return {
+    piece: move.piece,
+    from: boardOx88[move.from],
+    to: boardOx88[move.to],
+  };
+}
+
+function moveFromInternalMove(imove: InternalMove): Move {
+  return {
+    piece: imove.piece,
+    from: boardOx88Inverse[imove.from],
+    to: boardOx88Inverse[imove.to],
+  };
+}
+
 // Find all possible moves for a given side.
 export function findMoves(board: Piece[], side: Side): InternalMove[] {
   let output: InternalMove[] = [];
@@ -101,22 +117,6 @@ export function findMovesForSinglePiece(
   }
 
   return moves;
-}
-
-function internalMoveFromMove(move: Move): InternalMove {
-  return {
-    piece: move.piece,
-    from: boardOx88[move.from],
-    to: boardOx88[move.to],
-  };
-}
-
-function moveFromInternalMove(imove: InternalMove): Move {
-  return {
-    piece: imove.piece,
-    from: boardOx88Inverse[imove.from],
-    to: boardOx88Inverse[imove.to],
-  };
 }
 
 // Filter all available moves to produce just the moves from a given square.

@@ -2,6 +2,7 @@ import {
   findMoves,
   findMovesForSinglePiece,
   filterAvailableMoves,
+  isAvailableCaptureSquare,
   isAvailableMoveSquare,
   Piece,
   Thud,
@@ -72,6 +73,18 @@ test("checking we can't move to a square", () => {
   });
 
   expect(result).toBe(false);
+});
+
+test("checking we can capture a dwarf on a square", () => {
+  const result = isAvailableCaptureSquare(
+    [{ capturable: ["b1"], from: "b5", piece: "T", to: "b2" }],
+    {
+      algebraic: "b1",
+      piece: DWARF,
+    }
+  );
+
+  expect(result).toBe(true);
 });
 
 test("finding troll moves", () => {

@@ -2,10 +2,10 @@
 import { startTransition } from "react";
 import classNames from "classnames";
 import {
+  isAvailableCaptureSquare,
   isAvailableMoveSquare,
   Move,
   Side,
-  Square,
   ThudSquare as ThudSquareType,
   DWARF,
   TROLL,
@@ -36,20 +36,8 @@ export default function ThudSquare({
   // Check whether we can move to this square, or capture a dwarf here.
   const canMoveHere =
     availableMoves && isAvailableMoveSquare(availableMoves, square);
-  let canCaptureHere = false;
-  if (availableMoves) {
-    // TODO nice try, but this doesn't seem to work
-    if (
-      availableMoves
-        .reduce((ms, m) => {
-          ms.concat(m?.capturable as Square[]);
-          return ms;
-        }, [] as Square[])
-        .includes(square.algebraic)
-    ) {
-      canCaptureHere = true;
-    }
-  }
+  const canCaptureHere =
+    availableMoves && isAvailableCaptureSquare(availableMoves, square);
 
   // Draw the piece if there is one on this square.
   let piece = null;
@@ -63,6 +51,7 @@ export default function ThudSquare({
     );
   }
 
+  // If you click on a square you can move to, you move there.
   function clickSquare() {
     if (selectedPieceSquare?.piece && canMoveHere) {
       const move: Move = {

@@ -95,6 +95,24 @@ export function isAvailableMoveSquare(
   return false;
 }
 
+// Check if we can make a capture on a square.
+export function isAvailableCaptureSquare(
+  availableMoves: Move[],
+  square: ThudSquare
+): boolean {
+  if (
+    availableMoves
+      .reduce((ms, m) => {
+        ms = ms.concat(m?.capturable as Square[]);
+        return ms;
+      }, [] as Square[])
+      .includes(square.algebraic)
+  ) {
+    return true;
+  }
+  return false;
+}
+
 // Find possible moves for a given piece.
 // TODO dwarf working?
 export function findMovesForSinglePiece(

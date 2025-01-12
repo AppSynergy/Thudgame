@@ -27,6 +27,16 @@ export const boardOx88Inverse = Object.fromEntries(
 ) as Record<number, Square>;
 
 export const PIECE_OFFSETS = [-17, -16, -15, 1, 17, 16, 15, -1];
+export const INVERSE_PIECE_OFFSETS: Record<number, number> = {
+  "-17": 15,
+  "-16": 16,
+  "-15": 17,
+  "-1": 1,
+  1: -1,
+  15: -17,
+  16: -16,
+  17: -15,
+};
 
 // Extracts the zero-based rank of an 0x88 square.
 export function rank(square: number): number {

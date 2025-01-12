@@ -4,6 +4,7 @@ import {
   algebraic,
   Square as Ox88Square,
   PIECE_OFFSETS,
+  INVERSE_PIECE_OFFSETS,
 } from "./lib0x88";
 
 export const TROLL = "T";
@@ -39,6 +40,7 @@ interface InternalMove {
   to: number;
   piece: Piece;
   capturable?: number[];
+  hurl?: boolean;
 }
 
 export interface Move {
@@ -46,6 +48,7 @@ export interface Move {
   to: Square;
   piece: Piece;
   capturable?: Square[];
+  hurl?: boolean;
 }
 
 function internalMoveFromMove(move: Move): InternalMove {
@@ -62,8 +65,11 @@ function moveFromInternalMove(imove: InternalMove): Move {
     from: boardOx88Inverse[imove.from],
     to: boardOx88Inverse[imove.to],
   };
-  if (imove.piece === TROLL) {
-    output.capturable = imove.capturable?.map((c) => boardOx88Inverse[c]);
+  if (imove.capturable) {
+    output.capturable = imove.capturable.map((c) => boardOx88Inverse[c]);
+  }
+  if (imove.piece === DWARF && imove.hurl) {
+    output.hurl = true;
   }
   return output;
 }
@@ -113,6 +119,37 @@ export function isAvailableCaptureSquare(
   return false;
 }
 
+// Find out if there's any dwarfs surrounding a square.
+function findNearbyDwarfs(board: Piece[], square: number): number[] {
+  return PIECE_OFFSETS.reduce((xs, x) => {
+    const d = square + x;
+    if (board[d] === DWARF) xs.push(d);
+    return xs;
+  }, [] as number[]);
+}
+
+// Find out if there's a line of dwarfs that ends with this square.
+function findDwarfLineLength(
+  board: Piece[],
+  square: number,
+  offset: number
+): number {
+  let lineLength = 1;
+  const maxLength = 3;
+  for (let i = 0; i < maxLength; i++) {
+    const nearbyDwarfs = findNearbyDwarfs(board, square);
+    const dwarfInLine = nearbyDwarfs.includes(
+      square + INVERSE_PIECE_OFFSETS[offset]
+    );
+    if (dwarfInLine) {
+      lineLength += 1;
+    } else {
+      break;
+    }
+  }
+  return lineLength;
+}
+
 // Find possible moves for a given piece.
 // TODO dwarf working?
 export function findMovesForSinglePiece(
@@ -133,6 +170,7 @@ export function findMovesForSinglePiece(
     const offset = PIECE_OFFSETS[j];
     let distance = 0;
     to = from;
+
     while (true) {
       // check moves in a given direction
       to += offset;
@@ -141,34 +179,41 @@ export function findMovesForSinglePiece(
       // only check squares on the board
       if (to & 0x88) break;
 
-      // if square is empty
       if (!board[to]) {
+        // if square is empty
         if (piece === TROLL) {
-          // trolls can capture one nearby dwarf
-          const nearbyDwarfs = PIECE_OFFSETS.reduce((xs, x) => {
-            const d = to + x;
-            if (board[d] === DWARF) xs.push(d);
-            return xs;
-          }, [] as number[]);
+          // trolls can move and maybe capture one nearby dwarf
+          const nearbyDwarfs = findNearbyDwarfs(board, to);
           moves.push({ piece, from, to, capturable: nearbyDwarfs });
         } else {
           // dwarves can move
           moves.push({ piece, from, to });
         }
       } else {
+        // else if square has a piece
         // we can't move on top of our own pieces
         if (board[to] === piece) break;
 
-        // a single dwarf can hurl one square and capture a troll
-        // trolls can not capture dwarfs directly
-        if (piece === DWARF && distance == 1) {
-          moves.push({ piece, from, to });
+        // dwarf hurling
+        if (piece === DWARF) {
+          // a single dwarf can hurl one square and capture a troll
+          if (distance == 1) {
+            moves.push({ piece, from, to });
+          } else {
+            // for dwarfs, find if we're at the front of a line
+            const lineLength: number = findDwarfLineLength(board, from, offset);
+            // a line of dwarves can hurl further and capture a troll
+            if (distance <= lineLength) {
+              moves.push({ piece, from, to, hurl: true });
+            }
+          }
         }
+
         break;
       }
 
       // trolls can only move one square
-      if (piece === "T") break;
+      if (piece === TROLL) break;
     }
   }
 

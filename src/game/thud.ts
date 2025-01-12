@@ -120,38 +120,34 @@ export function isAvailableCaptureSquare(
 }
 
 // Find out if there's any dwarfs surrounding a square.
-function findNearbyDwarfs(board: Piece[], square: number): number[] {
+export function findNearbyDwarfs(board: Piece[], square: number): number[] {
   return PIECE_OFFSETS.reduce((xs, x) => {
-    const d = square + x;
-    if (board[d] === DWARF) xs.push(d);
+    const sq = square + x;
+    if (board[sq] === DWARF) xs.push(sq);
     return xs;
   }, [] as number[]);
 }
 
 // Find out if there's a line of dwarfs that ends with this square.
-function findDwarfLineLength(
+export function findDwarfLineLength(
   board: Piece[],
   square: number,
   offset: number
 ): number {
   let lineLength = 1;
-  const maxLength = 3;
-  for (let i = 0; i < maxLength; i++) {
-    const nearbyDwarfs = findNearbyDwarfs(board, square);
-    const dwarfInLine = nearbyDwarfs.includes(
-      square + INVERSE_PIECE_OFFSETS[offset]
-    );
-    if (dwarfInLine) {
+  let sq = square;
+  while (true) {
+    sq = sq + INVERSE_PIECE_OFFSETS[offset];
+    if (board[sq] === DWARF) {
       lineLength += 1;
-    } else {
-      break;
+      continue;
     }
+    break;
   }
   return lineLength;
 }
 
 // Find possible moves for a given piece.
-// TODO dwarf working?
 export function findMovesForSinglePiece(
   board: Piece[],
   piece: Piece,

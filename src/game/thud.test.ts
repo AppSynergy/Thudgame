@@ -1,6 +1,7 @@
 import {
   findMoves,
   findMovesForSinglePiece,
+  findNearbyDwarfs,
   filterAvailableMoves,
   isAvailableCaptureSquare,
   isAvailableMoveSquare,
@@ -8,6 +9,7 @@ import {
   Thud,
   DWARF,
   TROLL,
+  findDwarfLineLength,
 } from "./thud";
 
 test("dwarves go first", () => {
@@ -87,9 +89,37 @@ test("checking we can capture a dwarf on a square", () => {
   expect(result).toBe(true);
 });
 
+test("finding nearby dwarfs", () => {
+  const board = new Array<Piece>(128);
+  board[54] = "d"; // g5
+  board[71] = "d"; // h4
+  board[87] = "d"; // h3
+  board[83] = "d"; // d3, not nearby
+  const square = 70; // g4
+
+  const result = findNearbyDwarfs(board, square);
+
+  expect(result.length).toEqual(3);
+  expect(result).toEqual(expect.arrayContaining([54, 71, 87]));
+});
+
+test("finding dwarf line length", () => {
+  const board = new Array<Piece>(128);
+  board[38] = "d"; // g6
+  board[54] = "d"; // g5
+  board[87] = "d"; // h3, in line but wrong direction
+  board[83] = "d"; // d3, not nearby
+  const square = 70; // g4
+  const offset = 16; // points south, check to north
+
+  const result = findDwarfLineLength(board, square, offset);
+
+  expect(result).toEqual(3);
+});
+
 test("finding troll moves", () => {
   const board = new Array<Piece>(128);
-  board[34] = "d";
+  board[34] = "d"; // c6
   const square = "d5"; // 51
 
   const moves = findMovesForSinglePiece(board, TROLL, square);

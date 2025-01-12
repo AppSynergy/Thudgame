@@ -2,6 +2,7 @@
 import { startTransition } from "react";
 import classNames from "classnames";
 import {
+  isAvailableMoveSquare,
   Move,
   Side,
   Square,
@@ -33,12 +34,10 @@ export default function ThudSquare({
   makeMoveAction,
 }: ThudSquareProps) {
   // Check whether we can move to this square, or capture a dwarf here.
-  let canMoveHere = false;
+  const canMoveHere =
+    availableMoves && isAvailableMoveSquare(availableMoves, square);
   let canCaptureHere = false;
   if (availableMoves) {
-    if (availableMoves.map((m) => m.to).includes(square.algebraic)) {
-      canMoveHere = true;
-    }
     // TODO nice try, but this doesn't seem to work
     if (
       availableMoves

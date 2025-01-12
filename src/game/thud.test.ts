@@ -2,6 +2,7 @@ import {
   findMoves,
   findMovesForSinglePiece,
   filterAvailableMoves,
+  isAvailableMoveSquare,
   Piece,
   Thud,
   DWARF,
@@ -57,6 +58,22 @@ test("can load positions", () => {
   expect(thud.board()[0][0]).toStrictEqual({ algebraic: "a8", piece: "T" });
 });
 
+test("checking we can move to a square", () => {
+  const result = isAvailableMoveSquare([{ from: "b5", piece: "d", to: "b2" }], {
+    algebraic: "b2",
+  });
+
+  expect(result).toBe(true);
+});
+
+test("checking we can't move to a square", () => {
+  const result = isAvailableMoveSquare([{ from: "b5", piece: "d", to: "b2" }], {
+    algebraic: "c1",
+  });
+
+  expect(result).toBe(false);
+});
+
 test("finding troll moves", () => {
   const board = new Array<Piece>(128);
   board[34] = "d";
@@ -64,17 +81,16 @@ test("finding troll moves", () => {
 
   const moves = findMovesForSinglePiece(board, TROLL, square);
 
-  expect(moves.length).toEqual(8);
+  expect(moves.length).toEqual(7);
   expect(moves).toEqual(
     expect.arrayContaining([
-      { from: 51, piece: "T", to: 34 },
-      { from: 51, piece: "T", to: 35 },
-      { from: 51, piece: "T", to: 36 },
-      { from: 51, piece: "T", to: 50 },
-      { from: 51, piece: "T", to: 52 },
-      { from: 51, piece: "T", to: 66 },
-      { from: 51, piece: "T", to: 67 },
-      { from: 51, piece: "T", to: 68 },
+      { capturable: [34], from: 51, piece: "T", to: 35 },
+      { capturable: [], from: 51, piece: "T", to: 36 },
+      { capturable: [], from: 51, piece: "T", to: 52 },
+      { capturable: [], from: 51, piece: "T", to: 68 },
+      { capturable: [], from: 51, piece: "T", to: 67 },
+      { capturable: [], from: 51, piece: "T", to: 66 },
+      { capturable: [34], from: 51, piece: "T", to: 50 },
     ])
   );
 });
@@ -107,20 +123,20 @@ test("finding moves for multiple trolls", () => {
   expect(moves.length).toEqual(14);
   expect(moves).toEqual(
     expect.arrayContaining([
-      { piece: "T", from: 34, to: 17 },
-      { piece: "T", from: 34, to: 18 },
-      { piece: "T", from: 34, to: 19 },
-      { piece: "T", from: 34, to: 51 },
-      { piece: "T", from: 34, to: 50 },
-      { piece: "T", from: 34, to: 49 },
-      { piece: "T", from: 34, to: 33 },
-      { piece: "T", from: 35, to: 18 },
-      { piece: "T", from: 35, to: 19 },
-      { piece: "T", from: 35, to: 20 },
-      { piece: "T", from: 35, to: 36 },
-      { piece: "T", from: 35, to: 52 },
-      { piece: "T", from: 35, to: 51 },
-      { piece: "T", from: 35, to: 50 },
+      { capturable: [], piece: "T", from: 34, to: 17 },
+      { capturable: [], piece: "T", from: 34, to: 18 },
+      { capturable: [], piece: "T", from: 34, to: 19 },
+      { capturable: [], piece: "T", from: 34, to: 51 },
+      { capturable: [], piece: "T", from: 34, to: 50 },
+      { capturable: [], piece: "T", from: 34, to: 49 },
+      { capturable: [], piece: "T", from: 34, to: 33 },
+      { capturable: [], piece: "T", from: 35, to: 18 },
+      { capturable: [], piece: "T", from: 35, to: 19 },
+      { capturable: [], piece: "T", from: 35, to: 20 },
+      { capturable: [], piece: "T", from: 35, to: 36 },
+      { capturable: [], piece: "T", from: 35, to: 52 },
+      { capturable: [], piece: "T", from: 35, to: 51 },
+      { capturable: [], piece: "T", from: 35, to: 50 },
     ])
   );
 });
@@ -133,12 +149,18 @@ test("each side can find a legal opening move", () => {
   const trollMoves = thud.moves(TROLL);
 
   // TODO check dwarf exact moves
-  expect(dwarfMoves.length).toEqual(16);
+  expect(dwarfMoves.length).toEqual(15);
   expect(trollMoves.length).toEqual(5);
   expect(dwarfMoves).toEqual(
     expect.arrayContaining([{ piece: DWARF, from: "a8", to: "b8" }])
   );
   expect(trollMoves).toEqual(
-    expect.arrayContaining([{ piece: TROLL, from: "c8", to: "d8" }])
+    expect.arrayContaining([
+      { capturable: [], from: "c8", piece: "T", to: "d8" },
+      { capturable: [], from: "c8", piece: "T", to: "d7" },
+      { capturable: [], from: "c8", piece: "T", to: "c7" },
+      { capturable: ["a8"], from: "c8", piece: "T", to: "b7" },
+      { capturable: ["a8"], from: "c8", piece: "T", to: "b8" },
+    ])
   );
 });

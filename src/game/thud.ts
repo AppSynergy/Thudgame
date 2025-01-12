@@ -84,6 +84,17 @@ export function findMoves(board: Piece[], side: Side): InternalMove[] {
   return output;
 }
 
+// Check if we can move to a square.
+export function isAvailableMoveSquare(
+  availableMoves: Move[],
+  square: ThudSquare
+): boolean {
+  if (availableMoves.map((m) => m.to).includes(square.algebraic)) {
+    return true;
+  }
+  return false;
+}
+
 // Find possible moves for a given piece.
 // TODO dwarf working?
 export function findMovesForSinglePiece(

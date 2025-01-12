@@ -117,6 +117,17 @@ test("finding dwarf line length", () => {
   expect(result).toEqual(3);
 });
 
+test("finding dwarf line length doesn't check past board edge", () => {
+  const board = new Array<Piece>(128);
+  board[48] = "d"; // a5
+  const square = 49; // b5
+  const offset = 1; // points east, check to west
+
+  const result = findDwarfLineLength(board, square, offset);
+
+  expect(result).toEqual(2);
+});
+
 test("finding troll moves", () => {
   const board = new Array<Piece>(128);
   board[34] = "d"; // c6

@@ -6,6 +6,7 @@ import {
   isAvailableMoveSquare,
   Move,
   Side,
+  Square,
   ThudSquare as ThudSquareType,
   DWARF,
   TROLL,
@@ -53,9 +54,9 @@ export default function ThudSquare({
 
   // If you click on a square you can move to, you move there.
   function clickSquare() {
-    if (selectedPieceSquare?.piece && canMoveHere) {
+    if (square?.algebraic && selectedPieceSquare?.piece && canMoveHere) {
       const move: Move = {
-        from: selectedPieceSquare.algebraic,
+        from: selectedPieceSquare.algebraic as Square,
         to: square.algebraic,
         piece: selectedPieceSquare.piece,
       };
@@ -66,7 +67,8 @@ export default function ThudSquare({
   }
 
   const thudSquareClassNames = classNames({
-    thudSquare: true,
+    thudSquare: square?.algebraic,
+    emptySquare: !square.algebraic,
     canMoveHere: canMoveHere && !square.piece,
     canHurlHere: canMoveHere && yourSide === DWARF && square.piece === TROLL,
     canCaptureHere: canCaptureHere && yourSide === TROLL,

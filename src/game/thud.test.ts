@@ -12,11 +12,16 @@ import {
   findDwarfLineLength,
 } from "./thud";
 
+test("can load positions", () => {
+  const thud = Thud("Tx.....T");
+
+  expect(thud.board()[0][5]).toStrictEqual({ algebraic: "fF", piece: "T" });
+});
+
 test("dwarves go first", () => {
-  const thud = Thud("dxdoT");
+  const thud = Thud("dx.....dT");
   const boardAtStart = thud.board();
 
-  // TODO correctly setup and shaped board
   thud.move({ piece: TROLL, from: "c8", to: "d8" });
   const boardAfterFirstMove = thud.board();
 
@@ -24,16 +29,15 @@ test("dwarves go first", () => {
 });
 
 test("dwarves and trolls can both move", () => {
-  const thud = Thud("dxdoT");
+  const thud = Thud("dx.....dT");
   const boardAtStart = thud.board();
 
-  // TODO correctly setup and shaped board
-  thud.move({ piece: DWARF, from: "aF", to: "bF" });
+  thud.move({ piece: DWARF, from: "fF", to: "fE" });
   const boardAfterFirstMove = thud.board();
 
   expect(boardAtStart).not.toEqual(boardAfterFirstMove);
 
-  thud.move({ piece: TROLL, from: "cF", to: "dF" });
+  thud.move({ piece: TROLL, from: "gF", to: "hE" });
   const boardAfterSecondMove = thud.board();
 
   expect(boardAtStart).not.toEqual(boardAfterSecondMove);
@@ -44,34 +48,28 @@ test("can filter available moves", () => {
   const result = filterAvailableMoves(
     [
       { piece: TROLL, from: "c8", to: "c7" },
-      { piece: TROLL, from: "d2", to: "d3" },
+      { piece: TROLL, from: "d3", to: "d4" },
       { piece: TROLL, from: "e4", to: "e5" },
     ],
-    "d2"
+    "d3"
   );
 
   expect(result).toEqual(
-    expect.arrayContaining([{ piece: TROLL, from: "d2", to: "d3" }])
+    expect.arrayContaining([{ piece: TROLL, from: "d3", to: "d4" }])
   );
 });
 
-test("can load positions", () => {
-  const thud = Thud("TxT");
-
-  expect(thud.board()[0][0]).toStrictEqual({ algebraic: "aF", piece: "T" });
-});
-
 test("checking we can move to a square", () => {
-  const result = isAvailableMoveSquare([{ from: "b5", piece: "d", to: "b2" }], {
-    algebraic: "b2",
+  const result = isAvailableMoveSquare([{ from: "e8", piece: "d", to: "i8" }], {
+    algebraic: "i8",
   });
 
   expect(result).toBe(true);
 });
 
 test("checking we can't move to a square", () => {
-  const result = isAvailableMoveSquare([{ from: "b5", piece: "d", to: "b2" }], {
-    algebraic: "c1",
+  const result = isAvailableMoveSquare([{ from: "i6", piece: "d", to: "g5" }], {
+    algebraic: "g2",
   });
 
   expect(result).toBe(false);
@@ -79,9 +77,9 @@ test("checking we can't move to a square", () => {
 
 test("checking we can capture a dwarf on a square", () => {
   const result = isAvailableCaptureSquare(
-    [{ capturable: ["b1"], from: "b5", piece: "T", to: "b2" }],
+    [{ capturable: ["f7"], from: "e5", piece: "T", to: "e6" }],
     {
-      algebraic: "b1",
+      algebraic: "f7",
       piece: DWARF,
     }
   );
@@ -168,8 +166,8 @@ test("troll can't move on top of other troll", () => {
 
 test("finding moves for multiple trolls", () => {
   const board = new Array<Piece>(512);
-  board[34] = "T"; // dD
-  board[35] = "T"; // eD
+  board[37] = "T"; // fE
+  board[38] = "T"; // gE
 
   const moves = findMoves(board, TROLL);
 
@@ -177,44 +175,44 @@ test("finding moves for multiple trolls", () => {
   expect(moves.length).toEqual(14);
   expect(moves).toEqual(
     expect.arrayContaining([
-      { piece: "T", from: 34, to: 3, capturable: [] },
-      { piece: "T", from: 34, to: 2, capturable: [] },
-      { piece: "T", from: 34, to: 1, capturable: [] },
-      { piece: "T", from: 34, to: 65, capturable: [] },
-      { piece: "T", from: 34, to: 66, capturable: [] },
-      { piece: "T", from: 34, to: 67, capturable: [] },
-      { piece: "T", from: 34, to: 33, capturable: [] },
-      { piece: "T", from: 35, to: 4, capturable: [] },
-      { piece: "T", from: 35, to: 3, capturable: [] },
-      { piece: "T", from: 35, to: 2, capturable: [] },
-      { piece: "T", from: 35, to: 36, capturable: [] },
-      { piece: "T", from: 35, to: 66, capturable: [] },
-      { piece: "T", from: 35, to: 67, capturable: [] },
-      { piece: "T", from: 35, to: 68, capturable: [] },
+      { piece: "T", from: 37, to: 6, capturable: [] },
+      { piece: "T", from: 37, to: 5, capturable: [] },
+      { piece: "T", from: 37, to: 4, capturable: [] },
+      { piece: "T", from: 37, to: 68, capturable: [] },
+      { piece: "T", from: 37, to: 69, capturable: [] },
+      { piece: "T", from: 37, to: 70, capturable: [] },
+      { piece: "T", from: 37, to: 36, capturable: [] },
+      { piece: "T", from: 38, to: 7, capturable: [] },
+      { piece: "T", from: 38, to: 6, capturable: [] },
+      { piece: "T", from: 38, to: 5, capturable: [] },
+      { piece: "T", from: 38, to: 39, capturable: [] },
+      { piece: "T", from: 38, to: 69, capturable: [] },
+      { piece: "T", from: 38, to: 70, capturable: [] },
+      { piece: "T", from: 38, to: 71, capturable: [] },
     ])
   );
 });
 
 test("each side can find a legal opening move", () => {
-  const thud = Thud("dxdoT");
+  const thud = Thud("dx.....d.T");
 
   // TODO correctly setup and shaped board
   const dwarfMoves = thud.moves(DWARF);
   const trollMoves = thud.moves(TROLL);
 
   // TODO check dwarf exact moves
-  expect(dwarfMoves.length).toEqual(31);
+  expect(dwarfMoves.length).toEqual(36);
   expect(trollMoves.length).toEqual(5);
   expect(dwarfMoves).toEqual(
-    expect.arrayContaining([{ piece: DWARF, from: "aF", to: "bF" }])
+    expect.arrayContaining([{ piece: DWARF, from: "fF", to: "f5" }])
   );
   expect(trollMoves).toEqual(
     expect.arrayContaining([
-      { capturable: [], from: "cF", piece: "T", to: "dF" },
-      { capturable: ["aF"], from: "cF", piece: "T", to: "bE" },
-      { capturable: [], from: "cF", piece: "T", to: "cE" },
-      { capturable: [], from: "cF", piece: "T", to: "dE" },
-      { capturable: ["aF"], from: "cF", piece: "T", to: "bF" },
+      { capturable: [], from: "hF", piece: "T", to: "iF" },
+      { capturable: ["fF"], from: "hF", piece: "T", to: "gE" },
+      { capturable: [], from: "hF", piece: "T", to: "hE" },
+      { capturable: [], from: "hF", piece: "T", to: "iE" },
+      { capturable: ["fF"], from: "hF", piece: "T", to: "gF" },
     ])
   );
 });

@@ -1,7 +1,14 @@
+.emptySquare {
+  overflow: hidden;
+  width: 3em;
+  height: 3em;
+  background-color: black;
+}
+
 .thudSquare {
-  min-width: 3em;
-  min-height: 3em;
-  border: 1px solid darkslateblue;
+  overflow: hidden;
+  width: 3em;
+  height: 3em;
 }
 
 .thudSquare.light {

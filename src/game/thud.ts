@@ -5,6 +5,7 @@ import {
   Square as Hex210Square,
   PIECE_OFFSETS,
   INVERSE_PIECE_OFFSETS,
+  boardHex210Values,
 } from "./Hex210";
 
 export const TROLL = "T";
@@ -24,7 +25,7 @@ export function sideToText(side: Side): string {
 export type Square = Hex210Square;
 
 export interface ThudSquare {
-  algebraic: Square;
+  algebraic?: Square;
   piece?: Piece;
 }
 
@@ -33,7 +34,7 @@ export type ThudBoard = ThudSquare[][];
 // TODO improve Thud Board Notation
 // Current turn, then an X, then dwarf and troll positions.
 // Any other character is an empty space.
-export const DEFAULT_POSITION = "dxdoTddT";
+export const DEFAULT_POSITION = "dx.....dTTdd...";
 
 interface InternalMove {
   from: number;
@@ -95,7 +96,10 @@ export function isAvailableMoveSquare(
   availableMoves: Move[],
   square: ThudSquare
 ): boolean {
-  if (availableMoves.map((m) => m.to).includes(square.algebraic)) {
+  if (
+    square?.algebraic &&
+    availableMoves.map((m) => m.to).includes(square.algebraic)
+  ) {
     return true;
   }
   return false;
@@ -107,6 +111,7 @@ export function isAvailableCaptureSquare(
   square: ThudSquare
 ): boolean {
   if (
+    square?.algebraic &&
     availableMoves
       .reduce((ms, m) => {
         ms = ms.concat(m?.capturable as Square[]);
@@ -246,20 +251,25 @@ export function Thud(position?: string): ThudGame {
     const output = [];
     let row = [];
 
-    for (let i = boardHex210.aF; i <= boardHex210.o1; i++) {
-      if (iboard[i] == null) {
+    for (let i = 0; i <= boardHex210.j1; i++) {
+      if (!boardHex210Values.includes(i)) {
+        // these squares do not exist
+        row.push({});
+      } else if (iboard[i] == null) {
+        // these squares are empty
         row.push({
           algebraic: algebraic(i),
         });
       } else {
+        // these squares have pieces
         row.push({
           algebraic: algebraic(i),
           piece: iboard[i],
         });
       }
-      // This is the forbidden column
+      // this is the forbidden column
       if ((i + 1) & 0x210) continue;
-      // Off the board now, finish the row
+      // off the board now, finish the row
       if ((i + 2) & 0x210) {
         output.push(row);
         row = [];

@@ -1,11 +1,10 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Move, ThudSquare as ThudSquareType, TROLL } from "../game/thud";
+import { ThudSquare as ThudSquareType, TROLL } from "../game/thud";
 import ThudSquare from "./ThudSquare";
 
 const squareWithTroll: ThudSquareType = { piece: TROLL, algebraic: "e5" };
 const squareWithNoPiece: ThudSquareType = { algebraic: "e4" };
-const availableMove = { from: "e5", piece: TROLL, to: "e4" } as Move;
 
 test("renders an empty square", () => {
   render(
@@ -15,7 +14,11 @@ test("renders an empty square", () => {
       square={squareWithNoPiece}
       selectedPieceSquare={null}
       alternateColors={1}
-      availableMoves={[]}
+      canMoveHere={false}
+      canCaptureHere={false}
+      captureSquares={[]}
+      mostRecentMoveFrom={false}
+      mostRecentMoveTo={false}
       availableMovesAction={jest.fn()}
       makeMoveAction={jest.fn()}
     />
@@ -38,7 +41,11 @@ test("highlights a possible move", async () => {
       square={squareWithTroll}
       selectedPieceSquare={squareWithTroll}
       alternateColors={1}
-      availableMoves={[availableMove]}
+      canMoveHere={false}
+      canCaptureHere={false}
+      captureSquares={[]}
+      mostRecentMoveFrom={false}
+      mostRecentMoveTo={false}
       availableMovesAction={mockAvailableMovesAction}
       makeMoveAction={jest.fn()}
     />
@@ -63,7 +70,11 @@ test("can click on a square to move there", () => {
       square={squareWithNoPiece}
       selectedPieceSquare={squareWithTroll}
       alternateColors={1}
-      availableMoves={[availableMove]}
+      canMoveHere={true}
+      canCaptureHere={false}
+      captureSquares={[]}
+      mostRecentMoveFrom={false}
+      mostRecentMoveTo={false}
       availableMovesAction={jest.fn()}
       makeMoveAction={mockMakeMoveAction}
     />

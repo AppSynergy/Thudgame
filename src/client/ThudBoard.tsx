@@ -1,7 +1,10 @@
 "use client";
-import { useActionState, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import {
-  filterAvailableMoves,
+  filterMovesFrom,
+  getCaptureSquares,
+  isCaptureSquare,
+  isMoveSquare,
   Move,
   Side,
   ThudBoard as ThudBoardType,
@@ -16,6 +19,7 @@ interface ThudBoardProps {
   yourSide: Side;
   moves: Move[];
   move: (move: Move) => void;
+  moveCount: number;
 }
 
 export default function ThudBoard({
@@ -24,30 +28,36 @@ export default function ThudBoard({
   yourSide,
   moves,
   move,
+  moveCount,
 }: ThudBoardProps) {
-  const [availableMoves, setAvailableMoves] = useState<Move[] | null>(null);
+  const [availableMoves, setMoves] = useState<Move[] | null>(null);
 
   // If we select one of our pieces, show the available moves.
-  function showAvailableMoves(
-    previousSquare: ThudSquareType | null,
-    currentSquare: ThudSquareType | null
-  ) {
-    if (previousSquare == currentSquare) {
-      setAvailableMoves(null);
-      return null;
-    }
-    if (moves && currentSquare?.algebraic) {
-      setAvailableMoves(filterAvailableMoves(moves, currentSquare.algebraic));
-    }
+  const showMoves = useCallback(
+    (
+      previousSquare: ThudSquareType | null,
+      currentSquare: ThudSquareType | null
+    ) => {
+      if (previousSquare == currentSquare) {
+        setMoves(null);
+        return null;
+      }
+      if (moves && currentSquare?.algebraic) {
+        setMoves(filterMovesFrom(moves, currentSquare.algebraic));
+      }
 
-    return currentSquare;
-  }
+      return currentSquare;
+    },
+    [moves]
+  );
 
   // Enable moving to a valid square.
-  function makeMove(_previousMove: Move | null, currentMove: Move) {
+  function makeMove(_previousMove: Move | null, currentMove: Move | null) {
     if (activeSide == yourSide) {
-      move(currentMove);
-      setAvailableMoves(null);
+      if (currentMove) {
+        move(currentMove);
+      }
+      setMoves(null);
     }
 
     return currentMove;
@@ -55,13 +65,21 @@ export default function ThudBoard({
 
   // Action for selecting pieces.
   const [selectedPieceSquare, availableMovesAction] = useActionState(
-    showAvailableMoves,
+    showMoves,
     null
   );
 
   // Action for making moves.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_moveBeingMade, makeMoveAction] = useActionState(makeMove, null);
+  const [mostRecentMove, makeMoveAction] = useActionState(makeMove, null);
+
+  // dump user states if we've reset the board.
+  useEffect(() => {
+    if (moveCount == 0) {
+      setMoves(null);
+      availableMovesAction(null);
+      makeMoveAction(null);
+    }
+  }, [moveCount]);
 
   // Dark and light coloured squares.
   let alternateColors = 0;
@@ -70,6 +88,10 @@ export default function ThudBoard({
   function drawSquare(square: ThudSquareType, keyIndex: number) {
     alternateColors += 1;
 
+    const canMoveHere = isMoveSquare(availableMoves, square?.algebraic);
+    const canCaptureHere = isCaptureSquare(availableMoves, square?.algebraic);
+    const captureSquares = getCaptureSquares(availableMoves, square?.algebraic);
+
     return (
       <ThudSquare
         key={keyIndex}
@@ -77,7 +99,11 @@ export default function ThudBoard({
         square={square}
         selectedPieceSquare={selectedPieceSquare}
         alternateColors={alternateColors}
-        availableMoves={availableMoves}
+        canMoveHere={canMoveHere}
+        canCaptureHere={canCaptureHere}
+        captureSquares={captureSquares}
+        mostRecentMoveFrom={mostRecentMove?.from === square?.algebraic}
+        mostRecentMoveTo={mostRecentMove?.to === square?.algebraic}
         availableMovesAction={availableMovesAction}
         makeMoveAction={makeMoveAction}
       />

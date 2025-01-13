@@ -140,6 +140,7 @@ function App() {
         yourSide={yourSide}
         moves={moves}
         move={moveUser}
+        moveCount={moveCount}
       />
     );
   }

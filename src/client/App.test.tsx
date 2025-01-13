@@ -38,7 +38,7 @@ test("can make a move and then reset the game", async () => {
   await screen.findByText(/Move number: 0/);
 });
 
-test("can play against an ai opponent", async () => {
+test("can play against Slabhead", async () => {
   render(<App />);
 
   user.click(screen.getByText(/Play the dwarfs vs. Slabhead/));
@@ -47,4 +47,17 @@ test("can play against an ai opponent", async () => {
   user.click(screen.getAllByText("d")[0]);
   user.click(screen.getByText("a4"));
   await screen.findByText(/Move number: 2/);
+});
+
+test("can play against Rashful", async () => {
+  render(<App />);
+
+  user.click(screen.getByText(/Play the trolls vs. Rashful/));
+  await screen.findByText(/You are playing against Rashful/);
+
+  await screen.findByText(/Move number: 1/);
+
+  user.click(screen.getAllByText("T")[0]);
+  user.click(screen.getByText("c7"));
+  await screen.findByText(/Move number: 3/);
 });

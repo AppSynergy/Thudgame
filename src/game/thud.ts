@@ -1,11 +1,11 @@
 import {
-  boardOx88,
-  boardOx88Inverse,
+  boardHex210,
+  boardHex210Inverse,
   algebraic,
-  Square as Ox88Square,
+  Square as Hex210Square,
   PIECE_OFFSETS,
   INVERSE_PIECE_OFFSETS,
-} from "./lib0x88";
+} from "./Hex210";
 
 export const TROLL = "T";
 export const DWARF = "d";
@@ -21,7 +21,7 @@ export function sideToText(side: Side): string {
   return side == DWARF ? "Dwarfs" : "Trolls";
 }
 
-export type Square = Ox88Square;
+export type Square = Hex210Square;
 
 export interface ThudSquare {
   algebraic: Square;
@@ -54,19 +54,19 @@ export interface Move {
 function internalMoveFromMove(move: Move): InternalMove {
   return {
     piece: move.piece,
-    from: boardOx88[move.from],
-    to: boardOx88[move.to],
+    from: boardHex210[move.from],
+    to: boardHex210[move.to],
   };
 }
 
 function moveFromInternalMove(imove: InternalMove): Move {
   const output: Move = {
     piece: imove.piece,
-    from: boardOx88Inverse[imove.from],
-    to: boardOx88Inverse[imove.to],
+    from: boardHex210Inverse[imove.from],
+    to: boardHex210Inverse[imove.to],
   };
   if (imove.capturable) {
-    output.capturable = imove.capturable.map((c) => boardOx88Inverse[c]);
+    output.capturable = imove.capturable.map((c) => boardHex210Inverse[c]);
   }
   if (imove.piece === DWARF && imove.hurl) {
     output.hurl = true;
@@ -81,7 +81,7 @@ export function findMoves(board: Piece[], side: Side): InternalMove[] {
     if (board[i] === undefined) continue;
     if (board[i] !== side) continue;
 
-    const square = boardOx88Inverse[i];
+    const square = boardHex210Inverse[i];
     const found = findMovesForSinglePiece(board, side, square);
     if (found) {
       output = output.concat(found);
@@ -154,12 +154,12 @@ export function findMovesForSinglePiece(
   square: Square
 ): InternalMove[] {
   // pieces must be on the board
-  if (!(square in boardOx88)) {
+  if (!(square in boardHex210)) {
     return [];
   }
 
   const moves = [];
-  const from: number = boardOx88[square];
+  const from: number = boardHex210[square];
 
   let to: number;
   for (let j = 0, len = PIECE_OFFSETS.length; j < len; j++) {
@@ -173,7 +173,8 @@ export function findMovesForSinglePiece(
       distance += 1;
 
       // only check squares on the board
-      if (to & 0x88) break;
+      // TODO corners and forbidden row / column?
+      if (to & 0x210) break;
 
       if (!board[to]) {
         // if square is empty
@@ -245,7 +246,7 @@ export function Thud(position?: string): ThudGame {
     const output = [];
     let row = [];
 
-    for (let i = boardOx88.a8; i <= boardOx88.h1; i++) {
+    for (let i = boardHex210.aE; i <= boardHex210.o1; i++) {
       if (iboard[i] == null) {
         row.push({
           algebraic: algebraic(i),
@@ -256,10 +257,11 @@ export function Thud(position?: string): ThudGame {
           piece: iboard[i],
         });
       }
-      if ((i + 1) & 0x88) {
+      // TODO corners and forbidden row / column?
+      if ((i + 1) & 0x210) {
         output.push(row);
         row = [];
-        i += 8;
+        i += 16;
       }
     }
 

@@ -1,4 +1,11 @@
-import { algebraic, file, fileSan, rank, rankSan } from "./lib0x88";
+import {
+  algebraic,
+  file,
+  fileSan,
+  makeRealBoard,
+  rank,
+  rankSan,
+} from "./lib0x88";
 
 test("file function", () => {
   expect(file(98)).toBe(2); // aka C
@@ -18,4 +25,10 @@ test("rankSan function", () => {
 
 test("algebraic function", () => {
   expect(algebraic(98)).toBe("c2");
+});
+
+test("fake test making", () => {
+  makeRealBoard();
+
+  expect("fish").toEqual("chips");
 });

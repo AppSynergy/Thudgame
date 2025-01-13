@@ -1,3 +1,19 @@
+// Metaprogramming only
+export function makeRealBoard() {
+  const output = [];
+  for (let i = 0; i < 15 * 15; i++) {
+    const sq = fileSan(i) + rankSan(i);
+    output.push(sq);
+  }
+  //console.warn(output);
+  write(output);
+  return output;
+}
+
+function write(output: object) {
+  process.stdout.write(JSON.stringify(output) + "\n");
+}
+
 // prettier-ignore
 // TODO change board shape from chess example
 export type Square =
@@ -40,24 +56,29 @@ export const INVERSE_PIECE_OFFSETS: Record<number, number> = {
 
 // Extracts the zero-based rank of an 0x88 square.
 export function rank(square: number): number {
-  return square >> 4;
+  // square >> 4
+  return square >> 8;
 }
 
 // Extracts the zero-based file of an 0x88 square.
 export function file(square: number): number {
-  return square & 0xf;
+  // square & 0xf
+  return square % 15;
 }
 
 // Rank in SAN
 export function rankSan(square: number): string {
   const r = rank(square);
-  return "87654321".substring(r, r + 1);
+  if (r > 9) {
+    return r.toString();
+  }
+  return "987654321".substring(r, r + 1);
 }
 
 // File in SAN
 export function fileSan(square: number): string {
   const f = file(square);
-  return "abcdefgh".substring(f, f + 1);
+  return "abcdefghijklmno".substring(f, f + 1);
 }
 
 // Converts a 0x88 square to algebraic notation.

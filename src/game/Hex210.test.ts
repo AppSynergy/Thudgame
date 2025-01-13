@@ -5,7 +5,7 @@ test("file function", () => {
 });
 
 test("rank function", () => {
-  expect(rank(98)).toBe(3); // aka B
+  expect(rank(98)).toBe(3); // aka C
 });
 
 test("fileSan function", () => {
@@ -13,9 +13,9 @@ test("fileSan function", () => {
 });
 
 test("rankSan function", () => {
-  expect(rankSan(98)).toBe("B");
+  expect(rankSan(98)).toBe("C");
 });
 
 test("algebraic function", () => {
-  expect(algebraic(98)).toBe("cB");
+  expect(algebraic(98)).toBe("cC");
 });

@@ -28,12 +28,12 @@ test("dwarves and trolls can both move", () => {
   const boardAtStart = thud.board();
 
   // TODO correctly setup and shaped board
-  thud.move({ piece: DWARF, from: "aE", to: "bE" });
+  thud.move({ piece: DWARF, from: "aF", to: "bF" });
   const boardAfterFirstMove = thud.board();
 
   expect(boardAtStart).not.toEqual(boardAfterFirstMove);
 
-  thud.move({ piece: TROLL, from: "cE", to: "dE" });
+  thud.move({ piece: TROLL, from: "cF", to: "dF" });
   const boardAfterSecondMove = thud.board();
 
   expect(boardAtStart).not.toEqual(boardAfterSecondMove);
@@ -58,7 +58,7 @@ test("can filter available moves", () => {
 test("can load positions", () => {
   const thud = Thud("TxT");
 
-  expect(thud.board()[0][0]).toStrictEqual({ algebraic: "aE", piece: "T" });
+  expect(thud.board()[0][0]).toStrictEqual({ algebraic: "aF", piece: "T" });
 });
 
 test("checking we can move to a square", () => {
@@ -130,8 +130,8 @@ test("finding dwarf line length doesn't check past board edge", () => {
 
 test("finding troll moves", () => {
   const board = new Array<Piece>(128);
-  board[34] = "d"; // cD
-  const square = "dC"; // 67
+  board[34] = "d"; // cE
+  const square = "dD"; // 67
 
   const moves = findMovesForSinglePiece(board, TROLL, square);
 
@@ -151,9 +151,9 @@ test("finding troll moves", () => {
 
 test("troll can't move on top of other troll", () => {
   const board = new Array<Piece>(128);
-  board[259] = "T"; // d6
-  board[260] = "T"; // e6
-  const square = "d5"; // 291
+  board[259] = "T"; // d7
+  board[260] = "T"; // e7
+  const square = "d6"; // 291
 
   const moves = findMovesForSinglePiece(board, TROLL, square);
 
@@ -206,15 +206,15 @@ test("each side can find a legal opening move", () => {
   expect(dwarfMoves.length).toEqual(31);
   expect(trollMoves.length).toEqual(5);
   expect(dwarfMoves).toEqual(
-    expect.arrayContaining([{ piece: DWARF, from: "aE", to: "bE" }])
+    expect.arrayContaining([{ piece: DWARF, from: "aF", to: "bF" }])
   );
   expect(trollMoves).toEqual(
     expect.arrayContaining([
-      { capturable: [], from: "cE", piece: "T", to: "dE" },
-      { capturable: ["aE"], from: "cE", piece: "T", to: "bD" },
-      { capturable: [], from: "cE", piece: "T", to: "cD" },
-      { capturable: [], from: "cE", piece: "T", to: "dD" },
-      { capturable: ["aE"], from: "cE", piece: "T", to: "bE" },
+      { capturable: [], from: "cF", piece: "T", to: "dF" },
+      { capturable: ["aF"], from: "cF", piece: "T", to: "bE" },
+      { capturable: [], from: "cF", piece: "T", to: "cE" },
+      { capturable: [], from: "cF", piece: "T", to: "dE" },
+      { capturable: ["aF"], from: "cF", piece: "T", to: "bF" },
     ])
   );
 });

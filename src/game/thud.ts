@@ -246,7 +246,7 @@ export function Thud(position?: string): ThudGame {
     const output = [];
     let row = [];
 
-    for (let i = boardHex210.aE; i <= boardHex210.o1; i++) {
+    for (let i = boardHex210.aF; i <= boardHex210.o1; i++) {
       if (iboard[i] == null) {
         row.push({
           algebraic: algebraic(i),

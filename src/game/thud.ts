@@ -238,7 +238,7 @@ interface ThudGame {
 
 export function Thud(position?: string): ThudGame {
   // Internal representation of board
-  const iboard = new Array<Piece>(128);
+  const iboard = new Array<Piece>(512);
   let iturn = DWARF;
 
   // Data from drawing the current board
@@ -257,11 +257,13 @@ export function Thud(position?: string): ThudGame {
           piece: iboard[i],
         });
       }
-      // TODO corners and forbidden row / column?
-      if ((i + 1) & 0x210) {
+      // This is the forbidden column
+      if ((i + 1) & 0x210) continue;
+      // Off the board now, finish the row
+      if ((i + 2) & 0x210) {
         output.push(row);
         row = [];
-        i += 16;
+        i += 17;
       }
     }
 

@@ -90,7 +90,7 @@ test("checking we can capture a dwarf on a square", () => {
 });
 
 test("finding nearby dwarfs", () => {
-  const board = new Array<Piece>(128);
+  const board = new Array<Piece>(512);
   board[294] = "d"; // g5
   board[327] = "d"; // h4
   board[359] = "d"; // h3
@@ -104,7 +104,7 @@ test("finding nearby dwarfs", () => {
 });
 
 test("finding dwarf line length", () => {
-  const board = new Array<Piece>(128);
+  const board = new Array<Piece>(512);
   board[262] = "d"; // g6
   board[294] = "d"; // g5
   board[359] = "d"; // h3, in line but wrong direction
@@ -118,7 +118,7 @@ test("finding dwarf line length", () => {
 });
 
 test("finding dwarf line length doesn't check past board edge", () => {
-  const board = new Array<Piece>(128);
+  const board = new Array<Piece>(512);
   board[48] = "d"; // a5
   const square = 49; // b5
   const offset = 1; // points east, check to west
@@ -129,7 +129,7 @@ test("finding dwarf line length doesn't check past board edge", () => {
 });
 
 test("finding troll moves", () => {
-  const board = new Array<Piece>(128);
+  const board = new Array<Piece>(512);
   board[34] = "d"; // cE
   const square = "dD"; // 67
 
@@ -150,7 +150,7 @@ test("finding troll moves", () => {
 });
 
 test("troll can't move on top of other troll", () => {
-  const board = new Array<Piece>(128);
+  const board = new Array<Piece>(512);
   board[259] = "T"; // d7
   board[260] = "T"; // e7
   const square = "d6"; // 291
@@ -167,7 +167,7 @@ test("troll can't move on top of other troll", () => {
 });
 
 test("finding moves for multiple trolls", () => {
-  const board = new Array<Piece>(128);
+  const board = new Array<Piece>(512);
   board[34] = "T"; // dD
   board[35] = "T"; // eD
 

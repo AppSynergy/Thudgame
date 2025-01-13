@@ -87,7 +87,6 @@ export default function ThudBoard({
   // Draw a single row of the board.
   function drawRow(row: ThudSquareType[], keyIndex: number) {
     const thudRow = row.map(drawSquare);
-    alternateColors += 1;
 
     return (
       <div key={keyIndex} className="thudRow">

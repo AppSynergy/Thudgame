@@ -1,5 +1,5 @@
 "use client";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import {
   filterAvailableMoves,
   Move,
@@ -16,6 +16,7 @@ interface ThudBoardProps {
   yourSide: Side;
   moves: Move[];
   move: (move: Move) => void;
+  moveCount: number;
 }
 
 export default function ThudBoard({
@@ -24,6 +25,7 @@ export default function ThudBoard({
   yourSide,
   moves,
   move,
+  moveCount,
 }: ThudBoardProps) {
   const [availableMoves, setAvailableMoves] = useState<Move[] | null>(null);
 
@@ -60,8 +62,17 @@ export default function ThudBoard({
   );
 
   // Action for making moves.
+  // TODO highlight previous move
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_moveBeingMade, makeMoveAction] = useActionState(makeMove, null);
+
+  // dump user states if we've reset the board.
+  useEffect(() => {
+    setAvailableMoves(null);
+    availableMovesAction(null);
+    // TODO fix types, should be able to null this
+    //makeMoveAction(null);
+  }, [moveCount]);
 
   // Dark and light coloured squares.
   let alternateColors = 0;

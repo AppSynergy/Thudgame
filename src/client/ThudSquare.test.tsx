@@ -18,6 +18,7 @@ test("renders an empty square", () => {
       availableMoves={[]}
       availableMovesAction={jest.fn()}
       makeMoveAction={jest.fn()}
+      mostRecentMove={null}
     />
   );
 
@@ -41,6 +42,7 @@ test("highlights a possible move", async () => {
       availableMoves={[availableMove]}
       availableMovesAction={mockAvailableMovesAction}
       makeMoveAction={jest.fn()}
+      mostRecentMove={null}
     />
   );
 
@@ -66,6 +68,7 @@ test("can click on a square to move there", () => {
       availableMoves={[availableMove]}
       availableMovesAction={jest.fn()}
       makeMoveAction={mockMakeMoveAction}
+      mostRecentMove={null}
     />
   );
 

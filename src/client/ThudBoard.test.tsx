@@ -13,6 +13,7 @@ test("renders a thud board", () => {
       yourSide={TROLL}
       moves={[]}
       move={jest.fn()}
+      moveCount={0}
     />
   );
 

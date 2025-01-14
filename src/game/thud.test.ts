@@ -149,16 +149,14 @@ test("finding troll moves", () => {
 
   const moves = findMovesForSinglePiece(board, TROLL, square);
 
-  expect(moves.length).toEqual(7);
+  expect(moves.length).toEqual(5);
   expect(moves).toEqual(
     expect.arrayContaining([
-      { capturable: [], from: 67, piece: "T", to: 36 },
-      { capturable: [34], from: 67, piece: "T", to: 35 },
-      { capturable: [34], from: 67, piece: "T", to: 66 },
-      { capturable: [], from: 67, piece: "T", to: 68 },
-      { capturable: [], from: 67, piece: "T", to: 98 },
-      { capturable: [], from: 67, piece: "T", to: 99 },
-      { capturable: [], from: 67, piece: "T", to: 100 },
+      { from: 67, piece: "T", to: 36 },
+      { from: 67, piece: "T", to: 68 },
+      { from: 67, piece: "T", to: 98 },
+      { from: 67, piece: "T", to: 99 },
+      { from: 67, piece: "T", to: 100 },
     ])
   );
 });
@@ -188,23 +186,22 @@ test("finding moves for multiple trolls", () => {
   const moves = findMoves(board, TROLL);
 
   // TODO I assume this is correct, check
-  expect(moves.length).toEqual(14);
+  expect(moves.length).toEqual(13);
   expect(moves).toEqual(
     expect.arrayContaining([
-      { piece: "T", from: 37, to: 6, capturable: [] },
-      { piece: "T", from: 37, to: 5, capturable: [] },
-      { piece: "T", from: 37, to: 4, capturable: [] },
-      { piece: "T", from: 37, to: 68, capturable: [] },
-      { piece: "T", from: 37, to: 69, capturable: [] },
-      { piece: "T", from: 37, to: 70, capturable: [] },
-      { piece: "T", from: 37, to: 36, capturable: [] },
-      { piece: "T", from: 38, to: 7, capturable: [] },
-      { piece: "T", from: 38, to: 6, capturable: [] },
-      { piece: "T", from: 38, to: 5, capturable: [] },
-      { piece: "T", from: 38, to: 39, capturable: [] },
-      { piece: "T", from: 38, to: 69, capturable: [] },
-      { piece: "T", from: 38, to: 70, capturable: [] },
-      { piece: "T", from: 38, to: 71, capturable: [] },
+      { piece: "T", from: 37, to: 6 },
+      { piece: "T", from: 37, to: 5 },
+      { piece: "T", from: 37, to: 68 },
+      { piece: "T", from: 37, to: 69 },
+      { piece: "T", from: 37, to: 70 },
+      { piece: "T", from: 37, to: 36 },
+      { piece: "T", from: 38, to: 7 },
+      { piece: "T", from: 38, to: 6 },
+      { piece: "T", from: 38, to: 5 },
+      { piece: "T", from: 38, to: 39 },
+      { piece: "T", from: 38, to: 69 },
+      { piece: "T", from: 38, to: 70 },
+      { piece: "T", from: 38, to: 71 },
     ])
   );
 });
@@ -217,17 +214,17 @@ test("each side can find a legal opening move", () => {
   const trollMoves = thud.moves(TROLL);
 
   // TODO check dwarf exact moves
-  expect(dwarfMoves.length).toEqual(36);
+  expect(dwarfMoves.length).toEqual(29);
   expect(trollMoves.length).toEqual(5);
   expect(dwarfMoves).toEqual(
     expect.arrayContaining([{ piece: DWARF, from: "fF", to: "f5" }])
   );
   expect(trollMoves).toEqual(
     expect.arrayContaining([
-      { capturable: [], from: "hF", piece: "T", to: "iF" },
+      { from: "hF", piece: "T", to: "iF" },
       { capturable: ["fF"], from: "hF", piece: "T", to: "gE" },
-      { capturable: [], from: "hF", piece: "T", to: "hE" },
-      { capturable: [], from: "hF", piece: "T", to: "iE" },
+      { from: "hF", piece: "T", to: "hE" },
+      { from: "hF", piece: "T", to: "iE" },
       { capturable: ["fF"], from: "hF", piece: "T", to: "gF" },
     ])
   );

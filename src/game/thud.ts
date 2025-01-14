@@ -6,6 +6,7 @@ import {
   PIECE_OFFSETS,
   INVERSE_PIECE_OFFSETS,
   boardHex210Values,
+  boardHex210Corners,
 } from "./Hex210";
 
 export const TROLL = "T";
@@ -152,20 +153,15 @@ export function findDwarfLineLength(
   return lineLength;
 }
 
-const nwCorner = [0, 1, 2, 3, 4, 32, 33, 34, 35, 64, 65, 66, 96, 97, 128];
-const neCorner = [
-  10, 11, 12, 13, 14, 43, 44, 45, 46, 76, 77, 78, 109, 110, 142,
-];
-
-// NW corner: 0,1,2,3,4.. 32,33,34,35.. 64,65,66, 96,97.. 128
-// NE corner: 10,11,12,13,14.. 43,44,45,46.. 76,77,78.. 109,110, 142
+// TODO can this be improved?
 export function offTheBoard(square: number): boolean {
   if (square & 0x210) return true;
   if (square > 462) return true;
   if ((square - 15) % 32 == 0) return true;
-  if (nwCorner.includes(square)) return true;
-  if (neCorner.includes(square)) return true;
-  if (neCorner.includes(square ^ 0x210)) return true;
+  if (boardHex210Corners.nwCorner.includes(square)) return true;
+  if (boardHex210Corners.neCorner.includes(square)) return true;
+  if (boardHex210Corners.swCorner.includes(square)) return true;
+  if (boardHex210Corners.seCorner.includes(square)) return true;
   return false;
 }
 

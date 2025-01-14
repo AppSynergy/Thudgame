@@ -29,7 +29,7 @@ test("can make a move and then reset the game", async () => {
   await screen.findByText(/Your side is the Dwarfs/);
 
   user.click(screen.getAllByText("d")[0]);
-  user.click(screen.getByText("a4"));
+  user.click(screen.getByText("fC"));
 
   await screen.findByText(/Trolls to move next/);
   expect(screen.getByText(/Move number: 1/));
@@ -45,7 +45,7 @@ test("can play against Slabhead", async () => {
   await screen.findByText(/You are playing against Slabhead/);
 
   user.click(screen.getAllByText("d")[0]);
-  user.click(screen.getByText("a4"));
+  user.click(screen.getByText("fC"));
   await screen.findByText(/Move number: 2/);
 });
 
@@ -58,6 +58,6 @@ test("can play against Rashful", async () => {
   await screen.findByText(/Move number: 1/);
 
   user.click(screen.getAllByText("T")[0]);
-  user.click(screen.getByText("cE"));
+  user.click(screen.getByText("gE"));
   await screen.findByText(/Move number: 3/);
 });

@@ -1,46 +1,6 @@
-// Metaprogramming only
-// TODO remove
-export function makeRealBoard() {
-  function write(x: Record<string, number>[]) {
-    x.map((r) => {
-      process.stdout.write(JSON.stringify(r) + ",\n");
-    });
-  }
-  const output: Record<string, number>[] = [];
-  for (let i = 0; i < 16; i++) {
-    const row: Record<string, number> = {};
-    for (let j = 0; j < 16; j++) {
-      const n = 32 * i + j;
-      const sq = fileSan(n) + rankSan(n);
-      row[sq] = n;
-    }
-    output.push(row);
-  }
-  write(output);
-  return output;
-}
+// HEX 210 - Anthill Inside
 
-// prettier-ignore
-// TODO remove
-export const fullBoard = [
-  {"aF":0,"bF":1,"cF":2,"dF":3,"eF":4,"fF":5,"gF":6,"hF":7,"iF":8,"jF":9,"kF":10,"lF":11,"mF":12,"nF":13,"oF":14,"F":15},
-  {"aE":32,"bE":33,"cE":34,"dE":35,"eE":36,"fE":37,"gE":38,"hE":39,"iE":40,"jE":41,"kE":42,"lE":43,"mE":44,"nE":45,"oE":46,"E":47},
-  {"aD":64,"bD":65,"cD":66,"dD":67,"eD":68,"fD":69,"gD":70,"hD":71,"iD":72,"jD":73,"kD":74,"lD":75,"mD":76,"nD":77,"oD":78,"D":79},
-  {"aC":96,"bC":97,"cC":98,"dC":99,"eC":100,"fC":101,"gC":102,"hC":103,"iC":104,"jC":105,"kC":106,"lC":107,"mC":108,"nC":109,"oC":110,"C":111},
-  {"aB":128,"bB":129,"cB":130,"dB":131,"eB":132,"fB":133,"gB":134,"hB":135,"iB":136,"jB":137,"kB":138,"lB":139,"mB":140,"nB":141,"oB":142,"B":143},
-  {"aA":160,"bA":161,"cA":162,"dA":163,"eA":164,"fA":165,"gA":166,"hA":167,"iA":168,"jA":169,"kA":170,"lA":171,"mA":172,"nA":173,"oA":174,"A":175},
-  {"9":207,"a9":192,"b9":193,"c9":194,"d9":195,"e9":196,"f9":197,"g9":198,"h9":199,"i9":200,"j9":201,"k9":202,"l9":203,"m9":204,"n9":205,"o9":206},
-  {"8":239,"a8":224,"b8":225,"c8":226,"d8":227,"e8":228,"f8":229,"g8":230,"h8":231,"i8":232,"j8":233,"k8":234,"l8":235,"m8":236,"n8":237,"o8":238},
-  {"7":271,"a7":256,"b7":257,"c7":258,"d7":259,"e7":260,"f7":261,"g7":262,"h7":263,"i7":264,"j7":265,"k7":266,"l7":267,"m7":268,"n7":269,"o7":270},
-  {"6":303,"a6":288,"b6":289,"c6":290,"d6":291,"e6":292,"f6":293,"g6":294,"h6":295,"i6":296,"j6":297,"k6":298,"l6":299,"m6":300,"n6":301,"o6":302},
-  {"5":335,"a5":320,"b5":321,"c5":322,"d5":323,"e5":324,"f5":325,"g5":326,"h5":327,"i5":328,"j5":329,"k5":330,"l5":331,"m5":332,"n5":333,"o5":334},
-  {"4":367,"a4":352,"b4":353,"c4":354,"d4":355,"e4":356,"f4":357,"g4":358,"h4":359,"i4":360,"j4":361,"k4":362,"l4":363,"m4":364,"n4":365,"o4":366},
-  {"3":399,"a3":384,"b3":385,"c3":386,"d3":387,"e3":388,"f3":389,"g3":390,"h3":391,"i3":392,"j3":393,"k3":394,"l3":395,"m3":396,"n3":397,"o3":398},
-  {"2":431,"a2":416,"b2":417,"c2":418,"d2":419,"e2":420,"f2":421,"g2":422,"h2":423,"i2":424,"j2":425,"k2":426,"l2":427,"m2":428,"n2":429,"o2":430},
-  {"1":463,"a1":448,"b1":449,"c1":450,"d1":451,"e1":452,"f1":453,"g1":454,"h1":455,"i1":456,"j1":457,"k1":458,"l1":459,"m1":460,"n1":461,"o1":462},
-  {"a":480,"b":481,"c":482,"d":483,"e":484,"f":485,"g":486,"h":487,"i":488,"j":489,"k":490,"l":491,"m":492,"n":493,"o":494,"":495},  
-];
-
+// +++ Out Of Cheese Error ??????? +++
 // prettier-ignore
 export type Square =          "fF" |"gF" |"hF" |"iF" |"jF" |
                         "eE" |"fE" |"gE" |"hE" |"iE" |"jE" |"kE" | 
@@ -58,6 +18,7 @@ export type Square =          "fF" |"gF" |"hF" |"iF" |"jF" |
                         "e2" |"f2" |"g2" |"h2" |"i2" |"j2" |"k2" |
                               "f1" |"g1" |"h1" |"i1" |"j1" ;
 
+// +++ Divide by cucumber error +++
 // prettier-ignore
 export const boardHex210:  Record<Square,  number> = {
                                    fF:5,  gF:6,  hF:7,  iF:8,  jF:9,
@@ -82,6 +43,22 @@ export const boardHex210Values = Object.values(boardHex210);
 export const boardHex210Inverse = Object.fromEntries(
   Object.entries(boardHex210).map(([key, value]) => [value, key])
 ) as Record<number, Square>;
+
+// NW corner: 0,1,2,3,4.. 32,33,34,35.. 64,65,66, 96,97.. 128
+// NE corner: 10,11,12,13,14.. 43,44,45,46.. 76,77,78.. 109,110, 142
+// SW corner: 320.. 352,353.. 384,385,386.. 416,417,418,419.. 448,449,450,451,452
+// SE corner: 334.. 365,366.. 396,397,398.. 427,428,429,430.. 458,459,460,461,462
+const nwCorner = [0, 1, 2, 3, 4, 32, 33, 34, 35, 64, 65, 66, 96, 97, 128];
+const neCorner = [
+  10, 11, 12, 13, 14, 43, 44, 45, 46, 76, 77, 78, 109, 110, 142,
+];
+const swCorner = [
+  320, 352, 353, 384, 385, 386, 416, 417, 418, 419, 448, 449, 450, 451, 452,
+];
+const seCorner = [
+  334, 365, 366, 396, 397, 398, 427, 428, 429, 430, 458, 459, 460, 461, 462,
+];
+export const boardHex210Corners = { nwCorner, neCorner, swCorner, seCorner };
 
 export const PIECE_OFFSETS = [-31, -32, -33, 1, 31, 32, 33, -1];
 export const INVERSE_PIECE_OFFSETS: Record<number, number> = {

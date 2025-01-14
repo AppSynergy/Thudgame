@@ -1,5 +1,5 @@
 "use client";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import {
   filterAvailableMoves,
   Move,
@@ -30,25 +30,30 @@ export default function ThudBoard({
   const [availableMoves, setAvailableMoves] = useState<Move[] | null>(null);
 
   // If we select one of our pieces, show the available moves.
-  function showAvailableMoves(
-    previousSquare: ThudSquareType | null,
-    currentSquare: ThudSquareType | null
-  ) {
-    if (previousSquare == currentSquare) {
-      setAvailableMoves(null);
-      return null;
-    }
-    if (moves && currentSquare?.algebraic) {
-      setAvailableMoves(filterAvailableMoves(moves, currentSquare.algebraic));
-    }
+  const showAvailableMoves = useCallback(
+    (
+      previousSquare: ThudSquareType | null,
+      currentSquare: ThudSquareType | null
+    ) => {
+      if (previousSquare == currentSquare) {
+        setAvailableMoves(null);
+        return null;
+      }
+      if (moves && currentSquare?.algebraic) {
+        setAvailableMoves(filterAvailableMoves(moves, currentSquare.algebraic));
+      }
 
-    return currentSquare;
-  }
+      return currentSquare;
+    },
+    [moves]
+  );
 
   // Enable moving to a valid square.
-  function makeMove(_previousMove: Move | null, currentMove: Move) {
+  function makeMove(_previousMove: Move | null, currentMove: Move | null) {
     if (activeSide == yourSide) {
-      move(currentMove);
+      if (currentMove) {
+        move(currentMove);
+      }
       setAvailableMoves(null);
     }
 
@@ -62,16 +67,15 @@ export default function ThudBoard({
   );
 
   // Action for making moves.
-  // TODO highlight previous move
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_moveBeingMade, makeMoveAction] = useActionState(makeMove, null);
+  const [mostRecentMove, makeMoveAction] = useActionState(makeMove, null);
 
   // dump user states if we've reset the board.
   useEffect(() => {
-    setAvailableMoves(null);
-    availableMovesAction(null);
-    // TODO fix types, should be able to null this
-    //makeMoveAction(null);
+    if (moveCount == 0) {
+      setAvailableMoves(null);
+      availableMovesAction(null);
+      makeMoveAction(null);
+    }
   }, [moveCount]);
 
   // Dark and light coloured squares.
@@ -91,6 +95,7 @@ export default function ThudBoard({
         availableMoves={availableMoves}
         availableMovesAction={availableMovesAction}
         makeMoveAction={makeMoveAction}
+        mostRecentMove={mostRecentMove}
       />
     );
   }

@@ -22,6 +22,7 @@ interface ThudSquareProps {
   availableMoves: Move[] | null;
   availableMovesAction: (square: ThudSquareType | null) => void;
   makeMoveAction: (move: Move) => void;
+  mostRecentMove: Move | null;
 }
 
 // Draw a single square of the board.
@@ -33,13 +34,8 @@ export default function ThudSquare({
   availableMoves,
   availableMovesAction,
   makeMoveAction,
+  mostRecentMove,
 }: ThudSquareProps) {
-  // Check whether we can move to this square, or capture a dwarf here.
-  const canMoveHere =
-    availableMoves && isAvailableMoveSquare(availableMoves, square);
-  const canCaptureHere =
-    availableMoves && isAvailableCaptureSquare(availableMoves, square);
-
   // Draw the piece if there is one on this square.
   let piece = null;
   if (square.piece) {
@@ -66,6 +62,12 @@ export default function ThudSquare({
     }
   }
 
+  // Check whether we can move to this square, or capture a dwarf here.
+  const canMoveHere =
+    availableMoves && isAvailableMoveSquare(availableMoves, square);
+  const canCaptureHere =
+    availableMoves && isAvailableCaptureSquare(availableMoves, square);
+
   const thudSquareClassNames = classNames({
     thudSquare: square?.algebraic,
     emptySquare: !square.algebraic,
@@ -77,6 +79,14 @@ export default function ThudSquare({
     selectable: yourSide === square.piece,
     selected:
       square.piece && selectedPieceSquare?.algebraic == square.algebraic,
+    mostRecentMoveFrom:
+      mostRecentMove &&
+      square?.algebraic &&
+      mostRecentMove.from == square.algebraic,
+    mostRecentMoveTo:
+      mostRecentMove &&
+      square?.algebraic &&
+      mostRecentMove.to == square.algebraic,
   });
 
   return (

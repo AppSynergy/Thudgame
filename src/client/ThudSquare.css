@@ -25,20 +25,25 @@
   background-color: tomato;
 }
 
-.thudSquare.dark.canHurlHere,
-.thudSquare.light.canHurlHere {
+.thudSquare.mostRecentMoveFrom {
+  background-color: orchid;
+}
+
+.thudSquare.mostRecentMoveTo {
+  background-color: darkorchid;
+}
+
+.thudSquare.canHurlHere {
   background-color: purple;
   cursor: pointer;
 }
 
-.thudSquare.dark.canMoveHere,
-.thudSquare.light.canMoveHere {
+.thudSquare.canMoveHere {
   background-color: darkorange;
   cursor: pointer;
 }
 
-.thudSquare.dark.canCaptureHere,
-.thudSquare.light.canCaptureHere {
+.thudSquare.canCaptureHere {
   background-color: darkred;
 }
 

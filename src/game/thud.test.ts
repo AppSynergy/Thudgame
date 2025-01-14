@@ -3,8 +3,8 @@ import {
   findMovesForSinglePiece,
   findNearbyDwarfs,
   filterMovesFrom,
-  isAvailableCaptureSquare,
-  isAvailableMoveSquare,
+  isCaptureSquare,
+  isMoveSquare,
   Piece,
   Thud,
   DWARF,
@@ -61,28 +61,21 @@ test("can filter available moves", () => {
 });
 
 test("checking we can move to a square", () => {
-  const result = isAvailableMoveSquare([{ from: "e8", piece: "d", to: "i8" }], {
-    algebraic: "i8",
-  });
+  const result = isMoveSquare([{ from: "e8", piece: "d", to: "i8" }], "i8");
 
   expect(result).toBe(true);
 });
 
 test("checking we can't move to a square", () => {
-  const result = isAvailableMoveSquare([{ from: "i6", piece: "d", to: "g5" }], {
-    algebraic: "g2",
-  });
+  const result = isMoveSquare([{ from: "i6", piece: "d", to: "g5" }], "g2");
 
   expect(result).toBe(false);
 });
 
 test("checking we can capture a dwarf on a square", () => {
-  const result = isAvailableCaptureSquare(
+  const result = isCaptureSquare(
     [{ capturable: ["f7"], from: "e5", piece: "T", to: "e6" }],
-    {
-      algebraic: "f7",
-      piece: DWARF,
-    }
+    "f7"
   );
 
   expect(result).toBe(true);

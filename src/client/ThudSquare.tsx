@@ -2,9 +2,6 @@
 import { startTransition } from "react";
 import classNames from "clsx";
 import {
-  isAvailableCaptureSquare,
-  isAvailableMoveSquare,
-  getAvailableCaptureSquares,
   Move,
   Side,
   Square,
@@ -19,11 +16,14 @@ interface ThudSquareProps {
   yourSide: Side;
   square: ThudSquareType;
   alternateColors: number;
+  canMoveHere: boolean;
+  canCaptureHere: boolean;
+  captureSquares: Square[];
+  mostRecentMoveFrom: boolean;
+  mostRecentMoveTo: boolean;
   selectedPieceSquare: ThudSquareType | null;
-  availableMoves: Move[] | null;
   availableMovesAction: (square: ThudSquareType | null) => void;
   makeMoveAction: (move: Move) => void;
-  mostRecentMove: Move | null;
 }
 
 // Draw a single square of the board.
@@ -32,10 +32,13 @@ export default function ThudSquare({
   square,
   selectedPieceSquare,
   alternateColors,
-  availableMoves,
+  canMoveHere,
+  canCaptureHere,
+  captureSquares,
+  mostRecentMoveFrom,
+  mostRecentMoveTo,
   availableMovesAction,
   makeMoveAction,
-  mostRecentMove,
 }: ThudSquareProps) {
   // Draw the piece if there is one on this square.
   let piece = null;
@@ -51,14 +54,15 @@ export default function ThudSquare({
 
   // If you click on a square you can move to, you move there.
   function clickSquare() {
+    // TODO Should we just have the move passed down?
     if (square?.algebraic && selectedPieceSquare?.piece && canMoveHere) {
       const move: Move = {
         from: selectedPieceSquare.algebraic as Square,
         to: square.algebraic,
         piece: selectedPieceSquare.piece,
       };
-      if (yourSide == TROLL) {
-        move.capturable = getAvailableCaptureSquares(availableMoves, square);
+      if (yourSide == TROLL && captureSquares.length) {
+        move.capturable = captureSquares;
       }
       startTransition(() => {
         makeMoveAction(move);
@@ -67,14 +71,12 @@ export default function ThudSquare({
   }
 
   // Check whether we can move to this square, or capture a dwarf here.
-  const canMoveHere =
-    availableMoves && isAvailableMoveSquare(availableMoves, square);
-  const canCaptureHere =
-    availableMoves && isAvailableCaptureSquare(availableMoves, square);
 
   const thudSquareClassNames = classNames({
     thudSquare: square?.algebraic,
     emptySquare: !square.algebraic,
+    mostRecentMoveFrom: mostRecentMoveFrom,
+    mostRecentMoveTo: mostRecentMoveTo,
     canMoveHere: canMoveHere && !square.piece,
     canHurlHere: canMoveHere && yourSide === DWARF && square.piece === TROLL,
     canCaptureHere: canCaptureHere && yourSide === TROLL,
@@ -83,14 +85,6 @@ export default function ThudSquare({
     selectable: yourSide === square.piece,
     selected:
       square.piece && selectedPieceSquare?.algebraic == square.algebraic,
-    mostRecentMoveFrom:
-      mostRecentMove &&
-      square?.algebraic &&
-      mostRecentMove.from == square.algebraic,
-    mostRecentMoveTo:
-      mostRecentMove &&
-      square?.algebraic &&
-      mostRecentMove.to == square.algebraic,
   });
 
   return (

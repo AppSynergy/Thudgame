@@ -97,32 +97,30 @@ export function findMoves(board: Piece[], side: Side): InternalMove[] {
 }
 
 // Check if we can move to a square.
-export function isAvailableMoveSquare(
-  availableMoves: Move[],
-  square: ThudSquare
+export function isMoveSquare(
+  moves: Move[] | null,
+  square: Square | undefined
 ): boolean {
-  if (
-    square?.algebraic &&
-    availableMoves.map((m) => m.to).includes(square.algebraic)
-  ) {
+  if (moves?.length && square && moves.map((m) => m.to).includes(square)) {
     return true;
   }
   return false;
 }
 
 // Check if we can make a capture on a square.
-export function isAvailableCaptureSquare(
-  availableMoves: Move[],
-  square: ThudSquare
+export function isCaptureSquare(
+  moves: Move[] | null,
+  square: Square | undefined
 ): boolean {
   if (
-    square?.algebraic &&
-    availableMoves
+    moves?.length &&
+    square &&
+    moves
       .reduce((ms, m) => {
         ms = ms.concat(m?.capturable as Square[]);
         return ms;
       }, [] as Square[])
-      .includes(square.algebraic)
+      .includes(square)
   ) {
     return true;
   }
@@ -130,13 +128,13 @@ export function isAvailableCaptureSquare(
 }
 
 // Get the square we can capture on
-export function getAvailableCaptureSquares(
-  availableMoves: Move[],
-  square: ThudSquare
+export function getCaptureSquares(
+  moves: Move[] | null,
+  square: Square | undefined
 ): Square[] {
-  if (square?.algebraic) {
-    const capturables = filterMovesTo(availableMoves, square.algebraic).flatMap(
-      (m) => (m?.capturable ? m.capturable : [])
+  if (moves?.length && square) {
+    const capturables = filterMovesTo(moves, square).flatMap((m) =>
+      m?.capturable ? m.capturable : []
     );
     if (capturables) return capturables;
   }

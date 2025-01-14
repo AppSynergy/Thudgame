@@ -1,6 +1,6 @@
 "use client";
 import { startTransition } from "react";
-import classNames from "classnames";
+import classNames from "clsx";
 import {
   isAvailableCaptureSquare,
   isAvailableMoveSquare,

@@ -152,6 +152,23 @@ export function findDwarfLineLength(
   return lineLength;
 }
 
+const nwCorner = [0, 1, 2, 3, 4, 32, 33, 34, 35, 64, 65, 66, 96, 97, 128];
+const neCorner = [
+  10, 11, 12, 13, 14, 43, 44, 45, 46, 76, 77, 78, 109, 110, 142,
+];
+
+// NW corner: 0,1,2,3,4.. 32,33,34,35.. 64,65,66, 96,97.. 128
+// NE corner: 10,11,12,13,14.. 43,44,45,46.. 76,77,78.. 109,110, 142
+export function offTheBoard(square: number): boolean {
+  if (square & 0x210) return true;
+  if (square > 462) return true;
+  if ((square - 15) % 32 == 0) return true;
+  if (nwCorner.includes(square)) return true;
+  if (neCorner.includes(square)) return true;
+  if (neCorner.includes(square ^ 0x210)) return true;
+  return false;
+}
+
 // Find possible moves for a given piece.
 export function findMovesForSinglePiece(
   board: Piece[],
@@ -179,14 +196,18 @@ export function findMovesForSinglePiece(
 
       // only check squares on the board
       // TODO corners and forbidden row / column?
-      if (to & 0x210) break;
+      if (offTheBoard(to)) break;
 
       if (!board[to]) {
         // if square is empty
         if (piece === TROLL) {
           // trolls can move and maybe capture one nearby dwarf
           const nearbyDwarfs = findNearbyDwarfs(board, to);
-          moves.push({ piece, from, to, capturable: nearbyDwarfs });
+          const move = { piece, from, to } as InternalMove;
+          if (nearbyDwarfs.length) {
+            move.capturable = nearbyDwarfs;
+          }
+          moves.push(move);
         } else {
           // dwarves can move
           moves.push({ piece, from, to });

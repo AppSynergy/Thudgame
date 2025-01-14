@@ -10,6 +10,7 @@ import {
   DWARF,
   TROLL,
   findDwarfLineLength,
+  offTheBoard,
 } from "./thud";
 
 test("can load positions", () => {
@@ -124,6 +125,21 @@ test("finding dwarf line length doesn't check past board edge", () => {
   const result = findDwarfLineLength(board, square, offset);
 
   expect(result).toEqual(2);
+});
+
+test("off the board check", () => {
+  expect(offTheBoard(229)).toBe(false); // f8
+  expect(offTheBoard(75)).toBe(false); // lD
+  expect(offTheBoard(333)).toBe(false); // n5
+
+  expect(offTheBoard(22)).toBe(true); // not a real row
+  expect(offTheBoard(15)).toBe(true); // in the forbidden column
+  expect(offTheBoard(482)).toBe(true); // in the forbidden row
+
+  expect(offTheBoard(66)).toBe(true); // NW corner
+  expect(offTheBoard(44)).toBe(true); // NE corner
+  expect(offTheBoard(365)).toBe(true); // SE corner
+  expect(offTheBoard(418)).toBe(true); // SW" corner
 });
 
 test("finding troll moves", () => {

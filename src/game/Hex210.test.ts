@@ -1,4 +1,11 @@
-import { algebraic, file, fileSan, rank, rankSan } from "./Hex210";
+import {
+  algebraic,
+  file,
+  fileSan,
+  makeRealBoard,
+  rank,
+  rankSan,
+} from "./Hex210";
 
 test("file function", () => {
   expect(file(98)).toBe(2); // aka c
@@ -18,4 +25,8 @@ test("rankSan function", () => {
 
 test("algebraic function", () => {
   expect(algebraic(98)).toBe("cC");
+});
+
+test("fake", () => {
+  makeRealBoard();
 });

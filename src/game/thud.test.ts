@@ -2,7 +2,7 @@ import {
   findMoves,
   findMovesForSinglePiece,
   findNearbyDwarfs,
-  filterAvailableMoves,
+  filterMovesFrom,
   isAvailableCaptureSquare,
   isAvailableMoveSquare,
   Piece,
@@ -46,7 +46,7 @@ test("dwarves and trolls can both move", () => {
 });
 
 test("can filter available moves", () => {
-  const result = filterAvailableMoves(
+  const result = filterMovesFrom(
     [
       { piece: TROLL, from: "c8", to: "c7" },
       { piece: TROLL, from: "d3", to: "d4" },

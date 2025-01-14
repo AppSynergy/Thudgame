@@ -54,11 +54,15 @@ export interface Move {
 }
 
 function internalMoveFromMove(move: Move): InternalMove {
-  return {
+  const output: InternalMove = {
     piece: move.piece,
     from: boardHex210[move.from],
     to: boardHex210[move.to],
   };
+  if (move?.capturable) {
+    output.capturable = move.capturable.map((c) => boardHex210[c]);
+  }
+  return output;
 }
 
 function moveFromInternalMove(imove: InternalMove): Move {
@@ -123,6 +127,45 @@ export function isAvailableCaptureSquare(
     return true;
   }
   return false;
+}
+
+// Get the square we can capture on
+export function getAvailableCaptureSquares(
+  availableMoves: Move[],
+  square: ThudSquare
+): Square[] {
+  if (square?.algebraic) {
+    const capturables = filterMovesTo(availableMoves, square.algebraic).flatMap(
+      (m) => (m?.capturable ? m.capturable : [])
+    );
+    if (capturables) return capturables;
+  }
+  return [] as Square[];
+}
+
+// Filter all available moves to only some squares.
+function filterMoves(
+  moves: Move[],
+  square: Square,
+  condition: (move: Move) => Square
+): Move[] {
+  const output = [];
+  for (let i = 0; i < moves.length; i++) {
+    if (square == condition(moves[i])) {
+      output.push(moves[i]);
+    }
+  }
+  return output;
+}
+
+// Filter all available moves to produce just the moves from a given square.
+export function filterMovesFrom(moves: Move[], square: Square): Move[] {
+  return filterMoves(moves, square, (m) => m.from);
+}
+
+// Filter all available moves to produce just the moves to a given square.
+export function filterMovesTo(moves: Move[], square: Square): Move[] {
+  return filterMoves(moves, square, (m) => m.to);
 }
 
 // Find out if there's any dwarfs surrounding a square.
@@ -239,17 +282,6 @@ export function findMovesForSinglePiece(
   return moves;
 }
 
-// Filter all available moves to produce just the moves from a given square.
-export function filterAvailableMoves(moves: Move[], algebraic: Square): Move[] {
-  const output = [];
-  for (let i = 0; i < moves.length; i++) {
-    if (algebraic == moves[i].from) {
-      output.push(moves[i]);
-    }
-  }
-  return output;
-}
-
 interface ThudGame {
   board: () => ThudSquare[][];
   moves: (side: Side) => Move[];
@@ -306,9 +338,19 @@ export function Thud(position?: string): ThudGame {
   // Move a single piece.
   function move(move: Move) {
     if (iturn == move.piece) {
-      const internalMove = internalMoveFromMove(move);
-      iboard[internalMove.to] = iboard[internalMove.from];
-      delete iboard[internalMove.from];
+      const imove = internalMoveFromMove(move);
+      // move the piece
+      iboard[imove.to] = iboard[imove.from];
+      delete iboard[imove.from];
+
+      // capture a dwarf if we have a single option
+      if (
+        move.piece == TROLL &&
+        imove?.capturable &&
+        imove.capturable.length == 1
+      ) {
+        delete iboard[imove.capturable[0]];
+      }
     }
 
     iturn = iturn == DWARF ? TROLL : DWARF;

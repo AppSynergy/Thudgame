@@ -1,7 +1,7 @@
 "use client";
 import { useActionState, useCallback, useEffect, useState } from "react";
 import {
-  filterAvailableMoves,
+  filterMovesFrom,
   Move,
   Side,
   ThudBoard as ThudBoardType,
@@ -40,7 +40,7 @@ export default function ThudBoard({
         return null;
       }
       if (moves && currentSquare?.algebraic) {
-        setAvailableMoves(filterAvailableMoves(moves, currentSquare.algebraic));
+        setAvailableMoves(filterMovesFrom(moves, currentSquare.algebraic));
       }
 
       return currentSquare;

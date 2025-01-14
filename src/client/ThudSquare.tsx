@@ -4,6 +4,7 @@ import classNames from "clsx";
 import {
   isAvailableCaptureSquare,
   isAvailableMoveSquare,
+  getAvailableCaptureSquares,
   Move,
   Side,
   Square,
@@ -56,6 +57,9 @@ export default function ThudSquare({
         to: square.algebraic,
         piece: selectedPieceSquare.piece,
       };
+      if (yourSide == TROLL) {
+        move.capturable = getAvailableCaptureSquares(availableMoves, square);
+      }
       startTransition(() => {
         makeMoveAction(move);
       });

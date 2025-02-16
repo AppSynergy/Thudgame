@@ -34,7 +34,17 @@ export default function ThudBoard({
   moveCount,
   capture,
 }: ThudBoardProps) {
+  // States
   const [availableMoves, setMoves] = useState<Move[] | null>(null);
+
+  // dump user states if we've reset the board.
+  useEffect(() => {
+    if (moveCount == 0) {
+      setMoves(null);
+      availableMovesAction(null);
+      makeMoveAction(null);
+    }
+  }, [moveCount]);
 
   // If we select one of our pieces, show the available moves.
   const showMoves = useCallback(
@@ -85,15 +95,6 @@ export default function ThudBoard({
   // Action for making moves.
   const [lastMove, makeMoveAction] = useActionState(makeMove, null);
 
-  // dump user states if we've reset the board.
-  useEffect(() => {
-    if (moveCount == 0) {
-      setMoves(null);
-      availableMovesAction(null);
-      makeMoveAction(null);
-    }
-  }, [moveCount]);
-
   // Action for troll choosing to capture a dwarf.
   const [lastCapture, chooseCaptureAction] = useActionState(
     chooseCapture,
@@ -109,9 +110,9 @@ export default function ThudBoard({
 
     // Check whether we can move to this square, or capture a dwarf here.
     const canMoveHere = isMoveSquare(availableMoves, square?.algebraic);
-    const canCaptureHere = isCaptureSquare(availableMoves, square?.algebraic);
-    const captureSquares =
-      getCaptureSquares(availableMoves, square?.algebraic) ||
+    const captureSquares = getCaptureSquares(availableMoves, square?.algebraic);
+    const canCaptureHere =
+      isCaptureSquare(availableMoves, square?.algebraic) ||
       (yourSide == TROLL &&
         square?.algebraic &&
         lastMove?.capturable &&

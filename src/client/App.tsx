@@ -83,7 +83,7 @@ function App() {
       if (
         activeSide == TROLL &&
         move?.capturable &&
-        move.capturable.length > 0
+        move.capturable.length > 1
       ) {
         // wait for troll capture
       } else {

@@ -19,7 +19,7 @@ interface ThudSquareProps {
   selectedPieceSquare: ThudSquareType | null;
   alternateColors: number;
   canMoveHere: boolean;
-  canCaptureHere: boolean;
+  canCaptureHere: boolean | undefined;
   availableMoves: Move[] | null;
   availableMovesAction: (square: ThudSquareType | null) => void;
   lastMove: Move | null;

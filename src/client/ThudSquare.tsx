@@ -15,14 +15,14 @@ import "./ThudSquare.css";
 interface ThudSquareProps {
   yourSide: Side;
   square: ThudSquareType;
-  selectedPieceSquare: ThudSquareType | null;
+  selectedSquare: ThudSquareType | null;
   alternateColors: number;
   canMoveHere: boolean;
   canCaptureHere: boolean | undefined;
   availableMoves: Move[] | null;
   availableMovesAction: (square: ThudSquareType | null) => void;
   lastMove: Move | null;
-  makeMoveAction: (move: Move) => void;
+  makeMoveAction: (move: Move | null) => void;
   lastCapture: Square | null;
   chooseCaptureAction: (square: Square) => void;
 }
@@ -31,7 +31,7 @@ interface ThudSquareProps {
 export default function ThudSquare({
   yourSide,
   square,
-  selectedPieceSquare,
+  selectedSquare,
   alternateColors,
   canMoveHere,
   canCaptureHere,
@@ -55,41 +55,36 @@ export default function ThudSquare({
 
   function clickSquare() {
     // If you click on a square you can move to, you move there.
-    if (square?.algebraic && selectedPieceSquare?.piece && canMoveHere) {
-      const move: Move = (availableMoves &&
-        availableMoves.find((m) => m.to == square.algebraic)) || {
-        from: selectedPieceSquare.algebraic as Square,
-        to: square.algebraic,
-        piece: selectedPieceSquare.piece,
-      };
+    if (square?.algebraic && selectedSquare?.piece && canMoveHere) {
+      const move: Move | null =
+        (availableMoves &&
+          availableMoves.find((m) => m.to == square.algebraic)) ||
+        null;
 
       startTransition(() => {
         makeMoveAction(move);
       });
     }
     // If you click on a dwarf you can capture, capture them.
-    if (square?.algebraic && selectedPieceSquare?.piece && canCaptureHere) {
+    if (square?.algebraic && selectedSquare?.piece && canCaptureHere) {
       startTransition(() => {
         chooseCaptureAction(square.algebraic as Square);
       });
     }
   }
 
-  // Check whether we can move to this square, or capture a dwarf here.
-
   const thudSquareClassNames = classNames({
     thudSquare: square?.algebraic,
     emptySquare: !square.algebraic,
-    lastMoveFrom: lastMove?.from == square.piece,
-    lastMoveTo: lastMove?.to == square.piece,
+    lastMoveFrom: lastMove?.from == square.algebraic,
+    lastMoveTo: lastMove?.to == square.algebraic,
     canMoveHere: canMoveHere && !square.piece,
-    canHurlHere: canMoveHere && yourSide === DWARF && square.piece === TROLL,
+    canHurlHere: canMoveHere && yourSide === DWARF,
     canCaptureHere: canCaptureHere && yourSide === TROLL,
     dark: alternateColors % 2 === 0,
     light: alternateColors % 2 === 1,
     selectable: yourSide === square.piece,
-    selected:
-      square.piece && selectedPieceSquare?.algebraic == square.algebraic,
+    selected: square.piece && selectedSquare?.algebraic == square.algebraic,
   });
 
   return (

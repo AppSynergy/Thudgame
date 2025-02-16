@@ -7,13 +7,25 @@ const squareWithDwarf: ThudSquare = { piece: DWARF, algebraic: "g6" };
 const squareWithTroll: ThudSquare = { piece: TROLL, algebraic: "g6" };
 
 test("renders a dwarf", () => {
-  render(<ThudPiece yourSide={DWARF} square={squareWithDwarf} />);
+  render(
+    <ThudPiece
+      yourSide={DWARF}
+      square={squareWithDwarf}
+      availableMovesAction={jest.fn()}
+    />
+  );
   const piece = screen.getByText(/d/);
   expect(piece).toBeInTheDocument();
 });
 
 test("renders a troll", () => {
-  render(<ThudPiece yourSide={TROLL} square={squareWithTroll} />);
+  render(
+    <ThudPiece
+      yourSide={TROLL}
+      square={squareWithTroll}
+      availableMovesAction={jest.fn()}
+    />
+  );
   const piece = screen.getByText(/T/);
   expect(piece).toBeInTheDocument();
 });

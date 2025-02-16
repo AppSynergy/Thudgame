@@ -12,15 +12,16 @@ test("renders an empty square", () => {
       key={0}
       yourSide={TROLL}
       square={squareWithNoPiece}
-      selectedPieceSquare={null}
+      selectedSquare={null}
       alternateColors={1}
       canMoveHere={false}
       canCaptureHere={false}
-      captureSquares={[]}
-      mostRecentMoveFrom={false}
-      mostRecentMoveTo={false}
+      availableMoves={null}
       availableMovesAction={jest.fn()}
+      lastMove={null}
       makeMoveAction={jest.fn()}
+      lastCapture={null}
+      chooseCaptureAction={jest.fn()}
     />
   );
 
@@ -39,15 +40,16 @@ test("highlights a possible move", async () => {
       key={22}
       yourSide={TROLL}
       square={squareWithTroll}
-      selectedPieceSquare={squareWithTroll}
+      selectedSquare={squareWithTroll}
       alternateColors={1}
       canMoveHere={false}
       canCaptureHere={false}
-      captureSquares={[]}
-      mostRecentMoveFrom={false}
-      mostRecentMoveTo={false}
+      availableMoves={null}
       availableMovesAction={mockAvailableMovesAction}
+      lastMove={null}
       makeMoveAction={jest.fn()}
+      lastCapture={null}
+      chooseCaptureAction={jest.fn()}
     />
   );
 
@@ -68,15 +70,16 @@ test("can click on a square to move there", () => {
       key={22}
       yourSide={TROLL}
       square={squareWithNoPiece}
-      selectedPieceSquare={squareWithTroll}
+      selectedSquare={squareWithTroll}
       alternateColors={1}
       canMoveHere={true}
       canCaptureHere={false}
-      captureSquares={[]}
-      mostRecentMoveFrom={false}
-      mostRecentMoveTo={false}
+      availableMoves={[{ from: "e5", to: "e4", piece: TROLL }]}
       availableMovesAction={jest.fn()}
+      lastMove={null}
       makeMoveAction={mockMakeMoveAction}
+      lastCapture={null}
+      chooseCaptureAction={jest.fn()}
     />
   );
 

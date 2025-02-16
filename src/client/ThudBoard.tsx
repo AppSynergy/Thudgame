@@ -86,7 +86,7 @@ export default function ThudBoard({
   }
 
   // Action for selecting pieces.
-  const [selectedPieceSquare, availableMovesAction] = useActionState(
+  const [selectedSquare, availableMovesAction] = useActionState(
     showMoves,
     null
   );
@@ -121,7 +121,7 @@ export default function ThudBoard({
         key={keyIndex}
         yourSide={yourSide}
         square={square}
-        selectedPieceSquare={selectedPieceSquare}
+        selectedSquare={selectedSquare}
         alternateColors={alternateColors}
         canMoveHere={canMoveHere}
         canCaptureHere={canCaptureHere}

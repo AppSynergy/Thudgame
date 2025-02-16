@@ -14,6 +14,7 @@ test("renders a thud board", () => {
       moves={[]}
       move={jest.fn()}
       moveCount={0}
+      capture={jest.fn()}
     />
   );
 

@@ -34,29 +34,29 @@ export default function ThudBoard({
   capture,
 }: ThudBoardProps) {
   // States
-  const [availableMoves, setMoves] = useState<Move[] | null>(null);
+  const [availableMoves, setAvailableMoves] = useState<Move[] | null>(null);
 
-  // dump user states if we've reset the board.
+  // Effect - Dump user states if we've reset the board.
   useEffect(() => {
     if (moveCount == 0) {
-      setMoves(null);
+      setAvailableMoves(null);
       availableMovesAction(null);
       makeMoveAction(null);
     }
   }, [moveCount]);
 
-  // If we select one of our pieces, show the available moves.
-  const showMoves = useCallback(
+  // Callback - If we select one of our pieces, show the available moves.
+  const showAvailableMoves = useCallback(
     (
       previousSquare: ThudSquareType | null,
       currentSquare: ThudSquareType | null
     ) => {
       if (previousSquare == currentSquare) {
-        setMoves(null);
+        setAvailableMoves(null);
         return null;
       }
       if (moves && currentSquare?.algebraic) {
-        setMoves(filterMovesFrom(moves, currentSquare.algebraic));
+        setAvailableMoves(filterMovesFrom(moves, currentSquare.algebraic));
       }
 
       return currentSquare;
@@ -64,13 +64,13 @@ export default function ThudBoard({
     [moves]
   );
 
-  // Moving to a valid square.
+  // Action - Moving to a valid square.
   function makeMove(_previousMove: Move | null, currentMove: Move | null) {
     if (activeSide == yourSide) {
       if (currentMove) {
         move(currentMove);
       }
-      setMoves(null);
+      setAvailableMoves(null);
     }
 
     return currentMove;
@@ -87,7 +87,7 @@ export default function ThudBoard({
 
   // Action for selecting pieces.
   const [selectedSquare, availableMovesAction] = useActionState(
-    showMoves,
+    showAvailableMoves,
     null
   );
 

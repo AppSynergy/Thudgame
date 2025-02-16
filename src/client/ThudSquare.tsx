@@ -1,14 +1,7 @@
 "use client";
 import { startTransition } from "react";
 import classNames from "clsx";
-import {
-  Move,
-  Side,
-  Square,
-  ThudSquare as ThudSquareType,
-  DWARF,
-  TROLL,
-} from "../game/thud";
+import { Move, Side, Square, ThudSquare as ThudSquareType } from "../game/thud";
 import ThudPiece from "./ThudPiece";
 import "./ThudSquare.css";
 
@@ -54,33 +47,33 @@ export default function ThudSquare({
   }
 
   function clickSquare() {
-    // If you click on a square you can move to, you move there.
-    if (square?.algebraic && selectedSquare?.piece && canMoveHere) {
-      const move: Move | null =
-        (availableMoves &&
-          availableMoves.find((m) => m.to == square.algebraic)) ||
-        null;
+    if (square?.algebraic && selectedSquare?.piece) {
+      // If you click on a square you can move to, you move there.
+      if (canMoveHere && availableMoves) {
+        const move: Move | null =
+          availableMoves.find((m) => m.to == square.algebraic) || null;
 
-      startTransition(() => {
-        makeMoveAction(move);
-      });
-    }
-    // If you click on a dwarf you can capture, capture them.
-    if (square?.algebraic && selectedSquare?.piece && canCaptureHere) {
-      startTransition(() => {
-        chooseCaptureAction(square.algebraic as Square);
-      });
+        startTransition(() => {
+          makeMoveAction(move);
+        });
+      }
+      // If you click on a dwarf you can capture, capture them.
+      if (canCaptureHere) {
+        startTransition(() => {
+          chooseCaptureAction(square.algebraic as Square);
+        });
+      }
     }
   }
 
   const thudSquareClassNames = classNames({
-    thudSquare: square?.algebraic,
+    thudSquare: square.algebraic,
     emptySquare: !square.algebraic,
     lastMoveFrom: lastMove?.from == square.algebraic,
     lastMoveTo: lastMove?.to == square.algebraic,
     canMoveHere: canMoveHere && !square.piece,
-    canHurlHere: canMoveHere && yourSide === DWARF,
-    canCaptureHere: canCaptureHere && yourSide === TROLL,
+    canHurlHere: canMoveHere && square.piece,
+    canCaptureHere: canCaptureHere,
     dark: alternateColors % 2 === 0,
     light: alternateColors % 2 === 1,
     selectable: yourSide === square.piece,

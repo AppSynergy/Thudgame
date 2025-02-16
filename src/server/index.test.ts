@@ -1,13 +1,19 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { simpleMessageHandler } from "./index";
 
 test("api sends a message", async () => {
-  const mockResponse: any = jest.fn();
-  mockResponse.send = jest.fn();
+  const mockResponse = (): Partial<Response> => {
+    return {
+      send: jest.fn().mockReturnThis(),
+    };
+  };
 
-  simpleMessageHandler({} as Request, mockResponse);
+  const request = {} as Request;
+  const response = mockResponse() as Response;
 
-  expect(mockResponse.send).toHaveBeenCalledWith({
+  simpleMessageHandler(request, response);
+
+  expect(response.send).toHaveBeenCalledWith({
     message: "Backend is running!",
   });
 });

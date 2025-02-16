@@ -284,6 +284,7 @@ interface ThudGame {
   board: () => ThudSquare[][];
   moves: (side: Side) => Move[];
   move: (move: Move) => void;
+  capture: (square: Square) => void;
   load: (position: string) => void;
   reset: () => void;
 }
@@ -354,6 +355,11 @@ export function Thud(position?: string): ThudGame {
     iturn = iturn == DWARF ? TROLL : DWARF;
   }
 
+  // Capture a single dwarf.
+  function capture(square: Square) {
+    delete iboard[boardHex210[square]];
+  }
+
   // Loard a board position.
   function load(position: string) {
     const [turn, pieces] = position.split("x");
@@ -384,5 +390,5 @@ export function Thud(position?: string): ThudGame {
     reset();
   }
 
-  return { board, moves, move, load, reset };
+  return { board, moves, move, capture, load, reset };
 }

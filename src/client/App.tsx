@@ -6,6 +6,7 @@ import {
   toggleSide,
   Move,
   Side,
+  Square,
   Thud,
   ThudBoard as ThudBoardType,
   DWARF,
@@ -52,16 +53,14 @@ function App() {
   }, [thud, yourSide]);
 
   // Callbacks
-  // Callback - Handles common move logic
-  const moveCommon = useCallback(() => {
-    setMoveCount(moveCount + 1);
-
-    // TODO we only need to update two squares, is this efficient?
-    setBoard(thud.board());
-
+  // Callback - Handles end of turn logic
+  const endOfTurn = useCallback(() => {
     // Swap the active side
     const otherSide = toggleSide(activeSide);
     setActiveSide(otherSide);
+    if (playBothSides) {
+      setYourSide(toggleSide(activeSide));
+    }
 
     // Get available moves or lose.
     const nextMoves = thud.moves(otherSide);
@@ -70,17 +69,40 @@ function App() {
     } else {
       setLoss(otherSide);
     }
-  }, [thud, activeSide, moveCount]);
+  }, [thud, activeSide, playBothSides]);
+
+  // Callback - Handles common move logic
+  const moveCommon = useCallback(
+    (move: Move | null) => {
+      setMoveCount(moveCount + 1);
+
+      // TODO we only need to update two squares, is this efficient?
+      setBoard(thud.board());
+
+      // Trolls capturing dwarfs have a choice.
+      if (
+        activeSide == TROLL &&
+        move?.capturable &&
+        move.capturable.length > 0
+      ) {
+        // wait for troll capture
+      } else {
+        endOfTurn();
+      }
+    },
+    [thud, activeSide, moveCount, endOfTurn]
+  );
 
   // Callback - Handles AI move logic
   const moveAI = useCallback(() => {
+    let move = null;
     if (moves && opponent) {
-      const move = opponent.decideMove(moves);
+      move = opponent.decideMove(moves);
       if (move) {
         thud.move(move);
       }
     }
-    moveCommon();
+    moveCommon(move);
   }, [thud, moves, moveCommon, opponent]);
 
   // Effect - AI moves effect
@@ -95,13 +117,20 @@ function App() {
     (move: Move) => {
       if (!loss) {
         thud.move(move);
-        if (playBothSides) {
-          setYourSide(toggleSide(activeSide));
-        }
-        moveCommon();
+        moveCommon(move);
       }
     },
-    [thud, loss, moveCommon, activeSide, playBothSides]
+    [thud, loss, moveCommon]
+  );
+
+  // Callback - Handles user capture logic
+  const captureUser = useCallback(
+    (square: Square) => {
+      thud.capture(square);
+      setBoard(thud.board());
+      endOfTurn();
+    },
+    [thud, endOfTurn]
   );
 
   // Callback - Handles resetting a new game
@@ -141,6 +170,7 @@ function App() {
         moves={moves}
         move={moveUser}
         moveCount={moveCount}
+        capture={captureUser}
       />
     );
   }

@@ -7,8 +7,10 @@ import {
   isMoveSquare,
   Move,
   Side,
+  Square,
   ThudBoard as ThudBoardType,
   ThudSquare as ThudSquareType,
+  TROLL,
 } from "../game/thud";
 import ThudSquare from "./ThudSquare";
 import "./ThudBoard.css";
@@ -20,6 +22,7 @@ interface ThudBoardProps {
   moves: Move[];
   move: (move: Move) => void;
   moveCount: number;
+  capture: (square: Square) => void;
 }
 
 export default function ThudBoard({
@@ -29,6 +32,7 @@ export default function ThudBoard({
   moves,
   move,
   moveCount,
+  capture,
 }: ThudBoardProps) {
   const [availableMoves, setMoves] = useState<Move[] | null>(null);
 
@@ -51,7 +55,7 @@ export default function ThudBoard({
     [moves]
   );
 
-  // Enable moving to a valid square.
+  // Moving to a valid square.
   function makeMove(_previousMove: Move | null, currentMove: Move | null) {
     if (activeSide == yourSide) {
       if (currentMove) {
@@ -63,6 +67,15 @@ export default function ThudBoard({
     return currentMove;
   }
 
+  // Choosing to capture a dwarf piece.
+  function chooseCapture(
+    _previousCapture: Square | null,
+    currentCapture: Square
+  ) {
+    capture(currentCapture);
+    return currentCapture;
+  }
+
   // Action for selecting pieces.
   const [selectedPieceSquare, availableMovesAction] = useActionState(
     showMoves,
@@ -70,7 +83,7 @@ export default function ThudBoard({
   );
 
   // Action for making moves.
-  const [mostRecentMove, makeMoveAction] = useActionState(makeMove, null);
+  const [lastMove, makeMoveAction] = useActionState(makeMove, null);
 
   // dump user states if we've reset the board.
   useEffect(() => {
@@ -81,6 +94,12 @@ export default function ThudBoard({
     }
   }, [moveCount]);
 
+  // Action for troll choosing to capture a dwarf.
+  const [lastCapture, chooseCaptureAction] = useActionState(
+    chooseCapture,
+    null
+  );
+
   // Dark and light coloured squares.
   let alternateColors = 0;
 
@@ -88,24 +107,32 @@ export default function ThudBoard({
   function drawSquare(square: ThudSquareType, keyIndex: number) {
     alternateColors += 1;
 
+    // Check whether we can move to this square, or capture a dwarf here.
     const canMoveHere = isMoveSquare(availableMoves, square?.algebraic);
     const canCaptureHere = isCaptureSquare(availableMoves, square?.algebraic);
-    const captureSquares = getCaptureSquares(availableMoves, square?.algebraic);
+    const captureSquares =
+      getCaptureSquares(availableMoves, square?.algebraic) ||
+      (yourSide == TROLL &&
+        square?.algebraic &&
+        lastMove?.capturable &&
+        lastMove.capturable.includes(square.algebraic));
 
     return (
       <ThudSquare
         key={keyIndex}
         yourSide={yourSide}
         square={square}
+        captureSquares={captureSquares}
         selectedPieceSquare={selectedPieceSquare}
         alternateColors={alternateColors}
         canMoveHere={canMoveHere}
         canCaptureHere={canCaptureHere}
-        captureSquares={captureSquares}
-        mostRecentMoveFrom={mostRecentMove?.from === square?.algebraic}
-        mostRecentMoveTo={mostRecentMove?.to === square?.algebraic}
+        availableMoves={availableMoves}
         availableMovesAction={availableMovesAction}
+        lastMove={lastMove}
         makeMoveAction={makeMoveAction}
+        lastCapture={lastCapture}
+        chooseCaptureAction={chooseCaptureAction}
       />
     );
   }

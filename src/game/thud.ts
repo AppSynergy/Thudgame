@@ -127,20 +127,6 @@ export function isCaptureSquare(
   return false;
 }
 
-// Get the square we can capture on
-export function getCaptureSquares(
-  moves: Move[] | null,
-  square: Square | undefined
-): Square[] {
-  if (moves?.length && square) {
-    const capturables = filterMovesTo(moves, square).flatMap((m) =>
-      m?.capturable ? m.capturable : []
-    );
-    if (capturables) return capturables;
-  }
-  return [] as Square[];
-}
-
 // Filter all available moves to only some squares.
 function filterMoves(
   moves: Move[],

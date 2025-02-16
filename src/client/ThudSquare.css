@@ -25,11 +25,11 @@
   background-color: tomato;
 }
 
-.thudSquare.mostRecentMoveFrom {
+.thudSquare.lastMoveFrom {
   background-color: orchid;
 }
 
-.thudSquare.mostRecentMoveTo {
+.thudSquare.lastMoveTo {
   background-color: darkorchid;
 }
 

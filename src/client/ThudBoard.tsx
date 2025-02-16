@@ -2,7 +2,6 @@
 import { useActionState, useCallback, useEffect, useState } from "react";
 import {
   filterMovesFrom,
-  getCaptureSquares,
   isCaptureSquare,
   isMoveSquare,
   Move,
@@ -110,7 +109,6 @@ export default function ThudBoard({
 
     // Check whether we can move to this square, or capture a dwarf here.
     const canMoveHere = isMoveSquare(availableMoves, square?.algebraic);
-    const captureSquares = getCaptureSquares(availableMoves, square?.algebraic);
     const canCaptureHere =
       isCaptureSquare(availableMoves, square?.algebraic) ||
       (yourSide == TROLL &&
@@ -123,7 +121,6 @@ export default function ThudBoard({
         key={keyIndex}
         yourSide={yourSide}
         square={square}
-        captureSquares={captureSquares}
         selectedPieceSquare={selectedPieceSquare}
         alternateColors={alternateColors}
         canMoveHere={canMoveHere}

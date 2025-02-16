@@ -15,7 +15,6 @@ import "./ThudSquare.css";
 interface ThudSquareProps {
   yourSide: Side;
   square: ThudSquareType;
-  captureSquares: Square[];
   selectedPieceSquare: ThudSquareType | null;
   alternateColors: number;
   canMoveHere: boolean;
@@ -33,7 +32,6 @@ export default function ThudSquare({
   yourSide,
   square,
   selectedPieceSquare,
-  captureSquares,
   alternateColors,
   canMoveHere,
   canCaptureHere,
@@ -64,9 +62,7 @@ export default function ThudSquare({
         to: square.algebraic,
         piece: selectedPieceSquare.piece,
       };
-      if (yourSide == TROLL && captureSquares.length) {
-        move.capturable = captureSquares;
-      }
+
       startTransition(() => {
         makeMoveAction(move);
       });
@@ -84,8 +80,8 @@ export default function ThudSquare({
   const thudSquareClassNames = classNames({
     thudSquare: square?.algebraic,
     emptySquare: !square.algebraic,
-    lastMoveFrom: lastMove?.from,
-    lastMoveTo: lastMove?.to,
+    lastMoveFrom: lastMove?.from == square.piece,
+    lastMoveTo: lastMove?.to == square.piece,
     canMoveHere: canMoveHere && !square.piece,
     canHurlHere: canMoveHere && yourSide === DWARF && square.piece === TROLL,
     canCaptureHere: canCaptureHere && yourSide === TROLL,

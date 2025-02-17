@@ -1,9 +1,7 @@
 "use client";
 import { useActionState, useCallback, useEffect, useState } from "react";
+import { filterMovesFrom, isCaptureSquare, isMoveSquare } from "../game/helper";
 import {
-  filterMovesFrom,
-  isCaptureSquare,
-  isMoveSquare,
   Move,
   Side,
   Square,

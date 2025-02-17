@@ -127,31 +127,6 @@ export function isCaptureSquare(
   return false;
 }
 
-// Filter all available moves to only some squares.
-function filterMoves(
-  moves: Move[],
-  square: Square,
-  condition: (move: Move) => Square
-): Move[] {
-  const output = [];
-  for (let i = 0; i < moves.length; i++) {
-    if (square == condition(moves[i])) {
-      output.push(moves[i]);
-    }
-  }
-  return output;
-}
-
-// Filter all available moves to produce just the moves from a given square.
-export function filterMovesFrom(moves: Move[], square: Square): Move[] {
-  return filterMoves(moves, square, (m) => m.from);
-}
-
-// Filter all available moves to produce just the moves to a given square.
-export function filterMovesTo(moves: Move[], square: Square): Move[] {
-  return filterMoves(moves, square, (m) => m.to);
-}
-
 // Find out if there's any dwarfs surrounding a square.
 export function findNearbyDwarfs(board: Piece[], square: number): number[] {
   return PIECE_OFFSETS.reduce((xs, x) => {

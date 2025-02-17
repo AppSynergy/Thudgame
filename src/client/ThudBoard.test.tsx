@@ -12,9 +12,11 @@ test("renders a thud board", () => {
       board={board}
       yourSide={TROLL}
       moves={[]}
-      move={jest.fn()}
-      moveCount={0}
-      capture={jest.fn()}
+      selected={null}
+      lastMove={null}
+      selectAction={jest.fn()}
+      moveAction={jest.fn()}
+      captureAction={jest.fn()}
     />
   );
 

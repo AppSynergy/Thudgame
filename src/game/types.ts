@@ -1,5 +1,7 @@
 import { Square as Hex210Square } from "./Hex210";
 
+export type Opt<T> = T | null;
+
 export const TROLL = "T";
 export const DWARF = "d";
 
@@ -23,4 +25,11 @@ export interface Move {
   hurl?: boolean;
 }
 
-export type Opt<T> = T | null;
+export interface ThudGame {
+  board: () => Board;
+  moves: (side: Side) => Move[];
+  move: (move: Move) => void;
+  capture: (square: Square) => void;
+  load: (position: string) => void;
+  reset: () => void;
+}

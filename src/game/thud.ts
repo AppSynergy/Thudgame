@@ -1,10 +1,10 @@
 import {
+  Board,
   Move,
   Piece,
   Side,
   Square,
-  Board,
-  BoardSquare,
+  ThudGame,
   DWARF,
   TROLL,
 } from "./types";
@@ -188,15 +188,6 @@ export function findMovesForSinglePiece(
   return moves;
 }
 
-interface ThudGame {
-  board: () => BoardSquare[][];
-  moves: (side: Side) => Move[];
-  move: (move: Move) => void;
-  capture: (square: Square) => void;
-  load: (position: string) => void;
-  reset: () => void;
-}
-
 export function Thud(position?: string): ThudGame {
   // Internal representation of board
   const iboard = new Array<Piece>(512);
@@ -249,15 +240,6 @@ export function Thud(position?: string): ThudGame {
       // move the piece
       iboard[imove.to] = iboard[imove.from];
       delete iboard[imove.from];
-
-      // capture a dwarf if we have a single option
-      if (
-        move.piece == TROLL &&
-        imove?.capturable &&
-        imove.capturable.length == 1
-      ) {
-        delete iboard[imove.capturable[0]];
-      }
     }
 
     iturn = iturn == DWARF ? TROLL : DWARF;

@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
 import ai, { ThudAi } from "../ai";
 import {
-  sideToText,
   toggleSide,
   Move,
   Side,
@@ -12,19 +10,11 @@ import {
   DWARF,
   TROLL,
 } from "../game/thud";
+import Panel from "./Panel";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
 
 function App() {
-  const [message, setMessage] = useState("");
-
-  async function getMessage() {
-    const { data, status } = await axios.get("/api");
-    if (status == 200) {
-      setMessage(data.message);
-    }
-  }
-
   // States
   const [moveCount, setMoveCount] = useState(0);
   const [playBothSides, setPlayBothSides] = useState(true);
@@ -37,10 +27,6 @@ function App() {
   const [thud, setThud] = useState(Thud());
 
   // Effects
-  // Connect to server effect
-  useEffect(() => {
-    getMessage();
-  }, []);
 
   // Initialize game effect
   useEffect(() => {
@@ -138,8 +124,6 @@ function App() {
     setMoveCount(0);
     setLoss(null);
     setActiveSide(DWARF);
-    // TODO or Thud.reset()?
-    // TODO selects and move highlights are still on
     setThud(Thud());
   }, []);
 
@@ -175,42 +159,20 @@ function App() {
     );
   }
 
-  let opponentText = "You are playing both sides.";
-  if (opponent) {
-    opponentText = "You are playing against " + opponent.name + ".";
-  }
-
-  let winnerLoserText = "Neither side has lost yet.";
-  if (loss) {
-    const losingSide = sideToText(loss);
-    winnerLoserText = losingSide + " lose!";
-  }
+  const panel = (
+    <Panel
+      opponent={opponent}
+      loss={loss}
+      activeSide={activeSide}
+      yourSide={yourSide}
+      moveCount={moveCount}
+      startNewGame={startNewGame}
+    />
+  );
 
   return (
     <div className="game">
-      <div className="messages">
-        <h4>Start New Game</h4>
-        <div className="newGameButtons">
-          <button onClick={() => startNewGame(DWARF, null)}>
-            Play both sides.
-          </button>
-          <button onClick={() => startNewGame(DWARF, "Slabhead")}>
-            Play the dwarfs vs. Slabhead
-          </button>
-          <button onClick={() => startNewGame(TROLL, "Rashful")}>
-            Play the trolls vs. Rashful
-          </button>
-        </div>
-
-        <h4>Messages</h4>
-        <p>{message}</p>
-        <p>Hello, thud!</p>
-        <p>{opponentText}</p>
-        <p>Move number: {moveCount}</p>
-        <p>Your side is the {sideToText(yourSide)}.</p>
-        <p>{sideToText(activeSide)} to move next.</p>
-        <p>{winnerLoserText}</p>
-      </div>
+      <div className="messages">{panel}</div>
       <div className="thudBoardWrapper">{thudBoard}</div>
     </div>
   );

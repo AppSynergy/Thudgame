@@ -1,6 +1,11 @@
 "use client";
 import { useActionState, useCallback, useEffect, useState } from "react";
-import { filterMovesFrom, isCaptureSquare, isMoveSquare } from "../game/helper";
+import {
+  filterMovesFrom,
+  isMoveSquare,
+  isCaptureSquare,
+  isCaptureChoice,
+} from "../game/helper";
 import {
   Move,
   Side,
@@ -105,10 +110,7 @@ export default function ThudBoard({
     const canMoveHere = isMoveSquare(availableMoves, square?.algebraic);
     const canCaptureHere =
       isCaptureSquare(availableMoves, square?.algebraic) ||
-      (yourSide == TROLL &&
-        square?.algebraic &&
-        lastMove?.capturable &&
-        lastMove.capturable.includes(square.algebraic));
+      (yourSide == TROLL && isCaptureChoice(lastMove, square?.algebraic));
 
     return (
       <ThudSquare

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import ai, { ThudAi } from "../ai";
+import { toggleSide } from "../game/helper";
 import {
-  toggleSide,
   Move,
   Side,
   Square,

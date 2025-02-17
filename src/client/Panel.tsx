@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ThudAi } from "../ai";
-import { sideToText, Side, DWARF, TROLL } from "../game/thud";
+import { sideToText } from "../game/helper";
+import { Side, DWARF, TROLL } from "../game/thud";
 
 interface PanelProps {
   opponent: ThudAi | null;

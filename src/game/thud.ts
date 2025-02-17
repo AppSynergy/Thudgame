@@ -15,14 +15,6 @@ export const DWARF = "d";
 export type Piece = "T" | "d";
 export type Side = Piece;
 
-export function toggleSide(side: Side): Side {
-  return side == DWARF ? TROLL : DWARF;
-}
-
-export function sideToText(side: Side): string {
-  return side == DWARF ? "Dwarfs" : "Trolls";
-}
-
 export type Square = Hex210Square;
 
 export interface ThudSquare {
@@ -94,37 +86,6 @@ export function findMoves(board: Piece[], side: Side): InternalMove[] {
     }
   }
   return output;
-}
-
-// Check if we can move to a square.
-export function isMoveSquare(
-  moves: Move[] | null,
-  square: Square | undefined
-): boolean {
-  if (moves && square && moves.find((m) => m.to == square)) {
-    return true;
-  }
-  return false;
-}
-
-// Check if we can make a capture on a square.
-export function isCaptureSquare(
-  moves: Move[] | null,
-  square: Square | undefined
-): boolean {
-  if (
-    moves?.length &&
-    square &&
-    moves
-      .reduce((ms, m) => {
-        ms = ms.concat(m?.capturable as Square[]);
-        return ms;
-      }, [] as Square[])
-      .includes(square)
-  ) {
-    return true;
-  }
-  return false;
 }
 
 // Find out if there's any dwarfs surrounding a square.

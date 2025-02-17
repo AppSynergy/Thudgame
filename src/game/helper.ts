@@ -1,4 +1,4 @@
-import { Move, Side, Square, DWARF, TROLL } from "./thud";
+import { Move, Side, Square, DWARF, TROLL } from "./types";
 
 // Get the other side.
 export function toggleSide(side: Side): Side {

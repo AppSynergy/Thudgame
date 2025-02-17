@@ -1,10 +1,10 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { ThudSquare, DWARF, TROLL } from "../game/thud";
+import { BoardSquare, DWARF, TROLL } from "../game/types";
 import ThudPiece from "./ThudPiece";
 
-const squareWithDwarf: ThudSquare = { piece: DWARF, algebraic: "g6" };
-const squareWithTroll: ThudSquare = { piece: TROLL, algebraic: "g6" };
+const squareWithDwarf: BoardSquare = { piece: DWARF, algebraic: "g6" };
+const squareWithTroll: BoardSquare = { piece: TROLL, algebraic: "g6" };
 
 test("renders a dwarf", () => {
   render(

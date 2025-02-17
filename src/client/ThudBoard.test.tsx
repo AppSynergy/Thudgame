@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Thud, TROLL } from "../game/thud";
+import { TROLL } from "../game/types";
+import { Thud } from "../game/thud";
 import ThudBoard from "./ThudBoard";
 
 test("renders a thud board", () => {

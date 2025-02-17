@@ -1,11 +1,9 @@
+import { Piece, DWARF, TROLL } from "./types";
 import {
   findMoves,
   findMovesForSinglePiece,
   findNearbyDwarfs,
-  Piece,
   Thud,
-  DWARF,
-  TROLL,
   findDwarfLineLength,
   offTheBoard,
 } from "./thud";

@@ -1,10 +1,10 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { ThudSquare as ThudSquareType, TROLL } from "../game/thud";
+import { BoardSquare, TROLL } from "../game/types";
 import ThudSquare from "./ThudSquare";
 
-const squareWithTroll: ThudSquareType = { piece: TROLL, algebraic: "e5" };
-const squareWithNoPiece: ThudSquareType = { algebraic: "e4" };
+const squareWithTroll: BoardSquare = { piece: TROLL, algebraic: "e5" };
+const squareWithNoPiece: BoardSquare = { algebraic: "e4" };
 
 test("renders an empty square", () => {
   render(

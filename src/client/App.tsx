@@ -1,14 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import ai, { ThudAi } from "../ai";
 import { toggleSide } from "../game/helper";
-import {
-  Move,
-  Side,
-  Square,
-  Thud,
-  ThudBoard as ThudBoardType,
-  DWARF,
-} from "../game/thud";
+import { Thud } from "../game/thud";
+import { Move, Side, Square, Board, DWARF } from "../game/types";
 import Panel from "./Panel";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
@@ -20,7 +14,7 @@ function App() {
   const [opponent, setOpponent] = useState<ThudAi | null>(null);
   const [yourSide, setYourSide] = useState<Side>(DWARF);
   const [activeSide, setActiveSide] = useState<Side>(DWARF);
-  const [board, setBoard] = useState<ThudBoardType | null>(null);
+  const [board, setBoard] = useState<Board | null>(null);
   const [moves, setMoves] = useState<Move[] | null>(null);
   const [loss, setLoss] = useState<Side | null>(null);
   const [thud, setThud] = useState(Thud());

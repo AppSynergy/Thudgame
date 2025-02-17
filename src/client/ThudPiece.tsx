@@ -1,12 +1,12 @@
 "use client";
 import { startTransition } from "react";
-import { Side, ThudSquare } from "../game/thud";
+import { Side, BoardSquare } from "../game/types";
 import "./ThudPiece.css";
 
 interface ThudPieceProps {
-  square: ThudSquare;
+  square: BoardSquare;
   yourSide: Side;
-  selectAction: (square: ThudSquare | null) => void;
+  selectAction: (square: BoardSquare | null) => void;
 }
 
 export default function ThudPiece({

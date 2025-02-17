@@ -1,5 +1,5 @@
 import { filterMovesFrom, isMoveSquare, isCaptureSquare } from "./helper";
-import { TROLL } from "./thud";
+import { TROLL } from "./types";
 
 test("can filter available moves", () => {
   const result = filterMovesFrom(

@@ -1,28 +1,22 @@
 import {
+  Move,
+  Piece,
+  Side,
+  Square,
+  Board,
+  BoardSquare,
+  DWARF,
+  TROLL,
+} from "./types";
+import {
   boardHex210,
   boardHex210Inverse,
   algebraic,
-  Square as Hex210Square,
   PIECE_OFFSETS,
   INVERSE_PIECE_OFFSETS,
   boardHex210Values,
   boardHex210Corners,
 } from "./Hex210";
-
-export const TROLL = "T";
-export const DWARF = "d";
-
-export type Piece = "T" | "d";
-export type Side = Piece;
-
-export type Square = Hex210Square;
-
-export interface ThudSquare {
-  algebraic?: Square;
-  piece?: Piece;
-}
-
-export type ThudBoard = ThudSquare[][];
 
 // TODO improve Thud Board Notation
 // Current turn, then an X, then dwarf and troll positions.
@@ -34,14 +28,6 @@ interface InternalMove {
   to: number;
   piece: Piece;
   capturable?: number[];
-  hurl?: boolean;
-}
-
-export interface Move {
-  from: Square;
-  to: Square;
-  piece: Piece;
-  capturable?: Square[];
   hurl?: boolean;
 }
 
@@ -203,7 +189,7 @@ export function findMovesForSinglePiece(
 }
 
 interface ThudGame {
-  board: () => ThudSquare[][];
+  board: () => BoardSquare[][];
   moves: (side: Side) => Move[];
   move: (move: Move) => void;
   capture: (square: Square) => void;
@@ -217,7 +203,7 @@ export function Thud(position?: string): ThudGame {
   let iturn = DWARF;
 
   // Data from drawing the current board
-  function board(): ThudBoard {
+  function board(): Board {
     const output = [];
     let row = [];
 

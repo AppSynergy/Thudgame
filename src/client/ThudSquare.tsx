@@ -1,18 +1,18 @@
 "use client";
 import { startTransition, useCallback } from "react";
 import { findMoveTo } from "../game/helper";
-import { Move, Side, Square, ThudSquare as ThudSquareType } from "../game/thud";
+import { Move, Side, Square, BoardSquare } from "../game/types";
 import ThudPiece from "./ThudPiece";
 import "./ThudSquare.css";
 
 interface ThudSquareProps {
   yourSide: Side;
-  square: ThudSquareType;
+  square: BoardSquare;
   thudSquareClassNames?: string;
   canMoveHere: boolean;
   canCaptureHere: boolean | undefined;
   availableMoves: Move[] | null;
-  selectAction: (square: ThudSquareType | null) => void;
+  selectAction: (square: BoardSquare | null) => void;
   moveAction: (move: Move | null) => void;
   captureAction: (square: Square) => void;
 }

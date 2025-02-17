@@ -7,19 +7,12 @@ import {
   isCaptureSquare,
   isCaptureChoice,
 } from "../game/helper";
-import {
-  Move,
-  Side,
-  Square,
-  ThudBoard as ThudBoardType,
-  ThudSquare as ThudSquareType,
-  TROLL,
-} from "../game/thud";
+import { Move, Side, Square, Board, BoardSquare, TROLL } from "../game/types";
 import ThudSquare from "./ThudSquare";
 import "./ThudBoard.css";
 
 interface ThudBoardProps {
-  board: ThudBoardType;
+  board: Board;
   yourSide: Side;
   moves: Move[];
   moveCount: number;
@@ -49,10 +42,7 @@ export default function ThudBoard({
 
   // Callback - If we select one of our pieces, show the available moves.
   const showAvailableMoves = useCallback(
-    (
-      previousSquare: ThudSquareType | null,
-      currentSquare: ThudSquareType | null
-    ) => {
+    (previousSquare: BoardSquare | null, currentSquare: BoardSquare | null) => {
       // Deselect a piece
       if (previousSquare == currentSquare) {
         setAvailableMoves(null);
@@ -98,7 +88,7 @@ export default function ThudBoard({
   let alternateColors = 0;
 
   // Draw a single square of the board.
-  function drawSquare(square: ThudSquareType, keyIndex: number) {
+  function drawSquare(square: BoardSquare, keyIndex: number) {
     alternateColors += 1;
 
     // Check whether we can move to this square, or capture a dwarf here.
@@ -138,7 +128,7 @@ export default function ThudBoard({
   }
 
   // Draw a single row of the board.
-  function drawRow(row: ThudSquareType[], keyIndex: number) {
+  function drawRow(row: BoardSquare[], keyIndex: number) {
     const thudRow = row.map(drawSquare);
 
     return (

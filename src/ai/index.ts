@@ -1,4 +1,4 @@
-import { Move } from "../game/thud";
+import { Move } from "../game/types";
 import Rashful from "./Rashful";
 import Slabhead from "./Slabhead";
 

@@ -1,5 +1,5 @@
 import { ThudAi } from "./";
-import { Move } from "../game/thud";
+import { Move } from "../game/types";
 
 export default {
   name: "Rashful",

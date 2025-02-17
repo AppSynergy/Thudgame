@@ -40,7 +40,6 @@ function App() {
     if (playBothSides) {
       setYourSide(toggleSide(activeSide));
     }
-
     // Get available moves or lose.
     const nextMoves = thud.moves(otherSide);
     if (nextMoves.length > 0) {
@@ -59,19 +58,19 @@ function App() {
       setBoard(thud.board());
 
       // Trolls capturing dwarfs have a choice.
-      if (!(move?.capturable && move.capturable.length > 1)) {
-        endOfTurn();
-      }
+      if (!move?.capturable) endOfTurn();
     },
     [thud, moveCount, endOfTurn]
   );
 
   // Callback - Handles AI move logic
   const moveAI = useCallback(() => {
-    if (moves && opponent) {
+    if (moves?.length && opponent) {
       const move = opponent.decideMove(moves);
-      thud.move(move);
-      moveCommon(move);
+      if (move) {
+        thud.move(move);
+        moveCommon(move);
+      }
     }
   }, [thud, moves, moveCommon, opponent]);
 

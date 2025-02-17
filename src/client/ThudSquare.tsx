@@ -10,7 +10,7 @@ interface ThudSquareProps {
   square: BoardSquare;
   thudSquareClassNames?: string;
   canMoveHere: boolean;
-  canCaptureHere: boolean | undefined;
+  canCaptureHere: boolean;
   availableMoves: Opt<Move[]>;
   selectAction: (square: Opt<Square>) => void;
   moveAction: (move: Opt<Move>) => void;

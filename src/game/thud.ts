@@ -249,15 +249,6 @@ export function Thud(position?: string): ThudGame {
       // move the piece
       iboard[imove.to] = iboard[imove.from];
       delete iboard[imove.from];
-
-      // capture a dwarf if we have a single option
-      if (
-        move.piece == TROLL &&
-        imove?.capturable &&
-        imove.capturable.length == 1
-      ) {
-        delete iboard[imove.capturable[0]];
-      }
     }
 
     iturn = iturn == DWARF ? TROLL : DWARF;

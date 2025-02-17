@@ -39,15 +39,6 @@ export default function ThudBoard({
   // States
   const [availableMoves, setAvailableMoves] = useState<Opt<Move[]>>(null);
 
-  // Effect - Dump user states if we've reset the board.
-  useEffect(() => {
-    if (moveCount == 0) {
-      setAvailableMoves(null);
-      selectAction(null);
-      moveAction(null);
-    }
-  }, [moveCount]);
-
   // Callback - If we select one of our pieces, show the available moves.
   const showAvailableMoves = useCallback(
     (previousSquare: Opt<Square>, currentSquare: Opt<Square>) => {
@@ -65,7 +56,7 @@ export default function ThudBoard({
     [moves]
   );
 
-  // Action - Moving to a valid square.
+  // Callback - Moving to a valid square.
   const makeMove = useCallback(
     (_previousMove: Opt<Move>, currentMove: Opt<Move>) => {
       if (currentMove) move(currentMove);
@@ -75,7 +66,7 @@ export default function ThudBoard({
     [move]
   );
 
-  // Choosing to capture a dwarf piece.
+  // Callback - Choosing to capture a dwarf piece.
   const chooseCapture = useCallback(
     (_previousCapture: Opt<Square>, currentCapture: Square) => {
       capture(currentCapture);
@@ -94,6 +85,15 @@ export default function ThudBoard({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_lastCapture, captureAction] = useActionState(chooseCapture, null);
 
+  // Effect - Dump user states if we've reset the board.
+  useEffect(() => {
+    if (moveCount == 0) {
+      setAvailableMoves(null);
+      selectAction(null);
+      moveAction(null);
+    }
+  }, [moveCount]);
+
   // Dark and light coloured squares.
   let alternateColors = 0;
 
@@ -101,15 +101,17 @@ export default function ThudBoard({
   function drawSquare(square: BoardSquare, keyIndex: number) {
     alternateColors += 1;
 
+    if (!square?.algebraic)
+      return <div key={keyIndex} className="emptySquare"></div>;
+
     // Check whether we can move to this square, or capture a dwarf here.
-    const canMoveHere = isMoveSquare(availableMoves, square?.algebraic);
+    const canMoveHere = isMoveSquare(availableMoves, square.algebraic);
     const canCaptureHere =
-      isCaptureSquare(availableMoves, square?.algebraic) ||
-      (yourSide == TROLL && isCaptureChoice(lastMove, square?.algebraic));
+      isCaptureSquare(availableMoves, square.algebraic) ||
+      (yourSide == TROLL && isCaptureChoice(lastMove, square.algebraic));
 
     const thudSquareClassNames = classNames({
-      thudSquare: square.algebraic,
-      emptySquare: !square.algebraic,
+      thudSquare: true,
       lastMoveFrom: lastMove?.from == square.algebraic,
       lastMoveTo: lastMove?.to == square.algebraic,
       canMoveHere: canMoveHere && !square.piece,

@@ -1,5 +1,6 @@
 "use client";
 import { useActionState, useCallback, useEffect, useState } from "react";
+import classNames from "clsx";
 import {
   filterMovesFrom,
   isMoveSquare,
@@ -21,8 +22,8 @@ interface ThudBoardProps {
   board: ThudBoardType;
   yourSide: Side;
   moves: Move[];
-  move: (move: Move) => void;
   moveCount: number;
+  move: (move: Move) => void;
   capture: (square: Square) => void;
 }
 
@@ -30,8 +31,8 @@ export default function ThudBoard({
   board,
   yourSide,
   moves,
-  move,
   moveCount,
+  move,
   capture,
 }: ThudBoardProps) {
   // States
@@ -41,8 +42,8 @@ export default function ThudBoard({
   useEffect(() => {
     if (moveCount == 0) {
       setAvailableMoves(null);
-      availableMovesAction(null);
-      makeMoveAction(null);
+      selectAction(null);
+      moveAction(null);
     }
   }, [moveCount]);
 
@@ -85,19 +86,13 @@ export default function ThudBoard({
   );
 
   // Action for selecting pieces.
-  const [selectedSquare, availableMovesAction] = useActionState(
-    showAvailableMoves,
-    null
-  );
+  const [selected, selectAction] = useActionState(showAvailableMoves, null);
 
   // Action for making moves.
-  const [lastMove, makeMoveAction] = useActionState(makeMove, null);
+  const [lastMove, moveAction] = useActionState(makeMove, null);
 
   // Action for troll choosing to capture a dwarf.
-  const [lastCapture, chooseCaptureAction] = useActionState(
-    chooseCapture,
-    null
-  );
+  const [, captureAction] = useActionState(chooseCapture, null);
 
   // Dark and light coloured squares.
   let alternateColors = 0;
@@ -112,21 +107,32 @@ export default function ThudBoard({
       isCaptureSquare(availableMoves, square?.algebraic) ||
       (yourSide == TROLL && isCaptureChoice(lastMove, square?.algebraic));
 
+    const thudSquareClassNames = classNames({
+      thudSquare: square.algebraic,
+      emptySquare: !square.algebraic,
+      lastMoveFrom: lastMove?.from == square.algebraic,
+      lastMoveTo: lastMove?.to == square.algebraic,
+      canMoveHere: canMoveHere && !square.piece,
+      canHurlHere: canMoveHere && square.piece,
+      canCaptureHere: canCaptureHere,
+      dark: alternateColors % 2 === 0,
+      light: alternateColors % 2 === 1,
+      selectable: yourSide === square.piece,
+      selected: square.piece && selected?.algebraic == square.algebraic,
+    });
+
     return (
       <ThudSquare
         key={keyIndex}
         yourSide={yourSide}
         square={square}
-        selectedSquare={selectedSquare}
-        alternateColors={alternateColors}
+        thudSquareClassNames={thudSquareClassNames}
         canMoveHere={canMoveHere}
         canCaptureHere={canCaptureHere}
         availableMoves={availableMoves}
-        availableMovesAction={availableMovesAction}
-        lastMove={lastMove}
-        makeMoveAction={makeMoveAction}
-        lastCapture={lastCapture}
-        chooseCaptureAction={chooseCaptureAction}
+        selectAction={selectAction}
+        moveAction={moveAction}
+        captureAction={captureAction}
       />
     );
   }

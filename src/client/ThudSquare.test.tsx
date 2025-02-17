@@ -12,16 +12,12 @@ test("renders an empty square", () => {
       key={0}
       yourSide={TROLL}
       square={squareWithNoPiece}
-      selectedSquare={null}
-      alternateColors={1}
       canMoveHere={false}
       canCaptureHere={false}
       availableMoves={null}
-      availableMovesAction={jest.fn()}
-      lastMove={null}
-      makeMoveAction={jest.fn()}
-      lastCapture={null}
-      chooseCaptureAction={jest.fn()}
+      selectAction={jest.fn()}
+      moveAction={jest.fn()}
+      captureAction={jest.fn()}
     />
   );
 
@@ -33,64 +29,57 @@ test("renders an empty square", () => {
 });
 
 test("highlights a possible move", async () => {
-  const mockAvailableMovesAction = jest.fn();
+  const mmockSelectAction = jest.fn();
 
   render(
     <ThudSquare
       key={22}
       yourSide={TROLL}
       square={squareWithTroll}
-      selectedSquare={squareWithTroll}
-      alternateColors={1}
       canMoveHere={false}
       canCaptureHere={false}
       availableMoves={null}
-      availableMovesAction={mockAvailableMovesAction}
-      lastMove={null}
-      makeMoveAction={jest.fn()}
-      lastCapture={null}
-      chooseCaptureAction={jest.fn()}
+      selectAction={mmockSelectAction}
+      moveAction={jest.fn()}
+      captureAction={jest.fn()}
     />
   );
 
   fireEvent.click(screen.getByText(/T/));
 
-  expect(mockAvailableMovesAction).toHaveBeenCalledTimes(1);
-  expect(mockAvailableMovesAction).toHaveBeenCalledWith({
+  expect(mmockSelectAction).toHaveBeenCalledTimes(1);
+  expect(mmockSelectAction).toHaveBeenCalledWith({
     algebraic: "e5",
     piece: "T",
   });
 });
 
 test("can click on a square to move there", () => {
-  const mockMakeMoveAction = jest.fn();
+  const mockMoveAction = jest.fn();
 
   render(
     <ThudSquare
       key={22}
       yourSide={TROLL}
       square={squareWithNoPiece}
-      selectedSquare={squareWithTroll}
-      alternateColors={1}
+      thudSquareClassNames="test"
       canMoveHere={true}
       canCaptureHere={false}
       availableMoves={[{ from: "e5", to: "e4", piece: TROLL }]}
-      availableMovesAction={jest.fn()}
-      lastMove={null}
-      makeMoveAction={mockMakeMoveAction}
-      lastCapture={null}
-      chooseCaptureAction={jest.fn()}
+      selectAction={jest.fn()}
+      moveAction={mockMoveAction}
+      captureAction={jest.fn()}
     />
   );
 
   // TODO get by testing id
-  const square = screen.getByText(/e4/).closest("div.thudSquare");
+  const square = screen.getByText(/e4/).closest("div.test");
   if (square) {
     fireEvent.click(square);
   }
 
-  expect(mockMakeMoveAction).toHaveBeenCalledTimes(1);
-  expect(mockMakeMoveAction).toHaveBeenCalledWith({
+  expect(mockMoveAction).toHaveBeenCalledTimes(1);
+  expect(mockMoveAction).toHaveBeenCalledWith({
     from: "e5",
     piece: "T",
     to: "e4",

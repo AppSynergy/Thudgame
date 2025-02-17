@@ -8,7 +8,6 @@ import {
   Thud,
   ThudBoard as ThudBoardType,
   DWARF,
-  TROLL,
 } from "../game/thud";
 import Panel from "./Panel";
 import ThudBoard from "./ThudBoard";
@@ -66,17 +65,11 @@ function App() {
       setBoard(thud.board());
 
       // Trolls capturing dwarfs have a choice.
-      if (
-        activeSide == TROLL &&
-        move?.capturable &&
-        move.capturable.length > 1
-      ) {
-        // wait for troll capture
-      } else {
+      if (!(move?.capturable && move.capturable.length > 1)) {
         endOfTurn();
       }
     },
-    [thud, activeSide, moveCount, endOfTurn]
+    [thud, moveCount, endOfTurn]
   );
 
   // Callback - Handles AI move logic
@@ -151,8 +144,8 @@ function App() {
         board={board}
         yourSide={yourSide}
         moves={moves}
-        move={moveUser}
         moveCount={moveCount}
+        move={moveUser}
         capture={captureUser}
       />
     );

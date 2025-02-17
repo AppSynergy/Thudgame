@@ -1,6 +1,5 @@
 "use client";
 import { startTransition, useCallback } from "react";
-import classNames from "clsx";
 import { findMoveTo } from "../game/helper";
 import { Move, Side, Square, ThudSquare as ThudSquareType } from "../game/thud";
 import ThudPiece from "./ThudPiece";
@@ -9,31 +8,26 @@ import "./ThudSquare.css";
 interface ThudSquareProps {
   yourSide: Side;
   square: ThudSquareType;
-  selectedSquare: ThudSquareType | null;
-  alternateColors: number;
+  thudSquareClassNames?: string;
   canMoveHere: boolean;
   canCaptureHere: boolean | undefined;
   availableMoves: Move[] | null;
-  availableMovesAction: (square: ThudSquareType | null) => void;
-  lastMove: Move | null;
-  makeMoveAction: (move: Move | null) => void;
-  lastCapture: Square | null;
-  chooseCaptureAction: (square: Square) => void;
+  selectAction: (square: ThudSquareType | null) => void;
+  moveAction: (move: Move | null) => void;
+  captureAction: (square: Square) => void;
 }
 
 // Draw a single square of the board.
 export default function ThudSquare({
   yourSide,
   square,
-  selectedSquare,
-  alternateColors,
+  thudSquareClassNames,
   canMoveHere,
   canCaptureHere,
   availableMoves,
-  availableMovesAction,
-  lastMove,
-  makeMoveAction,
-  chooseCaptureAction,
+  selectAction,
+  moveAction,
+  captureAction,
 }: ThudSquareProps) {
   // Draw the piece if there is one on this square.
   let piece = null;
@@ -42,7 +36,7 @@ export default function ThudSquare({
       <ThudPiece
         yourSide={yourSide}
         square={square}
-        availableMovesAction={availableMovesAction}
+        selectAction={selectAction}
       />
     );
   }
@@ -53,38 +47,24 @@ export default function ThudSquare({
       if (canMoveHere) {
         const move = findMoveTo(availableMoves, square.algebraic);
         startTransition(() => {
-          makeMoveAction(move);
+          moveAction(move);
         });
       }
       // If you click on a dwarf you can capture, capture them.
       if (canCaptureHere) {
         startTransition(() => {
-          chooseCaptureAction(square.algebraic as Square);
+          captureAction(square.algebraic as Square);
         });
       }
     }
   }, [
     availableMoves,
     canMoveHere,
-    makeMoveAction,
+    moveAction,
     canCaptureHere,
-    chooseCaptureAction,
+    captureAction,
     square.algebraic,
   ]);
-
-  const thudSquareClassNames = classNames({
-    thudSquare: square.algebraic,
-    emptySquare: !square.algebraic,
-    lastMoveFrom: lastMove?.from == square.algebraic,
-    lastMoveTo: lastMove?.to == square.algebraic,
-    canMoveHere: canMoveHere && !square.piece,
-    canHurlHere: canMoveHere && square.piece,
-    canCaptureHere: canCaptureHere,
-    dark: alternateColors % 2 === 0,
-    light: alternateColors % 2 === 1,
-    selectable: yourSide === square.piece,
-    selected: square.piece && selectedSquare?.algebraic == square.algebraic,
-  });
 
   return (
     <div onClick={clickSquare} className={thudSquareClassNames}>

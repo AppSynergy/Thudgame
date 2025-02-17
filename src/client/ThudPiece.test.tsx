@@ -11,7 +11,7 @@ test("renders a dwarf", () => {
     <ThudPiece
       yourSide={DWARF}
       square={squareWithDwarf}
-      availableMovesAction={jest.fn()}
+      selectAction={jest.fn()}
     />
   );
   const piece = screen.getByText(/d/);
@@ -23,7 +23,7 @@ test("renders a troll", () => {
     <ThudPiece
       yourSide={TROLL}
       square={squareWithTroll}
-      availableMovesAction={jest.fn()}
+      selectAction={jest.fn()}
     />
   );
   const piece = screen.getByText(/T/);
@@ -36,7 +36,7 @@ test("can click on a dwarf", () => {
     <ThudPiece
       yourSide={DWARF}
       square={squareWithDwarf}
-      availableMovesAction={mockAction}
+      selectAction={mockAction}
     />
   );
 

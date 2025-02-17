@@ -6,18 +6,18 @@ import "./ThudPiece.css";
 interface ThudPieceProps {
   square: ThudSquare;
   yourSide: Side;
-  availableMovesAction: (square: ThudSquare | null) => void;
+  selectAction: (square: ThudSquare | null) => void;
 }
 
 export default function ThudPiece({
   square,
   yourSide,
-  availableMovesAction,
+  selectAction,
 }: ThudPieceProps) {
   function clickPiece() {
     if (yourSide == square.piece) {
       startTransition(() => {
-        availableMovesAction(square);
+        selectAction(square);
       });
     }
   }

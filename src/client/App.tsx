@@ -149,7 +149,6 @@ function App() {
     thudBoard = (
       <ThudBoard
         board={board}
-        activeSide={activeSide}
         yourSide={yourSide}
         moves={moves}
         move={moveUser}

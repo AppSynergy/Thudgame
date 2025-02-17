@@ -21,6 +21,10 @@
   color: white;
 }
 
+.thudSquare.selectable {
+  cursor: pointer;
+}
+
 .thudSquare.selected {
   background-color: tomato;
 }

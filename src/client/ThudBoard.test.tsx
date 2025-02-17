@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { Thud, DWARF, TROLL } from "../game/thud";
+import { Thud, TROLL } from "../game/thud";
 import ThudBoard from "./ThudBoard";
 
 test("renders a thud board", () => {
@@ -9,7 +9,6 @@ test("renders a thud board", () => {
   render(
     <ThudBoard
       board={board}
-      activeSide={DWARF}
       yourSide={TROLL}
       moves={[]}
       move={jest.fn()}

@@ -1,5 +1,5 @@
 "use client";
-import { startTransition } from "react";
+import { startTransition, useCallback } from "react";
 import classNames from "clsx";
 import { Move, Side, Square, ThudSquare as ThudSquareType } from "../game/thud";
 import ThudPiece from "./ThudPiece";
@@ -46,8 +46,8 @@ export default function ThudSquare({
     );
   }
 
-  function clickSquare() {
-    if (square?.algebraic && selectedSquare?.piece) {
+  const clickSquare = useCallback(() => {
+    if (square?.algebraic) {
       // If you click on a square you can move to, you move there.
       if (canMoveHere && availableMoves) {
         const move: Move | null =
@@ -64,7 +64,14 @@ export default function ThudSquare({
         });
       }
     }
-  }
+  }, [
+    availableMoves,
+    canMoveHere,
+    makeMoveAction,
+    canCaptureHere,
+    chooseCaptureAction,
+    square.algebraic,
+  ]);
 
   const thudSquareClassNames = classNames({
     thudSquare: square.algebraic,

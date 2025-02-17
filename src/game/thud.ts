@@ -101,7 +101,7 @@ export function isMoveSquare(
   moves: Move[] | null,
   square: Square | undefined
 ): boolean {
-  if (moves?.length && square && moves.map((m) => m.to).includes(square)) {
+  if (moves && square && moves.find((m) => m.to == square)) {
     return true;
   }
   return false;

@@ -16,7 +16,6 @@ import "./ThudBoard.css";
 
 interface ThudBoardProps {
   board: ThudBoardType;
-  activeSide: Side;
   yourSide: Side;
   moves: Move[];
   move: (move: Move) => void;
@@ -26,7 +25,6 @@ interface ThudBoardProps {
 
 export default function ThudBoard({
   board,
-  activeSide,
   yourSide,
   moves,
   move,
@@ -51,6 +49,7 @@ export default function ThudBoard({
       previousSquare: ThudSquareType | null,
       currentSquare: ThudSquareType | null
     ) => {
+      // Deselect a piece
       if (previousSquare == currentSquare) {
         setAvailableMoves(null);
         return null;
@@ -58,32 +57,29 @@ export default function ThudBoard({
       if (moves && currentSquare?.algebraic) {
         setAvailableMoves(filterMovesFrom(moves, currentSquare.algebraic));
       }
-
       return currentSquare;
     },
     [moves]
   );
 
   // Action - Moving to a valid square.
-  function makeMove(_previousMove: Move | null, currentMove: Move | null) {
-    if (activeSide == yourSide) {
-      if (currentMove) {
-        move(currentMove);
-      }
+  const makeMove = useCallback(
+    (_previousMove: Move | null, currentMove: Move | null) => {
+      if (currentMove) move(currentMove);
       setAvailableMoves(null);
-    }
-
-    return currentMove;
-  }
+      return currentMove;
+    },
+    [move]
+  );
 
   // Choosing to capture a dwarf piece.
-  function chooseCapture(
-    _previousCapture: Square | null,
-    currentCapture: Square
-  ) {
-    capture(currentCapture);
-    return currentCapture;
-  }
+  const chooseCapture = useCallback(
+    (_previousCapture: Square | null, currentCapture: Square) => {
+      capture(currentCapture);
+      return currentCapture;
+    },
+    [capture]
+  );
 
   // Action for selecting pieces.
   const [selectedSquare, availableMovesAction] = useActionState(

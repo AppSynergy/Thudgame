@@ -48,10 +48,7 @@ test("highlights a possible move", async () => {
   fireEvent.click(screen.getByText(/T/));
 
   expect(mmockSelectAction).toHaveBeenCalledTimes(1);
-  expect(mmockSelectAction).toHaveBeenCalledWith({
-    algebraic: "e5",
-    piece: "T",
-  });
+  expect(mmockSelectAction).toHaveBeenCalledWith("e5");
 });
 
 test("can click on a square to move there", () => {

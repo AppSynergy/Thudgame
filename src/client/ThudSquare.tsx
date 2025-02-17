@@ -1,7 +1,7 @@
 "use client";
 import { startTransition, useCallback } from "react";
 import { findMoveTo } from "../game/helper";
-import { Move, Side, Square, BoardSquare } from "../game/types";
+import { Move, Opt, Side, Square, BoardSquare } from "../game/types";
 import ThudPiece from "./ThudPiece";
 import "./ThudSquare.css";
 
@@ -11,9 +11,9 @@ interface ThudSquareProps {
   thudSquareClassNames?: string;
   canMoveHere: boolean;
   canCaptureHere: boolean | undefined;
-  availableMoves: Move[] | null;
-  selectAction: (square: BoardSquare | null) => void;
-  moveAction: (move: Move | null) => void;
+  availableMoves: Opt<Move[]>;
+  selectAction: (square: Opt<Square>) => void;
+  moveAction: (move: Opt<Move>) => void;
   captureAction: (square: Square) => void;
 }
 
@@ -43,25 +43,27 @@ export default function ThudSquare({
 
   const clickSquare = useCallback(() => {
     if (square?.algebraic) {
+      const clickedSquare = square.algebraic as Square;
       // If you click on a square you can move to, you move there.
       if (canMoveHere) {
-        const move = findMoveTo(availableMoves, square.algebraic);
         startTransition(() => {
-          moveAction(move);
+          moveAction(findMoveTo(availableMoves, clickedSquare));
+          selectAction(null);
         });
       }
       // If you click on a dwarf you can capture, capture them.
       if (canCaptureHere) {
         startTransition(() => {
-          captureAction(square.algebraic as Square);
+          captureAction(clickedSquare);
         });
       }
     }
   }, [
     availableMoves,
     canMoveHere,
-    moveAction,
     canCaptureHere,
+    selectAction,
+    moveAction,
     captureAction,
     square.algebraic,
   ]);

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import ai, { ThudAi } from "../ai";
 import { toggleSide } from "../game/helper";
 import { Thud } from "../game/thud";
-import { Move, Side, Square, Board, DWARF } from "../game/types";
+import { Move, Opt, Side, Square, Board, DWARF } from "../game/types";
 import Panel from "./Panel";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
@@ -11,12 +11,12 @@ function App() {
   // States
   const [moveCount, setMoveCount] = useState(0);
   const [playBothSides, setPlayBothSides] = useState(true);
-  const [opponent, setOpponent] = useState<ThudAi | null>(null);
+  const [opponent, setOpponent] = useState<Opt<ThudAi>>(null);
   const [yourSide, setYourSide] = useState<Side>(DWARF);
   const [activeSide, setActiveSide] = useState<Side>(DWARF);
-  const [board, setBoard] = useState<Board | null>(null);
-  const [moves, setMoves] = useState<Move[] | null>(null);
-  const [loss, setLoss] = useState<Side | null>(null);
+  const [board, setBoard] = useState<Opt<Board>>(null);
+  const [moves, setMoves] = useState<Opt<Move[]>>(null);
+  const [loss, setLoss] = useState<Opt<Side>>(null);
   const [thud, setThud] = useState(Thud());
 
   // Effects
@@ -52,7 +52,7 @@ function App() {
 
   // Callback - Handles common move logic
   const moveCommon = useCallback(
-    (move: Move | null) => {
+    (move: Opt<Move>) => {
       setMoveCount(moveCount + 1);
 
       // TODO we only need to update two squares, is this efficient?
@@ -68,14 +68,11 @@ function App() {
 
   // Callback - Handles AI move logic
   const moveAI = useCallback(() => {
-    let move = null;
     if (moves && opponent) {
-      move = opponent.decideMove(moves);
-      if (move) {
-        thud.move(move);
-      }
+      const move = opponent.decideMove(moves);
+      thud.move(move);
+      moveCommon(move);
     }
-    moveCommon(move);
   }, [thud, moves, moveCommon, opponent]);
 
   // Effect - AI moves effect
@@ -116,7 +113,7 @@ function App() {
 
   // Callback - Handles new game buttons
   const startNewGame = useCallback(
-    (side: Side, opponentName: string | null) => {
+    (side: Side, opponentName: Opt<string>) => {
       if (opponentName) {
         setOpponent(ai[opponentName]);
         setPlayBothSides(false);

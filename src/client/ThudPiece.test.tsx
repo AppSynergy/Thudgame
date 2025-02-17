@@ -42,5 +42,5 @@ test("can click on a dwarf", () => {
 
   fireEvent.click(screen.getByText(/d/));
 
-  expect(mockAction).toHaveBeenCalledWith(squareWithDwarf);
+  expect(mockAction).toHaveBeenCalledWith("g6");
 });

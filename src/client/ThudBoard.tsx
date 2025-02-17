@@ -7,7 +7,15 @@ import {
   isCaptureSquare,
   isCaptureChoice,
 } from "../game/helper";
-import { Move, Side, Square, Board, BoardSquare, TROLL } from "../game/types";
+import {
+  Opt,
+  Move,
+  Side,
+  Square,
+  Board,
+  BoardSquare,
+  TROLL,
+} from "../game/types";
 import ThudSquare from "./ThudSquare";
 import "./ThudBoard.css";
 
@@ -29,7 +37,7 @@ export default function ThudBoard({
   capture,
 }: ThudBoardProps) {
   // States
-  const [availableMoves, setAvailableMoves] = useState<Move[] | null>(null);
+  const [availableMoves, setAvailableMoves] = useState<Opt<Move[]>>(null);
 
   // Effect - Dump user states if we've reset the board.
   useEffect(() => {
@@ -42,23 +50,24 @@ export default function ThudBoard({
 
   // Callback - If we select one of our pieces, show the available moves.
   const showAvailableMoves = useCallback(
-    (previousSquare: BoardSquare | null, currentSquare: BoardSquare | null) => {
+    (previousSquare: Opt<Square>, currentSquare: Opt<Square>) => {
       // Deselect a piece
       if (previousSquare == currentSquare) {
         setAvailableMoves(null);
         return null;
       }
-      if (moves && currentSquare?.algebraic) {
-        setAvailableMoves(filterMovesFrom(moves, currentSquare.algebraic));
+      if (moves && currentSquare) {
+        setAvailableMoves(filterMovesFrom(moves, currentSquare));
+        return currentSquare;
       }
-      return currentSquare;
+      return null;
     },
     [moves]
   );
 
   // Action - Moving to a valid square.
   const makeMove = useCallback(
-    (_previousMove: Move | null, currentMove: Move | null) => {
+    (_previousMove: Opt<Move>, currentMove: Opt<Move>) => {
       if (currentMove) move(currentMove);
       setAvailableMoves(null);
       return currentMove;
@@ -68,7 +77,7 @@ export default function ThudBoard({
 
   // Choosing to capture a dwarf piece.
   const chooseCapture = useCallback(
-    (_previousCapture: Square | null, currentCapture: Square) => {
+    (_previousCapture: Opt<Square>, currentCapture: Square) => {
       capture(currentCapture);
       return currentCapture;
     },
@@ -82,7 +91,8 @@ export default function ThudBoard({
   const [lastMove, moveAction] = useActionState(makeMove, null);
 
   // Action for troll choosing to capture a dwarf.
-  const [, captureAction] = useActionState(chooseCapture, null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_lastCapture, captureAction] = useActionState(chooseCapture, null);
 
   // Dark and light coloured squares.
   let alternateColors = 0;
@@ -108,7 +118,7 @@ export default function ThudBoard({
       dark: alternateColors % 2 === 0,
       light: alternateColors % 2 === 1,
       selectable: yourSide === square.piece,
-      selected: square.piece && selected?.algebraic == square.algebraic,
+      selected: square.piece && selected == square.algebraic,
     });
 
     return (

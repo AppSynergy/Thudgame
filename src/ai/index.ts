@@ -5,7 +5,7 @@ import Slabhead from "./Slabhead";
 export interface ThudAi {
   name: string;
   description: string;
-  decideMove: (moves: Move[]) => Move | null;
+  decideMove: (moves: Move[]) => Move;
 }
 
 export default {

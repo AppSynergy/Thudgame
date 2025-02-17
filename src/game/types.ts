@@ -22,3 +22,5 @@ export interface Move {
   capturable?: Square[];
   hurl?: boolean;
 }
+
+export type Opt<T> = T | null;

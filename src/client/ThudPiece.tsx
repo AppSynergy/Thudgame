@@ -1,12 +1,12 @@
 "use client";
 import { startTransition } from "react";
-import { Side, BoardSquare } from "../game/types";
+import { BoardSquare, Opt, Side, Square } from "../game/types";
 import "./ThudPiece.css";
 
 interface ThudPieceProps {
   square: BoardSquare;
   yourSide: Side;
-  selectAction: (square: BoardSquare | null) => void;
+  selectAction: (square: Opt<Square>) => void;
 }
 
 export default function ThudPiece({
@@ -15,9 +15,9 @@ export default function ThudPiece({
   selectAction,
 }: ThudPieceProps) {
   function clickPiece() {
-    if (yourSide == square.piece) {
+    if (square?.algebraic && yourSide == square.piece) {
       startTransition(() => {
-        selectAction(square);
+        selectAction(square.algebraic as Square);
       });
     }
   }

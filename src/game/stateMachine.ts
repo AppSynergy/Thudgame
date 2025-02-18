@@ -1,5 +1,7 @@
 import { produce } from "immer";
+import { Thud } from "./thud";
 import { ThudAi } from "../ai";
+import { getOtherSide } from "./helper";
 import {
   Board,
   Move,
@@ -10,7 +12,6 @@ import {
   DWARF,
   TROLL,
 } from "./types";
-import { Thud } from "./thud";
 
 interface GameState {
   thud: Opt<ThudGame>;
@@ -119,7 +120,7 @@ export const stateMachine = (
     case "SET_OPPONENT": {
       const newState = produce(state, (next) => {
         next.yourSide = action.yourSide;
-        next.theirSide = action.yourSide == DWARF ? TROLL : DWARF;
+        next.theirSide = getOtherSide(action.yourSide);
         next.opponent = action.opponent;
       });
       return newGameState(newState);
@@ -127,12 +128,9 @@ export const stateMachine = (
 
     case "MAKE_MOVE": {
       const newState = moveState(state, action.move);
-      if (state.yourSide == TROLL && action.move?.capturable?.length) {
-        // Trolls capturing dwarfs have a choice to make.
-        return newState;
-      } else {
-        return endOfTurnState(newState);
-      }
+      // Trolls capturing dwarfs have a choice to make.
+      if (action.move?.capturable?.length) return newState;
+      return endOfTurnState(newState);
     }
 
     case "CHOOSE_CAPTURE": {

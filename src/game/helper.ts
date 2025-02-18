@@ -1,8 +1,13 @@
-import { Opt, Move, Side, Square, DWARF } from "./types";
+import { Opt, Move, Side, Square, DWARF, TROLL } from "./types";
 
 // Render a side.
 export function sideToText(side: Side): string {
   return side == DWARF ? "Dwarfs" : "Trolls";
+}
+
+// Get the opposing side.
+export function getOtherSide(side: Side): Side {
+  return side == DWARF ? TROLL : DWARF;
 }
 
 // Filter all available moves to produce just the moves from a given square.

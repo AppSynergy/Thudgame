@@ -1,11 +1,13 @@
 import { ThudAi } from "./";
-import { Board, Move, Opt, Square } from "../game/types";
+import { Board, Move, Opt, Square, TROLL } from "../game/types";
 
 export default {
   name: "Slabhead",
   description:
     "Slabhead considers all possible moves, but then makes one at random.",
   ready: false,
+  preferredSide: TROLL,
+  playingSide: null,
 
   decideMove: (_board: Opt<Board>, moves: Opt<Move[]>): Opt<Move> => {
     if (!moves) return null;

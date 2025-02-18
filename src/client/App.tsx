@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import ai from "../ai";
-import { filterMovesFrom } from "../game/helper";
+import { filterMovesFrom, getOtherSide } from "../game/helper";
 import { initialState, stateMachine } from "../game/stateMachine";
 import { Action, Move, Opt, Side, Square, DWARF } from "../game/types";
 import Panel from "./Panel";
@@ -28,8 +28,11 @@ function App() {
   // Callback - Handles new game buttons
   const startNewGame = useCallback(
     (yourSide: Side, opponentName: Opt<string>) => {
+      // Set up opponent.
       const opponent = (opponentName && ai[opponentName]) || null;
+      if (opponent) opponent.playingSide = getOtherSide(yourSide);
       dispatch({ type: "SET_OPPONENT", opponent, yourSide });
+      // Clear the interface.
       setAvailableMoves(null);
       selectAction(null);
       moveAction({ move: null });
@@ -41,11 +44,12 @@ function App() {
   // Callback - If we select one of our pieces, show the available moves.
   const showAvailableMoves = useCallback(
     (previousSquare: Opt<Square>, currentSquare: Opt<Square>) => {
-      // Deselect a piece
+      // Deselect a piece.
       if (previousSquare == currentSquare) {
         setAvailableMoves(null);
         return null;
       }
+      // Select a piece.
       if (state.moves && currentSquare) {
         setAvailableMoves(filterMovesFrom(state.moves, currentSquare));
         return currentSquare;
@@ -79,8 +83,10 @@ function App() {
     if (ai && ai?.ready) {
       const move = ai.decideMove(state.board, state.moves);
       const capture = ai.decideCapture(state.board, move?.capturable || null);
+      // Register AI actions with the interface.
       moveAction({ move, ai: true });
       captureAction({ capture, ai: true });
+      // Send AI actions to the state machine.
       dispatch({ type: "AI_TURN", move, capture });
     }
   }, [state.board, state.opponent, state.moves]);

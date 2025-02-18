@@ -1,11 +1,13 @@
 import { ThudAi } from "./";
-import { Board, Move, Opt, Square } from "../game/types";
+import { Board, Move, Opt, Square, DWARF } from "../game/types";
 
 export default {
   name: "Rashful",
   description:
     "Rashful predictably makes the first move that comes into his head.",
   ready: false,
+  preferredSide: DWARF,
+  playingSide: null,
 
   decideMove: (_board: Opt<Board>, moves: Opt<Move[]>): Opt<Move> => {
     if (!moves) return null;

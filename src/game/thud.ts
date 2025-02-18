@@ -19,9 +19,27 @@ import {
 } from "./Hex210";
 
 // TODO improve Thud Board Notation
-// Current turn, then an X, then dwarf and troll positions.
+// Current turn, then an x, then dwarf and troll positions.
+// e marks the end of the row
 // Any other character is an empty space.
-export const DEFAULT_POSITION = "dx.....dTTdd...";
+export const DEFAULT_POSITION = [
+  "dx",
+  ".....dd.dd.....e",
+  "....d.....d....e",
+  "...d.......d...e",
+  "..d.........d..e",
+  ".d...........d.e",
+  "d.............de",
+  "d.....TTT.....de",
+  "......T.T......e",
+  "d.....TTT.....de",
+  "d.............de",
+  ".d...........d.e",
+  "..d.........d..e",
+  "...d.......d...e",
+  "....d.....d....e",
+  ".....dd.dd.....e",
+];
 
 interface InternalMove {
   from: number;
@@ -256,22 +274,21 @@ export function Thud(position?: string): ThudGame {
     if (turn && (turn == DWARF || turn == TROLL)) {
       iturn = turn;
     }
-
     if (pieces) {
-      const piecePositions = pieces.split("");
-      for (let i = 0; i < piecePositions.length; i++) {
-        if (piecePositions[i] == DWARF) {
-          iboard[i] = DWARF;
-        } else if (piecePositions[i] == TROLL) {
-          iboard[i] = TROLL;
-        }
+      const pos = pieces.split("");
+      let k = 0;
+      for (let i = 0; i <= boardHex210.j1; i++) {
+        const j = i + 16 * k;
+        if (pos[i] == "e") k += 1;
+        if (pos[i] == DWARF) iboard[j] = DWARF;
+        else if (pos[i] == TROLL) iboard[j] = TROLL;
       }
     }
   }
 
   // Reset the board to starting position
   function reset() {
-    load(DEFAULT_POSITION);
+    load(DEFAULT_POSITION.join(""));
   }
 
   if (position) {

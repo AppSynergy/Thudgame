@@ -73,19 +73,17 @@ function App() {
     []
   );
 
-  // Callback - Handles AI logic
+  // Effect - Handles AI logic
   useEffect(() => {
     const ai = state.opponent;
-    if (ai && state.activeSide == state.theirSide) {
-      const move = ai?.decideMove(state.moves);
-      const capture = move?.capturable
-        ? ai?.decideCapture(move.capturable)
-        : null;
+    if (ai && ai?.ready) {
+      const move = ai.decideMove(state.board, state.moves);
+      const capture = ai.decideCapture(state.board, move?.capturable || null);
       moveAction({ move, ai: true });
       captureAction({ capture, ai: true });
       dispatch({ type: "AI_TURN", move, capture });
     }
-  }, [state.moves, state.opponent, state.activeSide, state.theirSide]);
+  }, [state.board, state.opponent, state.moves]);
 
   // Action for selecting pieces.
   const [selected, selectAction] = useActionState(showAvailableMoves, null);

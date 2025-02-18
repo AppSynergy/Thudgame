@@ -13,7 +13,7 @@ import {
 import { Thud } from "./thud";
 
 interface GameState {
-  thud: ThudGame;
+  thud: Opt<ThudGame>;
   board: Opt<Board>;
   moves: Opt<Move[]>;
   moveCount: number;
@@ -26,7 +26,7 @@ interface GameState {
 }
 
 export const initialState = {
-  thud: Thud(),
+  thud: null,
   board: null,
   moves: null,
   moveCount: 0,
@@ -59,6 +59,8 @@ function newGameState(state: GameState) {
     next.otherSide = TROLL;
     next.loser = null;
     next.moves = newThud.moves(next.activeSide);
+    // If AI is dwarfs, it goes first.
+    if (next.opponent && next.theirSide == DWARF) next.opponent.ready = true;
   });
 }
 
@@ -74,23 +76,28 @@ function endOfTurnState(state: GameState) {
       next.theirSide = state.yourSide;
     }
     // A side loses if it has no moves.
-    next.moves = next.thud.moves(next.activeSide);
-    if (!next.moves.length) next.loser = next.activeSide;
+    next.moves = next.thud?.moves(next.activeSide) || null;
+    if (!next.moves?.length) next.loser = next.activeSide;
+    // AI opponent should move next.
+    if (next.opponent && next.activeSide == next.theirSide)
+      next.opponent.ready = true;
   });
 }
 
 function moveState(state: GameState, move: Move) {
   return produce(state, (next) => {
-    next.thud.move(move);
-    next.board = next.thud.board();
+    next.thud?.move(move);
+    next.board = next.thud?.board() || null;
     next.moveCount = next.moveCount + 1;
+    // If AI is moving here, it's had its go.
+    if (next.opponent) next.opponent.ready = false;
   });
 }
 
 function captureState(state: GameState, capture: Square) {
   return produce(state, (next) => {
-    next.thud.capture(capture);
-    next.board = next.thud.board();
+    next.thud?.capture(capture);
+    next.board = next.thud?.board() || null;
   });
 }
 

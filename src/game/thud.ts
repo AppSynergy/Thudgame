@@ -216,7 +216,8 @@ export function Thud(position?: string): ThudGame {
     const output = [];
     let row = [];
 
-    for (let i = 0; i <= boardHex210.j1; i++) {
+    // TODO why do we need +5 here?
+    for (let i = 0; i <= boardHex210.j1 + 5; i++) {
       if (!boardHex210Values.includes(i)) {
         // these squares do not exist
         row.push({});

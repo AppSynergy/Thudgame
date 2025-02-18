@@ -58,6 +58,7 @@ test("can play against Rashful", async () => {
   await screen.findByText(/Move number: 1/);
 
   user.click(screen.getAllByText("T")[0]);
-  user.click(screen.getByText("gE"));
+  user.click(screen.getByText("hE")); // move
+  user.click(screen.getByText("iF")); // capture
   await screen.findByText(/Move number: 3/);
 });

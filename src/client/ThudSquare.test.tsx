@@ -77,8 +77,6 @@ test("can click on a square to move there", () => {
 
   expect(mockMoveAction).toHaveBeenCalledTimes(1);
   expect(mockMoveAction).toHaveBeenCalledWith({
-    from: "e5",
-    piece: "T",
-    to: "e4",
+    move: { from: "e5", piece: "T", to: "e4" },
   });
 });

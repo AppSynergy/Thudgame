@@ -7,12 +7,12 @@ export default {
     "Rashful predictably makes the first move that comes into his head.",
   ready: false,
 
-  decideMove: (board: Opt<Board>, moves: Opt<Move[]>): Opt<Move> => {
+  decideMove: (_board: Opt<Board>, moves: Opt<Move[]>): Opt<Move> => {
     if (!moves) return null;
     return moves[0];
   },
 
-  decideCapture: (board: Opt<Board>, squares: Opt<Square[]>): Opt<Square> => {
+  decideCapture: (_board: Opt<Board>, squares: Opt<Square[]>): Opt<Square> => {
     if (!squares) return null;
     return squares[0];
   },

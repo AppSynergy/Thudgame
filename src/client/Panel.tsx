@@ -3,6 +3,7 @@ import axios from "axios";
 import { ThudAi } from "../ai";
 import { sideToText } from "../game/helper";
 import { Side, DWARF, TROLL } from "../game/types";
+import "./Panel.css";
 
 interface PanelProps {
   opponent: ThudAi | null;

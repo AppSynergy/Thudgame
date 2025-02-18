@@ -2,6 +2,7 @@
 import classNames from "clsx";
 import { isMoveSquare, isCaptureSquare, isCaptureChoice } from "../game/helper";
 import {
+  Action,
   Board,
   BoardSquare,
   Move,
@@ -20,8 +21,8 @@ interface ThudBoardProps {
   selected: Opt<Square>;
   lastMove: Opt<Move>;
   selectAction: (square: Opt<Square>) => void;
-  moveAction: (move: Opt<Move>) => void;
-  captureAction: (square: Square) => void;
+  moveAction: (action: Action) => void;
+  captureAction: (action: Action) => void;
 }
 
 export default function ThudBoard({

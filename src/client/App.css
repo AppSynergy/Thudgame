@@ -8,11 +8,6 @@
   margin: 0 2em;
 }
 
-.newGameButtons {
-  display: flex;
-  flex-direction: column;
-}
-
 .thudBoardWrapper {
   display: flex;
 }

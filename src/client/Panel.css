@@ -1,0 +1,4 @@
+.newGameButtons {
+  display: flex;
+  flex-direction: column;
+}

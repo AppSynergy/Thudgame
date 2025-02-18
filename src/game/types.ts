@@ -33,3 +33,9 @@ export interface ThudGame {
   load: (position: string) => void;
   reset: () => void;
 }
+
+export interface Action {
+  move?: Opt<Move>;
+  capture?: Opt<Square>;
+  ai?: boolean;
+}

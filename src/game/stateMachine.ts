@@ -57,36 +57,13 @@ function newGameState(state: GameState) {
     // Dwarfs always go first
     next.activeSide = DWARF;
     next.otherSide = TROLL;
+    next.loser = null;
     next.moves = newThud.moves(next.activeSide);
   });
 }
 
-function moveState(state: GameState, move: Move) {
-  return produce(state, (next) => {
-    next.thud.move(move);
-    next.board = next.thud.board();
-    next.moveCount = next.moveCount + 1;
-    //console.log(`move ${move.piece} ${move.from} => ${move.to}`);
-  });
-}
-
-function captureState(state: GameState, capture: Square) {
-  return produce(state, (next) => {
-    next.thud.capture(capture);
-    next.board = next.thud.board();
-    //console.log(`capture on ${capture}`);
-  });
-}
-
-function aiState(state: GameState, move: Opt<Move>, capture: Opt<Square>) {
-  const nextPostMove = move ? moveState(state, move) : state;
-  if (capture) return captureState(nextPostMove, capture);
-  return nextPostMove;
-}
-
 // Typical state updates for end of a turn.
 function endOfTurnState(state: GameState) {
-  // Upkeep Phase
   return produce(state, (next) => {
     // Swap active side
     next.activeSide = state.otherSide;
@@ -96,9 +73,31 @@ function endOfTurnState(state: GameState) {
       next.yourSide = state.theirSide;
       next.theirSide = state.yourSide;
     }
+    // A side loses if it has no moves.
     next.moves = next.thud.moves(next.activeSide);
-    //console.log(`EOT ${state.activeSide} - next ${next.activeSide}`);
+    if (!next.moves.length) next.loser = next.activeSide;
   });
+}
+
+function moveState(state: GameState, move: Move) {
+  return produce(state, (next) => {
+    next.thud.move(move);
+    next.board = next.thud.board();
+    next.moveCount = next.moveCount + 1;
+  });
+}
+
+function captureState(state: GameState, capture: Square) {
+  return produce(state, (next) => {
+    next.thud.capture(capture);
+    next.board = next.thud.board();
+  });
+}
+
+function aiState(state: GameState, move: Opt<Move>, capture: Opt<Square>) {
+  const movedState = move ? moveState(state, move) : state;
+  if (capture) return captureState(movedState, capture);
+  return movedState;
 }
 
 export const stateMachine = (

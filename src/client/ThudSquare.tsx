@@ -1,7 +1,7 @@
 "use client";
 import { startTransition, useCallback } from "react";
 import { findMoveTo } from "../game/helper";
-import { Move, Opt, Side, Square, BoardSquare } from "../game/types";
+import { Action, BoardSquare, Move, Opt, Side, Square } from "../game/types";
 import ThudPiece from "./ThudPiece";
 import "./ThudSquare.css";
 
@@ -13,8 +13,8 @@ interface ThudSquareProps {
   canCaptureHere: boolean;
   availableMoves: Opt<Move[]>;
   selectAction: (square: Opt<Square>) => void;
-  moveAction: (move: Opt<Move>) => void;
-  captureAction: (square: Square) => void;
+  moveAction: (action: Action) => void;
+  captureAction: (action: Action) => void;
 }
 
 // Draw a single square of the board.
@@ -47,14 +47,14 @@ export default function ThudSquare({
       // If you click on a square you can move to, you move there.
       if (canMoveHere) {
         startTransition(() => {
-          moveAction(findMoveTo(availableMoves, clickedSquare));
+          moveAction({ move: findMoveTo(availableMoves, clickedSquare) });
           selectAction(null);
         });
       }
       // If you click on a dwarf you can capture, capture them.
       if (canCaptureHere) {
         startTransition(() => {
-          captureAction(clickedSquare);
+          captureAction({ capture: clickedSquare });
         });
       }
     }

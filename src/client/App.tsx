@@ -8,7 +8,7 @@ import {
 import ai from "../ai";
 import { filterMovesFrom } from "../game/helper";
 import { initialState, stateMachine } from "../game/stateMachine";
-import { Move, Opt, Side, Square, DWARF } from "../game/types";
+import { Action, Move, Opt, Side, Square, DWARF } from "../game/types";
 import Panel from "./Panel";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
@@ -32,8 +32,8 @@ function App() {
       dispatch({ type: "SET_OPPONENT", opponent, yourSide });
       setAvailableMoves(null);
       selectAction(null);
-      moveAction(null);
-      captureAction(null);
+      moveAction({ move: null });
+      captureAction({ capture: null });
     },
     []
   );
@@ -56,17 +56,19 @@ function App() {
   );
 
   // Callback - Moving to a valid square.
-  const makeMove = useCallback((_prevMove: Opt<Move>, move: Opt<Move>) => {
-    if (move) dispatch({ type: "MAKE_MOVE", move });
+  const makeMove = useCallback((_prevMove: Opt<Move>, action: Action) => {
+    const move = action.move;
+    if (move && !action.ai) dispatch({ type: "MAKE_MOVE", move });
     setAvailableMoves(null);
-    return move;
+    return move || null;
   }, []);
 
   // Callback - Choosing to capture a dwarf piece.
   const chooseCapture = useCallback(
-    (_prevCapture: Opt<Square>, capture: Opt<Square>) => {
-      if (capture) dispatch({ type: "CHOOSE_CAPTURE", capture });
-      return capture;
+    (_prevCapture: Opt<Square>, action: Action) => {
+      const capture = action.capture;
+      if (capture && !action.ai) dispatch({ type: "CHOOSE_CAPTURE", capture });
+      return capture || null;
     },
     []
   );
@@ -79,6 +81,8 @@ function App() {
       const capture = move?.capturable
         ? ai?.decideCapture(move.capturable)
         : null;
+      moveAction({ move, ai: true });
+      captureAction({ capture, ai: true });
       dispatch({ type: "AI_TURN", move, capture });
     }
   }, [state.moves, state.opponent, state.activeSide, state.theirSide]);

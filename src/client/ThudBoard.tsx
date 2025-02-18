@@ -9,7 +9,6 @@ import {
   Opt,
   Side,
   Square,
-  TROLL,
 } from "../game/types";
 import ThudSquare from "./ThudSquare";
 import "./ThudBoard.css";
@@ -47,9 +46,8 @@ export default function ThudBoard({
 
     // Check whether we can move to this square, or capture a dwarf here.
     const canMoveHere = isMoveSquare(moves, square.algebraic);
-    const canCaptureHere =
-      isCaptureSquare(moves, square.algebraic) ||
-      (yourSide == TROLL && isCaptureChoice(lastMove, square.algebraic));
+    const hasCaptureRisk = isCaptureSquare(moves, square.algebraic);
+    const canCaptureHere = isCaptureChoice(lastMove, square.algebraic);
 
     const thudSquareClassNames = classNames({
       thudSquare: true,
@@ -57,7 +55,8 @@ export default function ThudBoard({
       lastMoveTo: lastMove?.to == square.algebraic,
       canMoveHere: canMoveHere && !square.piece,
       canHurlHere: canMoveHere && square.piece,
-      canCaptureHere: canCaptureHere,
+      hasCaptureRisk,
+      canCaptureHere,
       dark: alternateColors % 2 === 0,
       light: alternateColors % 2 === 1,
       selectable: yourSide === square.piece,

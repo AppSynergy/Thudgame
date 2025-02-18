@@ -23,20 +23,25 @@
 }
 
 .thudSquare.lastMoveFrom {
-  background-color: orchid;
+  background-color: darkgoldenrod;
 }
 
 .thudSquare.lastMoveTo {
-  background-color: darkorchid;
-}
-
-.thudSquare.canHurlHere {
-  background-color: purple;
-  cursor: pointer;
+  background-color: goldenrod;
 }
 
 .thudSquare.canMoveHere {
   background-color: darkorange;
+  cursor: pointer;
+}
+
+.thudSquare.canHurlHere {
+  background-color: darkred;
+  cursor: pointer;
+}
+
+.thudSquare.hasCaptureRisk {
+  background-color: darkred;
   cursor: pointer;
 }
 

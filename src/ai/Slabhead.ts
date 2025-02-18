@@ -1,5 +1,5 @@
 import { ThudAi } from "./";
-import { Board, Move, Opt, Square, TROLL } from "../game/types";
+import { Board, Move, Opt, Side, Square, TROLL } from "../game/types";
 
 export default {
   name: "Slabhead",
@@ -9,13 +9,13 @@ export default {
   preferredSide: TROLL,
   playingSide: null,
 
-  decideMove: (_board: Opt<Board>, moves: Opt<Move[]>): Opt<Move> => {
+  decideMove: (_side: Side, _board: Board, moves: Opt<Move[]>): Opt<Move> => {
     if (!moves) return null;
     const move = moves[Math.floor(Math.random() * moves.length)];
     return move;
   },
 
-  decideCapture: (_board: Opt<Board>, squares: Opt<Square[]>): Opt<Square> => {
+  decideCapture: (_board: Board, squares: Opt<Square[]>): Opt<Square> => {
     if (!squares) return null;
     const square = squares[Math.floor(Math.random() * squares.length)];
     return square;

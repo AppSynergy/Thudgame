@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import ai from "../ai";
-import { filterMovesFrom, getOtherSide } from "../game/helper";
+import { filterMovesFrom } from "../game/helper";
 import { initialState, stateMachine } from "../game/stateMachine";
 import { Action, Move, Opt, Side, Square, DWARF } from "../game/types";
 import Panel from "./Panel";
@@ -30,7 +30,6 @@ function App() {
     (yourSide: Side, opponentName: Opt<string>) => {
       // Set up opponent.
       const opponent = (opponentName && ai[opponentName]) || null;
-      if (opponent) opponent.playingSide = getOtherSide(yourSide);
       dispatch({ type: "SET_OPPONENT", opponent, yourSide });
       // Clear the interface.
       setAvailableMoves(null);
@@ -81,7 +80,7 @@ function App() {
   useEffect(() => {
     const ai = state.opponent;
     if (ai && ai?.ready) {
-      const move = ai.decideMove(state.board, state.moves);
+      const move = ai.decideMove(state.theirSide, state.board, state.moves);
       const capture = ai.decideCapture(state.board, move?.capturable || null);
       // Register AI actions with the interface.
       moveAction({ move, ai: true });
@@ -89,7 +88,7 @@ function App() {
       // Send AI actions to the state machine.
       dispatch({ type: "AI_TURN", move, capture });
     }
-  }, [state.board, state.opponent, state.moves]);
+  }, [state.board, state.opponent, state.moves, state.theirSide]);
 
   // Action for selecting pieces.
   const [selected, selectAction] = useActionState(showAvailableMoves, null);

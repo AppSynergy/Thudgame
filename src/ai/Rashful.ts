@@ -1,5 +1,5 @@
 import { ThudAi } from "./";
-import { Board, Move, Opt, Square, DWARF } from "../game/types";
+import { Board, Move, Opt, Side, Square, DWARF } from "../game/types";
 
 export default {
   name: "Rashful",
@@ -9,12 +9,12 @@ export default {
   preferredSide: DWARF,
   playingSide: null,
 
-  decideMove: (_board: Opt<Board>, moves: Opt<Move[]>): Opt<Move> => {
+  decideMove: (_side: Side, _board: Board, moves: Opt<Move[]>): Opt<Move> => {
     if (!moves) return null;
     return moves[0];
   },
 
-  decideCapture: (_board: Opt<Board>, squares: Opt<Square[]>): Opt<Square> => {
+  decideCapture: (_board: Board, squares: Opt<Square[]>): Opt<Square> => {
     if (!squares) return null;
     return squares[0];
   },

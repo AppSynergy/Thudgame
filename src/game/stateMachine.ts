@@ -13,7 +13,7 @@ import {
   TROLL,
 } from "./types";
 
-interface GameState {
+export interface GameState {
   thud: Opt<ThudGame>;
   board: Opt<Board>;
   moves: Opt<Move[]>;
@@ -40,7 +40,7 @@ export const initialState = {
 };
 
 // Define possible actions
-type GameAction =
+export type GameAction =
   | { type: "NEW_GAME"; yourSide: Side }
   | { type: "SET_OPPONENT"; opponent: Opt<ThudAi>; yourSide: Side }
   | { type: "MAKE_MOVE"; move: Move }
@@ -48,7 +48,7 @@ type GameAction =
   | { type: "AI_TURN"; move: Opt<Move>; capture: Opt<Square> };
 
 // Typical state for new games.
-function newGameState(state: GameState) {
+export function newGameState(state: GameState) {
   const newThud = Thud();
   return produce(state, (next) => {
     // Reset the board
@@ -66,7 +66,7 @@ function newGameState(state: GameState) {
 }
 
 // Typical state updates for end of a turn.
-function endOfTurnState(state: GameState) {
+export function endOfTurnState(state: GameState) {
   return produce(state, (next) => {
     // Swap active side
     next.activeSide = state.otherSide;
@@ -85,7 +85,7 @@ function endOfTurnState(state: GameState) {
   });
 }
 
-function moveState(state: GameState, move: Move) {
+export function moveState(state: GameState, move: Move) {
   return produce(state, (next) => {
     next.thud?.move(move);
     next.board = next.thud?.board() || null;
@@ -95,14 +95,18 @@ function moveState(state: GameState, move: Move) {
   });
 }
 
-function captureState(state: GameState, capture: Square) {
+export function captureState(state: GameState, capture: Square) {
   return produce(state, (next) => {
     next.thud?.capture(capture);
     next.board = next.thud?.board() || null;
   });
 }
 
-function aiState(state: GameState, move: Opt<Move>, capture: Opt<Square>) {
+export function aiState(
+  state: GameState,
+  move: Opt<Move>,
+  capture: Opt<Square>
+) {
   const movedState = move ? moveState(state, move) : state;
   if (capture) return captureState(movedState, capture);
   return movedState;

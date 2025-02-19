@@ -21,11 +21,11 @@ test("renders a thud board", () => {
   );
 
   const dwarf = screen.getAllByText("d");
-  expect(dwarf.length).toEqual(3);
+  expect(dwarf.length).toEqual(32);
   expect(dwarf[0]).toBeInTheDocument();
 
   const troll = screen.getAllByText("T");
-  expect(troll.length).toEqual(2);
+  expect(troll.length).toEqual(8);
   expect(troll[1]).toBeInTheDocument();
 
   // TODO get by testing id

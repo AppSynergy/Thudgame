@@ -80,7 +80,7 @@ function endOfTurnState(state: GameState) {
     next.moves = next.thud?.moves(next.activeSide) || null;
     if (!next.moves?.length) next.loser = next.activeSide;
     // AI opponent should move next.
-    if (next.opponent && next.activeSide == next.theirSide)
+    if (!next.loser && next.opponent && next.activeSide == next.theirSide)
       next.opponent.ready = true;
   });
 }

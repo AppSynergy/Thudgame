@@ -132,21 +132,20 @@ export function offTheBoard(square: number): boolean {
   return false;
 }
 
-// Find possible moves for a given piece.
-export function findMovesForSinglePiece(
-  board: Piece[],
-  piece: Piece,
-  square: Square
-): InternalMove[] {
-  // pieces must be on the board
-  if (!(square in boardHex210)) {
-    return [];
-  }
+interface SearchOperation {
+  from: number;
+  to: number;
+  offset: number;
+  distance: number;
+}
 
-  const moves = [];
+// return true to break, false to continue.
+type SearchOperator = (op: SearchOperation) => boolean;
+
+export function radialSearch(square: Square, operation: SearchOperator) {
   const from: number = boardHex210[square];
-
   let to: number;
+
   for (let j = 0, len = PIECE_OFFSETS.length; j < len; j++) {
     const offset = PIECE_OFFSETS[j];
     let distance = 0;
@@ -158,50 +157,68 @@ export function findMovesForSinglePiece(
       distance += 1;
 
       // only check squares on the board
-      // TODO corners and forbidden row / column?
       if (offTheBoard(to)) break;
-
-      if (!board[to]) {
-        // if square is empty
-        if (piece === TROLL) {
-          // trolls can move and maybe capture one nearby dwarf
-          const nearbyDwarfs = findNearbyDwarfs(board, to);
-          const move = { piece, from, to } as InternalMove;
-          if (nearbyDwarfs.length) {
-            move.capturable = nearbyDwarfs;
-          }
-          moves.push(move);
-        } else {
-          // dwarves can move
-          moves.push({ piece, from, to });
-        }
-      } else {
-        // else if square has a piece
-        // we can't move on top of our own pieces
-        if (board[to] === piece) break;
-
-        // dwarf hurling
-        if (piece === DWARF) {
-          // a single dwarf can hurl one square and capture a troll
-          if (distance == 1) {
-            moves.push({ piece, from, to });
-          } else {
-            // for dwarfs, find if we're at the front of a line
-            const lineLength: number = findDwarfLineLength(board, from, offset);
-            // a line of dwarves can hurl further and capture a troll
-            if (distance <= lineLength) {
-              moves.push({ piece, from, to, hurl: true });
-            }
-          }
-        }
-
-        break;
-      }
-
-      // trolls can only move one square
-      if (piece === TROLL) break;
+      if (operation({ from, to, offset, distance })) break;
     }
   }
+}
+
+// Find possible moves for a given piece.
+export function findMovesForSinglePiece(
+  board: Piece[],
+  piece: Piece,
+  square: Square
+): InternalMove[] {
+  // pieces must be on the board
+  if (!(square in boardHex210)) {
+    return [];
+  }
+
+  const moves: InternalMove[] = [];
+
+  radialSearch(square, ({ from, to, offset, distance }) => {
+    if (!board[to]) {
+      // if square is empty
+      if (piece === TROLL) {
+        // trolls can move and maybe capture one nearby dwarf
+        const nearbyDwarfs = findNearbyDwarfs(board, to);
+        const move = { piece, from, to } as InternalMove;
+        if (nearbyDwarfs.length) {
+          move.capturable = nearbyDwarfs;
+        }
+        moves.push(move);
+      } else {
+        // dwarves can move
+        moves.push({ piece, from, to });
+      }
+    } else {
+      // else if square has a piece
+      // we can't move on top of our own pieces
+      if (board[to] === piece) return true;
+
+      // dwarf hurling
+      if (piece === DWARF) {
+        // a single dwarf can hurl one square and capture a troll
+        if (distance == 1) {
+          moves.push({ piece, from, to });
+        } else {
+          // for dwarfs, find if we're at the front of a line
+          const lineLength: number = findDwarfLineLength(board, from, offset);
+          // a line of dwarves can hurl further and capture a troll
+          if (distance <= lineLength) {
+            moves.push({ piece, from, to, hurl: true });
+          }
+        }
+      }
+      return true;
+    }
+
+    // trolls can only move one square
+    if (piece === TROLL) return true;
+
+    // keep going for dwarfs
+    return false;
+  });
 
   return moves;
 }

@@ -13,7 +13,7 @@ export default {
   decideMove: (_side: Side, _board: Board, moves: Opt<Move[]>): Opt<Move> => {
     if (!moves) return null;
     const capturingMoves = filterMovesCapturable(moves);
-    if (capturingMoves) return chooseRandom(capturingMoves) as Move;
+    if (capturingMoves.length) return chooseRandom(capturingMoves) as Move;
 
     return chooseRandom(moves) as Move;
   },

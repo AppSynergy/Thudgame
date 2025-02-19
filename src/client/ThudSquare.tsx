@@ -45,7 +45,7 @@ export default function ThudSquare({
     if (square?.algebraic) {
       const clickedSquare = square.algebraic as Square;
       // If you click on a square you can move to, you move there.
-      if (canMoveHere) {
+      if (availableMoves && canMoveHere) {
         startTransition(() => {
           moveAction({ move: findMoveTo(availableMoves, clickedSquare) });
           selectAction(null);

@@ -1,4 +1,5 @@
 import { ThudAi } from "./";
+import { chooseRandom, filterMovesCapturable } from "../game/helper";
 import { Board, Move, Opt, Side, Square, TROLL } from "../game/types";
 
 export default {
@@ -11,13 +12,15 @@ export default {
 
   decideMove: (_side: Side, _board: Board, moves: Opt<Move[]>): Opt<Move> => {
     if (!moves) return null;
-    const move = moves[Math.floor(Math.random() * moves.length)];
-    return move;
+    const capturingMoves = filterMovesCapturable(moves);
+    if (capturingMoves) return chooseRandom(capturingMoves) as Move;
+
+    return chooseRandom(moves) as Move;
   },
 
   decideCapture: (_board: Board, squares: Opt<Square[]>): Opt<Square> => {
     if (!squares) return null;
-    const square = squares[Math.floor(Math.random() * squares.length)];
+    const square = chooseRandom(squares) as Square;
     return square;
   },
 } as ThudAi;

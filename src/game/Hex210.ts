@@ -62,14 +62,14 @@ export const boardHex210Corners = { nwCorner, neCorner, swCorner, seCorner };
 
 export const PIECE_OFFSETS = [-31, -32, -33, 1, 31, 32, 33, -1];
 export const INVERSE_PIECE_OFFSETS: Record<number, number> = {
-  "-33": 31,
+  "-33": 33,
   "-32": 32,
-  "-31": 33,
+  "-31": 31,
   "-1": 1,
   1: -1,
-  31: -33,
+  31: -31,
   32: -32,
-  33: -31,
+  33: -33,
 };
 
 // Extracts the zero-based rank of an Hex210 square.

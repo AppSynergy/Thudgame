@@ -43,10 +43,13 @@ export function radialSearch(
 }
 
 // Find out if there's any dwarfs surrounding a square.
-export function findNearbyDwarfs(board: Piece[], square: number): number[] {
+export function findNearbyDwarfs(
+  square: number,
+  nearby: (sq: number) => boolean
+): number[] {
   return PIECE_OFFSETS.reduce((xs, x) => {
     const sq = square + x;
-    if (board[sq] === DWARF) xs.push(sq);
+    if (nearby(sq)) xs.push(sq);
     return xs;
   }, [] as number[]);
 }
@@ -104,7 +107,7 @@ export function findMovesForSinglePiece(
       // if square is empty
       if (piece === TROLL) {
         // trolls can move and maybe capture one nearby dwarf
-        const nearbyDwarfs = findNearbyDwarfs(board, to);
+        const nearbyDwarfs = findNearbyDwarfs(to, (sq) => board[sq] === DWARF);
         const move = { piece, from, to } as InternalMove;
         if (nearbyDwarfs.length) {
           move.capturable = nearbyDwarfs;

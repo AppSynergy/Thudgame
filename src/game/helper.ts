@@ -25,6 +25,11 @@ export function filterMovesCapturable(moves: Move[]): Move[] {
   return moves.filter((m) => m.capturable && m.capturable.length > 0);
 }
 
+// Filter moves to produce just the moves which hurl.
+export function filterMovesHurlable(moves: Move[]): Move[] {
+  return moves.filter((m) => m.hurl);
+}
+
 // Find the move to a given square.
 export function findMoveTo(moves: Move[], square: Square): Opt<Move> {
   return moves.find((m) => m.to == square) || null;

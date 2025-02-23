@@ -14,7 +14,7 @@ test("finding nearby dwarfs", () => {
   board[355] = DWARF; // d3, not nearby
   const square = 326; // g4
 
-  const result = findNearbyDwarfs(board, square);
+  const result = findNearbyDwarfs(square, (sq) => board[sq] === DWARF);
 
   expect(result.length).toEqual(3);
   expect(result).toEqual(expect.arrayContaining([294, 327, 359]));

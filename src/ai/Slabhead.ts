@@ -5,7 +5,7 @@ import {
   getOtherSide,
 } from "../game/helper";
 import { Board, Move, Opt, Side, Square, TROLL } from "../game/types";
-import { radialSearch } from "../game/thud";
+import { radialSearch } from "../game/search";
 import { rank, file } from "../game/Hex210";
 
 function findShortestAttackingMove(

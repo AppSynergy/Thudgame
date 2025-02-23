@@ -98,3 +98,15 @@ export function fileSan(square: number): string {
 export function algebraic(square: number): Square {
   return (fileSan(square) + rankSan(square)) as Square;
 }
+
+// TODO can this be improved?
+export function offTheBoard(square: number): boolean {
+  if (square & 0x210) return true;
+  if (square > 462) return true;
+  if ((square - 15) % 32 == 0) return true;
+  if (boardHex210Corners.nwCorner.includes(square)) return true;
+  if (boardHex210Corners.neCorner.includes(square)) return true;
+  if (boardHex210Corners.swCorner.includes(square)) return true;
+  if (boardHex210Corners.seCorner.includes(square)) return true;
+  return false;
+}

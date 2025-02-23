@@ -1,6 +1,5 @@
 "use client";
 import classNames from "clsx";
-import { isMoveSquare, isCaptureSquare, isCaptureChoice } from "../game/helper";
 import {
   Action,
   Board,
@@ -10,6 +9,7 @@ import {
   Side,
   Square,
 } from "../game/types";
+import { isMoveSquare, isCaptureRisk, isCaptureHere } from "../game/helper";
 import ThudSquare from "./ThudSquare";
 import "./ThudBoard.css";
 
@@ -46,15 +46,14 @@ export default function ThudBoard({
 
     // Check whether we can move to this square, or capture a dwarf here.
     const canMoveHere = isMoveSquare(moves, square.algebraic);
-    const hasCaptureRisk = isCaptureSquare(moves, square.algebraic);
-    const canCaptureHere = isCaptureChoice(lastMove, square.algebraic);
+    const canCaptureHere = isCaptureHere(lastMove, square.algebraic, yourSide);
 
     const thudSquareClassNames = classNames({
       lastMoveFrom: lastMove?.from == square.algebraic,
       lastMoveTo: lastMove?.to == square.algebraic,
       canMoveHere: canMoveHere && !square.piece,
       canHurlHere: canMoveHere && square.piece,
-      hasCaptureRisk,
+      hasCaptureRisk: isCaptureRisk(moves, square.algebraic),
       canCaptureHere,
       dark: alternateColors % 2 === 0,
       light: alternateColors % 2 === 1,

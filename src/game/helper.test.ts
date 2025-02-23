@@ -4,8 +4,8 @@ import {
   filterMovesCapturable,
   filterMovesFrom,
   getOtherSide,
-  isCaptureChoice,
-  isCaptureSquare,
+  isCaptureRisk,
+  isCaptureHere,
   isMoveSquare,
   sideToText,
 } from "./helper";
@@ -55,14 +55,14 @@ test("isMoveSquare", () => {
   expect(isMoveSquare(null, "c7")).toBe(false);
 });
 
-test("isCaptureSquare", () => {
-  expect(isCaptureSquare(someMoves, "f7")).toBe(true);
-  expect(isCaptureSquare(someMoves, "i4")).toBe(false);
-  expect(isCaptureSquare(null, "f7")).toBe(false);
+test("isCaptureRisk", () => {
+  expect(isCaptureRisk(someMoves, "f7")).toBe(true);
+  expect(isCaptureRisk(someMoves, "i4")).toBe(false);
+  expect(isCaptureRisk(null, "f7")).toBe(false);
 });
 
-test("isCaptureChoice", () => {
-  expect(isCaptureChoice(capturingMove, "f7")).toBe(true);
-  expect(isCaptureChoice(capturingMove, "i4")).toBe(false);
-  expect(isCaptureChoice(someMoves[0], "f7")).toBe(false);
+test("isCaptureHere", () => {
+  expect(isCaptureHere(capturingMove, "f7", TROLL)).toBe(true);
+  expect(isCaptureHere(capturingMove, "i4", TROLL)).toBe(false);
+  expect(isCaptureHere(someMoves[0], "f7", TROLL)).toBe(false);
 });

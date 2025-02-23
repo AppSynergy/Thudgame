@@ -45,13 +45,18 @@ export function isMoveSquare(moves: Opt<Move[]>, square: Square): boolean {
 }
 
 // Check if we can make a capture on a square.
-export function isCaptureSquare(moves: Opt<Move[]>, square: Square): boolean {
+export function isCaptureRisk(moves: Opt<Move[]>, square: Square): boolean {
   if (!moves) return false;
   return listCapturable(moves).includes(square);
 }
 
 // Check if we have a capture to resolve.
-export function isCaptureChoice(lastMove: Opt<Move>, square: Square): boolean {
-  if (!lastMove?.capturable) return false;
-  return lastMove.capturable.includes(square);
+export function isCaptureHere(
+  move: Opt<Move>,
+  square: Square,
+  side: Side
+): boolean {
+  if (side == DWARF) return false;
+  if (!move?.capturable) return false;
+  return move.capturable.includes(square);
 }

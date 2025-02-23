@@ -1,7 +1,7 @@
 "use client";
 import { startTransition, useCallback } from "react";
-import { findMoveTo } from "../game/helper";
 import { Action, BoardSquare, Move, Opt, Side, Square } from "../game/types";
+import { findMoveTo } from "../game/helper";
 import ThudPiece from "./ThudPiece";
 import "./ThudSquare.css";
 

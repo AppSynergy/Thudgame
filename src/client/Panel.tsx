@@ -1,27 +1,25 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ThudAi } from "../ai";
 import { sideToText } from "../game/helper";
+import { GameState } from "../game/stateMachine";
 import { Side, DWARF, TROLL } from "../game/types";
 import "./Panel.css";
 
 interface PanelProps {
-  opponent: ThudAi | null;
-  loss: Side | null;
-  activeSide: Side;
-  yourSide: Side;
-  moveCount: number;
+  state: GameState;
   startNewGame: (yourside: Side, opponentName: string | null) => void;
 }
 
-export default function Panel({
-  opponent,
-  loss,
-  activeSide,
-  yourSide,
-  moveCount,
-  startNewGame,
-}: PanelProps) {
+export default function Panel({ state, startNewGame }: PanelProps) {
+  const {
+    opponent,
+    loser,
+    activeSide,
+    yourSide,
+    moveCount,
+    dwarfCount,
+    trollCount,
+  } = state;
   const [message, setMessage] = useState("");
 
   async function getMessage() {
@@ -42,8 +40,8 @@ export default function Panel({
   }
 
   let winnerLoserText = "Neither side has lost yet.";
-  if (loss) {
-    winnerLoserText = sideToText(loss) + " lose!";
+  if (loser) {
+    winnerLoserText = sideToText(loser) + " lose!";
   }
 
   return (
@@ -61,13 +59,15 @@ export default function Panel({
         </button>
       </div>
 
-      <h4>Messages</h4>
       <p>{message}</p>
-      <p>Hello, thud!</p>
       <p>{opponentText}</p>
-      <p>Move number: {moveCount}</p>
       <p>Your side is the {sideToText(yourSide)}.</p>
       <p>{sideToText(activeSide)} to move next.</p>
+
+      <h4>Stats</h4>
+      <p>
+        Move {moveCount + 1} : {dwarfCount} dwarves : {trollCount} trolls
+      </p>
       <p>{winnerLoserText}</p>
     </>
   );

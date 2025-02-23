@@ -27,6 +27,8 @@ const initialState = (): GameState => {
     board: null,
     moves: null,
     moveCount: 0,
+    dwarfCount: 0,
+    trollCount: 0,
     activeSide: DWARF,
     otherSide: TROLL,
     yourSide: DWARF,

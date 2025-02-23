@@ -117,20 +117,11 @@ function App() {
     );
   }
 
-  const panel = (
-    <Panel
-      opponent={state.opponent}
-      loss={state.loser}
-      activeSide={state.activeSide}
-      yourSide={state.yourSide}
-      moveCount={state.moveCount}
-      startNewGame={startNewGame}
-    />
-  );
+  const panel = <Panel state={state} startNewGame={startNewGame} />;
 
   return (
     <div className="game">
-      <div className="messages">{panel}</div>
+      <div className="panel">{panel}</div>
       <div className="thudBoardWrapper">{thudBoard}</div>
     </div>
   );

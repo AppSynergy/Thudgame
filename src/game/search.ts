@@ -123,7 +123,7 @@ export function findMovesForSinglePiece(
       if (piece === DWARF) {
         // a single dwarf can hurl one square and capture a troll
         if (distance == 1) {
-          moves.push({ piece, from, to });
+          moves.push({ piece, from, to, hurl: true });
         } else {
           // for dwarfs, find if we're at the front of a line
           const lineLength: number = findDwarfLineLength(board, from, offset);

@@ -24,6 +24,8 @@ export interface GameState {
   theirSide: Side;
   loser: Opt<Side>;
   opponent: Opt<ThudAi>;
+  dwarfCount: number;
+  trollCount: number;
 }
 
 export const initialState = {
@@ -37,6 +39,8 @@ export const initialState = {
   theirSide: TROLL as Side,
   loser: null,
   opponent: null,
+  dwarfCount: 0,
+  trollCount: 0,
 };
 
 // Define possible actions
@@ -55,6 +59,8 @@ export function newGameState(state: GameState) {
     next.thud = newThud;
     next.board = newThud.board();
     next.moveCount = 0;
+    next.dwarfCount = 32;
+    next.trollCount = 8;
     // Dwarfs always go first
     next.activeSide = DWARF;
     next.otherSide = TROLL;
@@ -90,6 +96,7 @@ export function moveState(state: GameState, move: Move) {
     next.thud?.move(move);
     next.board = next.thud?.board() || null;
     next.moveCount = next.moveCount + 1;
+    if (move.hurl) next.trollCount--;
     // If AI is moving here, it's had its go.
     if (next.opponent) next.opponent.ready = false;
   });
@@ -98,6 +105,7 @@ export function moveState(state: GameState, move: Move) {
 export function captureState(state: GameState, capture: Square) {
   return produce(state, (next) => {
     next.thud?.capture(capture);
+    next.dwarfCount--;
     next.board = next.thud?.board() || null;
   });
 }

@@ -116,7 +116,7 @@ export function Thud(position?: string): ThudGame {
     }
   }
 
-  // Reset the board to starting position
+  // Reset the board to default position
   function reset() {
     load(DEFAULT_POSITION.join(""));
   }

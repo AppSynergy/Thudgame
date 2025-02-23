@@ -18,24 +18,24 @@ beforeAll(() => {
 test("renders something", async () => {
   render(<App />);
 
-  expect(screen.getByText(/Hello, thud!/)).toBeInTheDocument();
+  expect(screen.getByText(/Stats/)).toBeInTheDocument();
   await screen.findByText(/Your side is the Dwarfs/);
 });
 
 test("can make a move and then reset the game", async () => {
   render(<App />);
 
-  expect(screen.getByText(/Move number: 0/));
+  expect(screen.getByText(/Move 1/));
   await screen.findByText(/Your side is the Dwarfs/);
 
   user.click(screen.getAllByText("d")[0]);
   user.click(screen.getByText("fC"));
 
   await screen.findByText(/Trolls to move next/);
-  expect(screen.getByText(/Move number: 1/));
+  expect(screen.getByText(/Move 2/));
 
   user.click(screen.getByText(/Play both sides./));
-  await screen.findByText(/Move number: 0/);
+  await screen.findByText(/Move 1/);
 });
 
 test("can play against Slabhead", async () => {
@@ -46,7 +46,7 @@ test("can play against Slabhead", async () => {
 
   user.click(screen.getAllByText("d")[0]);
   user.click(screen.getByText("fC"));
-  await screen.findByText(/Move number: 2/);
+  await screen.findByText(/Move 3/);
 });
 
 test("can play against Rashful", async () => {
@@ -55,9 +55,9 @@ test("can play against Rashful", async () => {
   user.click(screen.getByText(/Play the trolls vs. Rashful/));
   await screen.findByText(/You are playing against Rashful/);
 
-  await screen.findByText(/Move number: 1/);
+  await screen.findByText(/Move 2/);
 
   user.click(screen.getAllByText("T")[0]);
   user.click(screen.getByText("fA"));
-  await screen.findByText(/Move number: 3/);
+  await screen.findByText(/Move 4/);
 });

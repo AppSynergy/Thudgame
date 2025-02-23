@@ -25,14 +25,6 @@ export interface Move {
   hurl?: boolean;
 }
 
-export interface InternalMove {
-  from: number;
-  to: number;
-  piece: Piece;
-  capturable?: number[];
-  hurl?: boolean;
-}
-
 export interface ThudGame {
   board: () => Board;
   moves: (side: Side) => Move[];
@@ -47,12 +39,3 @@ export interface Action {
   capture?: Opt<Square>;
   ai?: boolean;
 }
-
-interface SearchOperation {
-  from: number;
-  to: number;
-  offset: number;
-  distance: number;
-}
-
-export type SearchOperator = (op: SearchOperation) => boolean;

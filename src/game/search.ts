@@ -1,12 +1,5 @@
-import {
-  InternalMove,
-  Piece,
-  SearchOperator,
-  Side,
-  Square,
-  DWARF,
-  TROLL,
-} from "./types";
+import { Piece, Side, Square, DWARF, TROLL } from "./types";
+import { InternalMove } from "./moves";
 import {
   boardHex210,
   boardHex210Inverse,
@@ -15,20 +8,38 @@ import {
   INVERSE_PIECE_OFFSETS,
 } from "./Hex210";
 
-// Find all possible moves for a given side.
-export function findMoves(board: Piece[], side: Side): InternalMove[] {
-  let output: InternalMove[] = [];
-  for (let i = 0; i < board.length; i++) {
-    if (board[i] === undefined) continue;
-    if (board[i] !== side) continue;
+interface SearchOperation {
+  from: number;
+  to: number;
+  offset: number;
+  distance: number;
+}
 
-    const square = boardHex210Inverse[i];
-    const found = findMovesForSinglePiece(board, side, square);
-    if (found) {
-      output = output.concat(found);
+type SearchOperator = (op: SearchOperation) => boolean;
+
+// return true to break, false to continue.
+export function radialSearch(
+  from: number,
+  operation: SearchOperator,
+  offsets = PIECE_OFFSETS
+) {
+  let to: number;
+
+  for (let j = 0, len = offsets.length; j < len; j++) {
+    const offset = offsets[j];
+    let distance = 0;
+    to = from;
+
+    while (true) {
+      // check moves in a given direction
+      to += offset;
+      distance += 1;
+
+      // only check squares on the board
+      if (offTheBoard(to)) break;
+      if (operation({ from, to, offset, distance })) break;
     }
   }
-  return output;
 }
 
 // Find out if there's any dwarfs surrounding a square.
@@ -59,26 +70,20 @@ export function findDwarfLineLength(
   return lineLength;
 }
 
-// return true to break, false to continue.
-export function radialSearch(square: Square, operation: SearchOperator) {
-  const from: number = boardHex210[square];
-  let to: number;
+// Find all possible moves for a given side.
+export function findMoves(board: Piece[], side: Side): InternalMove[] {
+  let output: InternalMove[] = [];
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === undefined) continue;
+    if (board[i] !== side) continue;
 
-  for (let j = 0, len = PIECE_OFFSETS.length; j < len; j++) {
-    const offset = PIECE_OFFSETS[j];
-    let distance = 0;
-    to = from;
-
-    while (true) {
-      // check moves in a given direction
-      to += offset;
-      distance += 1;
-
-      // only check squares on the board
-      if (offTheBoard(to)) break;
-      if (operation({ from, to, offset, distance })) break;
+    const square = boardHex210Inverse[i];
+    const found = findMovesForSinglePiece(board, side, square);
+    if (found) {
+      output = output.concat(found);
     }
   }
+  return output;
 }
 
 // Find possible moves for a given piece.
@@ -94,7 +99,7 @@ export function findMovesForSinglePiece(
 
   const moves: InternalMove[] = [];
 
-  radialSearch(square, ({ from, to, offset, distance }) => {
+  radialSearch(boardHex210[square], ({ from, to, offset, distance }) => {
     if (!board[to]) {
       // if square is empty
       if (piece === TROLL) {

@@ -5,8 +5,8 @@ import {
   getOtherSide,
 } from "../game/helper";
 import { Board, Move, Opt, Side, Square, TROLL } from "../game/types";
+import { boardHex210, rank, file } from "../game/Hex210";
 import { radialSearch } from "../game/search";
-import { rank, file } from "../game/Hex210";
 
 function findShortestAttackingMove(
   side: Side,
@@ -17,7 +17,7 @@ function findShortestAttackingMove(
   let minDistance = Infinity;
 
   moves?.map((move) => {
-    radialSearch(move.to, ({ to, distance }) => {
+    radialSearch(boardHex210[move.to], ({ to, distance }) => {
       if (board[rank(to)][file(to)].piece == getOtherSide(side)) {
         if (distance < minDistance) {
           minDistance = distance;

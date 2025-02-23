@@ -1,6 +1,5 @@
 import {
   Board,
-  InternalMove,
   Move,
   Piece,
   Side,
@@ -9,12 +8,8 @@ import {
   DWARF,
   TROLL,
 } from "./types";
-import {
-  boardHex210,
-  boardHex210Inverse,
-  algebraic,
-  boardHex210Values,
-} from "./Hex210";
+import { boardHex210, algebraic, boardHex210Values } from "./Hex210";
+import { internalMoveFromMove, moveFromInternalMove } from "./moves";
 import { findMoves } from "./search";
 
 // TODO improve Thud Board Notation
@@ -39,33 +34,6 @@ export const DEFAULT_POSITION = [
   "....d.....d....e",
   ".....dd.dd.....e",
 ];
-
-function internalMoveFromMove(move: Move): InternalMove {
-  const output: InternalMove = {
-    piece: move.piece,
-    from: boardHex210[move.from],
-    to: boardHex210[move.to],
-  };
-  if (move?.capturable) {
-    output.capturable = move.capturable.map((c) => boardHex210[c]);
-  }
-  return output;
-}
-
-function moveFromInternalMove(imove: InternalMove): Move {
-  const output: Move = {
-    piece: imove.piece,
-    from: boardHex210Inverse[imove.from],
-    to: boardHex210Inverse[imove.to],
-  };
-  if (imove.capturable) {
-    output.capturable = imove.capturable.map((c) => boardHex210Inverse[c]);
-  }
-  if (imove.piece === DWARF && imove.hurl) {
-    output.hurl = true;
-  }
-  return output;
-}
 
 export function Thud(position?: string): ThudGame {
   // Internal representation of board

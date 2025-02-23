@@ -50,7 +50,6 @@ export default function ThudBoard({
     const canCaptureHere = isCaptureChoice(lastMove, square.algebraic);
 
     const thudSquareClassNames = classNames({
-      thudSquare: true,
       lastMoveFrom: lastMove?.from == square.algebraic,
       lastMoveTo: lastMove?.to == square.algebraic,
       canMoveHere: canMoveHere && !square.piece,
@@ -64,18 +63,19 @@ export default function ThudBoard({
     });
 
     return (
-      <ThudSquare
-        key={keyIndex}
-        yourSide={yourSide}
-        square={square}
-        thudSquareClassNames={thudSquareClassNames}
-        canMoveHere={canMoveHere}
-        canCaptureHere={canCaptureHere}
-        availableMoves={moves}
-        selectAction={selectAction}
-        moveAction={moveAction}
-        captureAction={captureAction}
-      />
+      <div key={keyIndex} className="thudSquare">
+        <ThudSquare
+          yourSide={yourSide}
+          square={square}
+          thudSquareClassNames={thudSquareClassNames}
+          canMoveHere={canMoveHere}
+          canCaptureHere={canCaptureHere}
+          availableMoves={moves}
+          selectAction={selectAction}
+          moveAction={moveAction}
+          captureAction={captureAction}
+        />
+      </div>
     );
   }
 

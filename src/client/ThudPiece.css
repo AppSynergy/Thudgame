@@ -9,15 +9,10 @@
   text-align: center;
 }
 
-.piece .pieceBackground {
+.thudSquare .piece .pieceBackground {
   background-color: darkslategray;
   color: wheat;
   margin: 25%;
   height: 50%;
   width: 50%;
-}
-
-.thudSquare.canHurlHere .piece,
-.thudSquare.selectable .piece {
-  cursor: pointer;
 }

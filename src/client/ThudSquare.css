@@ -1,56 +1,52 @@
-.thudSquare {
-  overflow: hidden;
-  width: 3em;
-  height: 3em;
-}
-
-.thudSquare.light {
-  background-color: aliceblue;
-  color: black;
-}
-
-.thudSquare.dark {
-  background-color: darkolivegreen;
-  color: white;
-}
-
-.thudSquare.selectable {
+.thudSquare .selectable .piece,
+.thudSquare .canHurlHere .piece,
+.thudSquare .canCaptureHere .piece,
+.thudSquare .canMoveHere {
   cursor: pointer;
 }
 
-.thudSquare.selected {
+.thudSquare .light {
+  background-color: aliceblue;
+  color: black;
+  height: 100%;
+}
+
+.thudSquare .dark {
+  background-color: darkolivegreen;
+  color: white;
+  height: 100%;
+}
+
+.thudSquare .selected {
   background-color: tomato;
 }
 
-.thudSquare.lastMoveFrom {
+.thudSquare .lastMoveFrom {
   background-color: darkgoldenrod;
 }
 
-.thudSquare.lastMoveTo {
+.thudSquare .lastMoveTo {
   background-color: goldenrod;
 }
 
-.thudSquare.canMoveHere {
+.thudSquare .canMoveHere {
   background-color: darkorange;
-  cursor: pointer;
 }
 
-.thudSquare.canHurlHere {
+.thudSquare .canHurlHere {
   background-color: darkred;
-  cursor: pointer;
 }
 
-.thudSquare.hasCaptureRisk {
-  background-color: darkred;
-  cursor: pointer;
+.thudSquare .hasCaptureRisk {
+  background-color: firebrick;
 }
 
-.thudSquare.canCaptureHere {
-  background-color: darkred;
-  cursor: pointer;
+.thudSquare .canCaptureHere {
+  background-color: maroon;
 }
 
 .thudSquare .label {
+  font-size: 0.7em;
   text-align: start;
   position: absolute;
   cursor: default;

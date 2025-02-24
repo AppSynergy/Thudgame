@@ -1,15 +1,15 @@
 import { produce } from "immer";
 import { Thud } from "./thud";
-import { ThudAi } from "../ai";
-import { getOtherSide } from "./helper";
 import {
   Board,
+  Matchup,
   Move,
   Opt,
   Side,
   Square,
   ThudGame,
   DWARF,
+  HUMAN,
   TROLL,
 } from "./types";
 
@@ -21,9 +21,8 @@ export interface GameState {
   activeSide: Side;
   otherSide: Side;
   yourSide: Side;
-  theirSide: Side;
   loser: Opt<Side>;
-  opponent: Opt<ThudAi>;
+  players: Opt<Matchup>;
   dwarfCount: number;
   trollCount: number;
 }
@@ -36,9 +35,8 @@ export const initialState = {
   activeSide: DWARF as Side,
   otherSide: TROLL as Side,
   yourSide: DWARF as Side,
-  theirSide: TROLL as Side,
   loser: null,
-  opponent: null,
+  players: { [DWARF]: HUMAN, [TROLL]: HUMAN },
   dwarfCount: 0,
   trollCount: 0,
 };
@@ -46,7 +44,7 @@ export const initialState = {
 // Define possible actions
 export type GameAction =
   | { type: "NEW_GAME"; yourSide: Side }
-  | { type: "SET_OPPONENT"; opponent: Opt<ThudAi>; yourSide: Side }
+  | { type: "SET_MATCHUP"; matchup: Matchup }
   | { type: "MAKE_MOVE"; move: Move }
   | { type: "CHOOSE_CAPTURE"; capture: Square }
   | { type: "AI_TURN"; move: Opt<Move>; capture: Opt<Square> };
@@ -67,7 +65,7 @@ export function newGameState(state: GameState) {
     next.loser = null;
     next.moves = newThud.moves(next.activeSide);
     // If AI is dwarfs, it goes first.
-    if (next.opponent && next.theirSide == DWARF) next.opponent.ready = true;
+    if (next.players) next.players[DWARF].ready = true;
   });
 }
 
@@ -77,28 +75,25 @@ export function endOfTurnState(state: GameState) {
     // Swap active side
     next.activeSide = state.otherSide;
     next.otherSide = state.activeSide;
-    if (!state.opponent) {
-      // Play both sides
-      next.yourSide = state.theirSide;
-      next.theirSide = state.yourSide;
-    }
-    // A side loses if it has no moves.
+    // Get moves for next player.
     next.moves = next.thud?.moves(next.activeSide) || null;
+    // A side loses if it has no moves.
     if (!next.moves?.length) next.loser = next.activeSide;
-    // AI opponent should move next.
-    if (!next.loser && next.opponent && next.activeSide == next.theirSide)
-      next.opponent.ready = true;
+    // Human might both sides
+    if (next.players?.[next.activeSide].human) next.yourSide = next.activeSide;
+    // AI player on the other side should move next.
+    if (!next.loser && next.players) next.players[next.activeSide].ready = true;
   });
 }
 
 export function moveState(state: GameState, move: Move) {
   return produce(state, (next) => {
     next.thud?.move(move);
+    if (move.hurl) next.trollCount--;
     next.board = next.thud?.board() || null;
     next.moveCount = next.moveCount + 1;
-    if (move.hurl) next.trollCount--;
     // If AI is moving here, it's had its go.
-    if (next.opponent) next.opponent.ready = false;
+    if (next.players) next.players[next.activeSide].ready = false;
   });
 }
 
@@ -129,11 +124,11 @@ export const stateMachine = (
       return newGameState(state);
     }
 
-    case "SET_OPPONENT": {
+    case "SET_MATCHUP": {
       const newState = produce(state, (next) => {
-        next.yourSide = action.yourSide;
-        next.theirSide = getOtherSide(action.yourSide);
-        next.opponent = action.opponent;
+        next.players = action.matchup;
+        if (next.players[TROLL].human) next.yourSide = TROLL;
+        if (next.players[DWARF].human) next.yourSide = DWARF;
       });
       return newGameState(newState);
     }

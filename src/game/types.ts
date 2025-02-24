@@ -1,3 +1,4 @@
+import { ThudAi } from "../ai";
 import { Square as Hex210Square } from "./Hex210";
 
 export type Opt<T> = T | null;
@@ -5,8 +6,29 @@ export type Opt<T> = T | null;
 export const TROLL = "T";
 export const DWARF = "d";
 
-export type Piece = "T" | "d";
+export type Piece = "d" | "T";
 export type Side = Piece;
+
+export interface HumanPlayer {
+  name: string;
+  human: true;
+  ai: false;
+  ready: boolean;
+}
+
+export const HUMAN = {
+  name: "Johnny",
+  ai: false,
+  human: true,
+  ready: false,
+} as HumanPlayer;
+
+export type Player = HumanPlayer | ThudAi;
+
+export interface Matchup {
+  [DWARF]: Player;
+  [TROLL]: Player;
+}
 
 export type Square = Hex210Square;
 

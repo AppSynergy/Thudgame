@@ -8,6 +8,8 @@ export interface ThudAi {
   decideMove: (side: Side, board: Opt<Board>, moves: Opt<Move[]>) => Opt<Move>;
   decideCapture: (board: Opt<Board>, squares: Opt<Square[]>) => Opt<Square>;
   ready: boolean;
+  human: false;
+  ai: true;
   preferredSide: Opt<Side>;
 }
 

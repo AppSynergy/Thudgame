@@ -36,6 +36,8 @@ export default {
   description:
     "Slabhead considers all possible moves, but then makes one at random.",
   ready: false,
+  human: false,
+  ai: true,
   preferredSide: TROLL,
   playingSide: null,
 

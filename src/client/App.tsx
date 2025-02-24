@@ -5,10 +5,17 @@ import {
   useReducer,
   useState,
 } from "react";
-import ai from "../ai";
 import { filterMovesFrom } from "../game/helper";
 import { initialState, stateMachine } from "../game/stateMachine";
-import { Action, Move, Opt, Side, Square, DWARF } from "../game/types";
+import {
+  Action,
+  Move,
+  Opt,
+  Square,
+  DWARF,
+  Matchup,
+  Player,
+} from "../game/types";
 import Panel from "./Panel";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
@@ -26,19 +33,15 @@ function App() {
   }, []);
 
   // Callback - Handles new game buttons
-  const startNewGame = useCallback(
-    (yourSide: Side, opponentName: Opt<string>) => {
-      // Set up opponent.
-      const opponent = (opponentName && ai[opponentName]) || null;
-      dispatch({ type: "SET_OPPONENT", opponent, yourSide });
-      // Clear the interface.
-      setAvailableMoves(null);
-      selectAction(null);
-      moveAction({ move: null });
-      captureAction({ capture: null });
-    },
-    []
-  );
+  const startGame = useCallback((matchup: Matchup) => {
+    // Setup matchup and AI.
+    dispatch({ type: "SET_MATCHUP", matchup });
+    // Clear the interface.
+    setAvailableMoves(null);
+    selectAction(null);
+    moveAction({ move: null });
+    captureAction({ capture: null });
+  }, []);
 
   // Callback - If we select one of our pieces, show the available moves.
   const showAvailableMoves = useCallback(
@@ -78,17 +81,27 @@ function App() {
 
   // Effect - Handles AI logic
   useEffect(() => {
-    const ai = state.opponent;
-    if (ai && ai?.ready) {
-      const move = ai.decideMove(state.theirSide, state.board, state.moves);
-      const capture = ai.decideCapture(state.board, move?.capturable || null);
-      // Register AI actions with the interface.
-      moveAction({ move, ai: true });
-      captureAction({ capture, ai: true });
-      // Send AI actions to the state machine.
-      dispatch({ type: "AI_TURN", move, capture });
+    if (state.players) {
+      Object.values(state.players).map((player: Player) => {
+        if (player.ai && player.ready) {
+          const move = player.decideMove(
+            state.activeSide,
+            state.board,
+            state.moves
+          );
+          const capture = player.decideCapture(
+            state.board,
+            move?.capturable || null
+          );
+          // Register AI actions with the interface.
+          moveAction({ move, ai: true });
+          captureAction({ capture, ai: true });
+          // Send AI actions to the state machine.
+          dispatch({ type: "AI_TURN", move, capture });
+        }
+      });
     }
-  }, [state.board, state.opponent, state.moves, state.theirSide]);
+  }, [state.board, state.players, state.moves, state.activeSide]);
 
   // Action for selecting pieces.
   const [selected, selectAction] = useActionState(showAvailableMoves, null);
@@ -117,7 +130,7 @@ function App() {
     );
   }
 
-  const panel = <Panel state={state} startNewGame={startNewGame} />;
+  const panel = <Panel state={state} startGame={startGame} />;
 
   return (
     <div className="game">

@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import ai from "../ai";
 import { sideToText } from "../game/helper";
 import { GameState } from "../game/stateMachine";
-import { Side, DWARF, TROLL } from "../game/types";
+import { Matchup, DWARF, HUMAN, TROLL } from "../game/types";
 import "./Panel.css";
 
 interface PanelProps {
   state: GameState;
-  startNewGame: (yourside: Side, opponentName: string | null) => void;
+  startGame: (matchup: Matchup) => void;
 }
 
-export default function Panel({ state, startNewGame }: PanelProps) {
+export default function Panel({ state, startGame }: PanelProps) {
   const {
-    opponent,
+    players,
     loser,
     activeSide,
     yourSide,
@@ -34,33 +35,42 @@ export default function Panel({ state, startNewGame }: PanelProps) {
     getMessage();
   }, []);
 
-  let opponentText = "You are playing both sides.";
-  if (opponent) {
-    opponentText = "You are playing against " + opponent.name + ".";
-  }
-
-  let winnerLoserText = "Neither side has lost yet.";
-  if (loser) {
-    winnerLoserText = sideToText(loser) + " lose!";
-  }
+  const playerNames = (
+    <>
+      <p>{players?.[DWARF].name} as dwarves</p>
+      <p>{players?.[TROLL].name} as trolls</p>
+    </>
+  );
+  const winnerLoserText = loser ? sideToText(loser) + " lose!" : "";
 
   return (
     <>
       <h4>Start New Game</h4>
       <div className="newGameButtons">
-        <button onClick={() => startNewGame(DWARF, null)}>
+        <button onClick={() => startGame({ [DWARF]: HUMAN, [TROLL]: HUMAN })}>
           Play both sides.
         </button>
-        <button onClick={() => startNewGame(DWARF, "Slabhead")}>
+        <button
+          onClick={() => startGame({ [DWARF]: HUMAN, [TROLL]: ai["Slabhead"] })}
+        >
           Play the dwarfs vs. Slabhead
         </button>
-        <button onClick={() => startNewGame(TROLL, "Rashful")}>
+        <button
+          onClick={() => startGame({ [DWARF]: ai["Rashful"], [TROLL]: HUMAN })}
+        >
           Play the trolls vs. Rashful
+        </button>
+        <button
+          onClick={() =>
+            startGame({ [DWARF]: ai["Rashful"], [TROLL]: ai["Slabhead"] })
+          }
+        >
+          Watch Rashful vs. Slabhead
         </button>
       </div>
 
       <p>{message}</p>
-      <p>{opponentText}</p>
+      {playerNames}
       <p>Your side is the {sideToText(yourSide)}.</p>
       <p>{sideToText(activeSide)} to move next.</p>
 

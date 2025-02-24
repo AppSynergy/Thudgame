@@ -26,6 +26,8 @@ export default {
   description:
     "Rashful predictably makes the first move that comes into his head.",
   ready: false,
+  human: false,
+  ai: true,
   preferredSide: DWARF,
   playingSide: null,
 

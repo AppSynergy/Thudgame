@@ -1,5 +1,4 @@
-import { DWARF, Move, ThudGame, TROLL } from "./types";
-import { ThudAi } from "../ai";
+import { DWARF, HUMAN, Move, ThudGame, TROLL } from "./types";
 import {
   aiState,
   captureState,
@@ -32,9 +31,8 @@ const initialState = (): GameState => {
     activeSide: DWARF,
     otherSide: TROLL,
     yourSide: DWARF,
-    theirSide: TROLL,
     loser: null,
-    opponent: { ready: false } as ThudAi,
+    players: { [DWARF]: HUMAN, [TROLL]: HUMAN },
   };
 };
 
@@ -47,28 +45,26 @@ test("newGameState", () => {
 });
 
 test("endOfTurnState - play both sides", () => {
-  const initState: GameState = initialState();
-  initState.opponent = null;
-  const state = endOfTurnState(initState);
-
-  expect(state.yourSide).toEqual(TROLL);
-  expect(state.theirSide).toEqual(DWARF);
-});
-
-test("endOfTurnState - ai loses", () => {
   const state = endOfTurnState(initialState());
 
   expect(state.activeSide).toEqual(TROLL);
   expect(state.otherSide).toEqual(DWARF);
-  expect(state.theirSide).toEqual(TROLL);
+  expect(state.yourSide).toEqual(TROLL);
+});
+
+test("endOfTurnState - lose with no moves", () => {
+  const state = endOfTurnState(initialState());
+
+  expect(state.activeSide).toEqual(TROLL);
+  expect(state.otherSide).toEqual(DWARF);
   expect(state.loser).toBe(TROLL);
-  expect(state.opponent?.ready).toBe(false);
+  expect(state.players?.[state.activeSide].ready).toBe(false);
 });
 
 test("moveState", () => {
   const state = moveState(initialState(), move);
 
-  expect(state.opponent?.ready).toBe(false);
+  expect(state.players?.[state.activeSide].ready).toBe(false);
   expect(state.thud?.move).toHaveBeenCalledWith(move);
   expect(state.thud?.board).toHaveBeenCalled();
 });
@@ -92,7 +88,7 @@ test("stateMachine", () => {
   const actions: GameAction[] = [
     { type: "NEW_GAME", yourSide: TROLL },
     { type: "MAKE_MOVE", move },
-    { type: "SET_OPPONENT", opponent: null, yourSide: DWARF },
+    { type: "SET_MATCHUP", matchup: { [DWARF]: HUMAN, [TROLL]: HUMAN } },
     { type: "CHOOSE_CAPTURE", capture: "i3" },
     { type: "AI_TURN", move, capture: null },
   ];

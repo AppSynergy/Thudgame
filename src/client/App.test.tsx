@@ -42,7 +42,7 @@ test("can play against Slabhead", async () => {
   render(<App />);
 
   user.click(screen.getByText(/Play the dwarfs vs. Slabhead/));
-  await screen.findByText(/You are playing against Slabhead/);
+  await screen.findByText(/Slabhead as trolls/);
 
   user.click(screen.getAllByText("d")[0]);
   user.click(screen.getByText("fC"));
@@ -53,7 +53,7 @@ test("can play against Rashful", async () => {
   render(<App />);
 
   user.click(screen.getByText(/Play the trolls vs. Rashful/));
-  await screen.findByText(/You are playing against Rashful/);
+  await screen.findByText(/Rashful as dwarfs/);
 
   await screen.findByText(/Move 2/);
 

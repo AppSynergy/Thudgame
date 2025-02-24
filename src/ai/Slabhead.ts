@@ -38,6 +38,7 @@ export default {
   ready: false,
   human: false,
   ai: true,
+  delay: 300,
   preferredSide: TROLL,
   playingSide: null,
 
@@ -47,8 +48,10 @@ export default {
     const capturingMoves = filterMovesCapturable(moves);
     if (capturingMoves.length) return chooseRandom(capturingMoves) as Move;
 
-    const attackingMove = findShortestAttackingMove(side, board, moves);
-    if (attackingMove) return attackingMove;
+    if (Math.random() > 0.1) {
+      const attackingMove = findShortestAttackingMove(side, board, moves);
+      if (attackingMove) return attackingMove;
+    }
 
     return chooseRandom(moves) as Move;
   },

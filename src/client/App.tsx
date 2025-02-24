@@ -19,6 +19,7 @@ import {
 import Panel from "./Panel";
 import ThudBoard from "./ThudBoard";
 import "./App.css";
+import { ThudAi } from "../ai";
 
 function App() {
   // State Machine
@@ -79,29 +80,29 @@ function App() {
     []
   );
 
+  // Callback - AI taking a turn.
+  const takeAiTurn = useCallback(
+    (ai: ThudAi) => {
+      const move = ai.decideMove(state.activeSide, state.board, state.moves);
+      const capture = ai.decideCapture(state.board, move?.capturable || null);
+      // Register AI actions with the interface.
+      moveAction({ move, ai: true });
+      captureAction({ capture, ai: true });
+      // Send AI actions to the state machine.
+      dispatch({ type: "AI_TURN", move, capture });
+    },
+    [state.board, state.moves, state.activeSide]
+  );
+
   // Effect - Handles AI logic
   useEffect(() => {
     if (state.players) {
       Object.values(state.players).map((player: Player) => {
-        if (player.ai && player.ready) {
-          const move = player.decideMove(
-            state.activeSide,
-            state.board,
-            state.moves
-          );
-          const capture = player.decideCapture(
-            state.board,
-            move?.capturable || null
-          );
-          // Register AI actions with the interface.
-          moveAction({ move, ai: true });
-          captureAction({ capture, ai: true });
-          // Send AI actions to the state machine.
-          dispatch({ type: "AI_TURN", move, capture });
-        }
+        if (player.ai && player.ready)
+          setTimeout(() => takeAiTurn(player), player.delay);
       });
     }
-  }, [state.board, state.players, state.moves, state.activeSide]);
+  }, [takeAiTurn, state.players]);
 
   // Action for selecting pieces.
   const [selected, selectAction] = useActionState(showAvailableMoves, null);

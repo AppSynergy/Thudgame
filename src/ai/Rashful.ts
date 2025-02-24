@@ -1,6 +1,6 @@
 import { ThudAi } from "./";
 import { Board, Move, Opt, Side, Square, DWARF } from "../game/types";
-import { filterMovesHurlable } from "../game/helper";
+import { chooseRandom, filterMovesHurlable } from "../game/helper";
 import { findNearbyDwarfs } from "../game/search";
 import { boardHex210, file, rank } from "../game/Hex210";
 
@@ -28,6 +28,7 @@ export default {
   ready: false,
   human: false,
   ai: true,
+  delay: 300,
   preferredSide: DWARF,
   playingSide: null,
 
@@ -35,13 +36,14 @@ export default {
     if (!moves) return null;
 
     const hurlingMoves = filterMovesHurlable(moves);
-    if (hurlingMoves.length) return hurlingMoves[0];
+    if (hurlingMoves.length) return chooseRandom(hurlingMoves) as Move;
 
-    const reinforcingMove = findReinforcingMove(board, moves);
-    if (reinforcingMove) return reinforcingMove;
+    if (Math.random() > 0.1) {
+      const reinforcingMove = findReinforcingMove(board, moves);
+      if (reinforcingMove) return reinforcingMove;
+    }
 
-    if (moves.length > 10) return moves[7];
-    return moves[0];
+    return chooseRandom(moves) as Move;
   },
 
   decideCapture: (_board: Board, squares: Opt<Square[]>): Opt<Square> => {

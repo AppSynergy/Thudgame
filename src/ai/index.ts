@@ -10,6 +10,7 @@ export interface ThudAi {
   ready: boolean;
   human: false;
   ai: true;
+  delay: number;
   preferredSide: Opt<Side>;
 }
 

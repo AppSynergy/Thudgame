@@ -37,7 +37,7 @@ export default function Panel({ state, startGame }: PanelProps) {
 
   const playerNames = (
     <>
-      <p>{players?.[DWARF].name} as dwarves</p>
+      <p>{players?.[DWARF].name} as dwarfs</p>
       <p>{players?.[TROLL].name} as trolls</p>
     </>
   );

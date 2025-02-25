@@ -67,6 +67,13 @@ export default function Panel({ state, startGame }: PanelProps) {
         >
           Watch Rashful vs. Slabhead
         </button>
+        <button
+          onClick={() =>
+            startGame({ [DWARF]: ai["Slabhead"], [TROLL]: ai["Rashful"] })
+          }
+        >
+          Watch AI play wrong sides
+        </button>
       </div>
 
       <p>{message}</p>

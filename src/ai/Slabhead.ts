@@ -1,40 +1,12 @@
 import { ThudAi } from "./";
-import {
-  chooseRandom,
-  filterMovesCapturable,
-  getOtherSide,
-} from "../game/helper";
+import { countNearbyDwarfs, findShortestAttackingMoves } from "./lib";
+import { chooseRandom, filterMovesCapturable } from "../game/helper";
 import { Board, Move, Opt, Side, Square, TROLL } from "../game/types";
-import { boardHex210, rank, file } from "../game/Hex210";
-import { radialSearch } from "../game/search";
-
-function findShortestAttackingMove(
-  side: Side,
-  board: Board,
-  moves: Opt<Move[]>
-): Opt<Move> {
-  let attackingMove = null as Opt<Move>;
-  let minDistance = Infinity;
-
-  moves?.map((move) => {
-    radialSearch(boardHex210[move.to], ({ to, distance }) => {
-      if (board[rank(to)][file(to)].piece == getOtherSide(side)) {
-        if (distance < minDistance) {
-          minDistance = distance;
-          attackingMove = move;
-        }
-      }
-      return false;
-    });
-  });
-
-  return attackingMove;
-}
 
 export default {
   name: "Slabhead",
   description:
-    "Slabhead considers all possible moves, but then makes one at random.",
+    "Slabhead likes to play directly, throwing the nearest troll into dwarf lines.",
   ready: false,
   human: false,
   ai: true,
@@ -49,16 +21,20 @@ export default {
     if (capturingMoves.length) return chooseRandom(capturingMoves) as Move;
 
     if (Math.random() > 0.1) {
-      const attackingMove = findShortestAttackingMove(side, board, moves);
-      if (attackingMove) return attackingMove;
+      const attackingMoves = findShortestAttackingMoves(side, board, moves);
+      if (attackingMoves) return chooseRandom(attackingMoves) as Move;
     }
 
     return chooseRandom(moves) as Move;
   },
 
-  decideCapture: (_board: Board, squares: Opt<Square[]>): Opt<Square> => {
+  decideCapture: (board: Board, squares: Opt<Square[]>): Opt<Square> => {
     if (!squares) return null;
-    const square = chooseRandom(squares) as Square;
-    return square;
+    const safeCaptures = squares.filter(
+      (s) => countNearbyDwarfs(board, s) == 0
+    );
+    if (safeCaptures.length) return chooseRandom(safeCaptures) as Square;
+
+    return chooseRandom(squares) as Square;
   },
 } as ThudAi;

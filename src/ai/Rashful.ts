@@ -1,25 +1,7 @@
 import { ThudAi } from "./";
-import { Board, Move, Opt, Side, Square, DWARF } from "../game/types";
+import { findReinforcingMoves } from "./lib";
 import { chooseRandom, filterMovesHurlable } from "../game/helper";
-import { findNearbyDwarfs } from "../game/search";
-import { boardHex210, file, rank } from "../game/Hex210";
-
-function findReinforcingMove(board: Board, moves: Opt<Move[]>): Opt<Move> {
-  let reinforcingMove = null as Opt<Move>;
-  let maxCount = 0;
-
-  moves?.map((move) => {
-    const dwarfCount = findNearbyDwarfs(boardHex210[move.to], (sq) => {
-      return board?.[rank(sq)]?.[file(sq)]?.piece == DWARF;
-    })?.length;
-    if (dwarfCount > maxCount) {
-      reinforcingMove = move;
-      maxCount = dwarfCount;
-    }
-  });
-
-  return reinforcingMove;
-}
+import { Board, Move, Opt, Side, Square, DWARF } from "../game/types";
 
 export default {
   name: "Rashful",
@@ -39,8 +21,8 @@ export default {
     if (hurlingMoves.length) return chooseRandom(hurlingMoves) as Move;
 
     if (Math.random() > 0.1) {
-      const reinforcingMove = findReinforcingMove(board, moves);
-      if (reinforcingMove) return reinforcingMove;
+      const reinforcingMoves = findReinforcingMoves(board, moves);
+      if (reinforcingMoves) return chooseRandom(reinforcingMoves) as Move;
     }
 
     return chooseRandom(moves) as Move;

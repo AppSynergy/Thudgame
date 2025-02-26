@@ -5,8 +5,9 @@ export type Opt<T> = T | null;
 
 export const TROLL = "T";
 export const DWARF = "d";
+export const THUDSTONE = "S";
 
-export type Piece = "d" | "T";
+export type Piece = "d" | "T" | "S";
 export type Side = Piece;
 
 export interface HumanPlayer {

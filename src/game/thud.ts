@@ -6,6 +6,7 @@ import {
   Square,
   ThudGame,
   DWARF,
+  THUDSTONE,
   TROLL,
 } from "./types";
 import { boardHex210, algebraic, boardHex210Values } from "./Hex210";
@@ -25,7 +26,7 @@ export const DEFAULT_POSITION = [
   ".d...........d.e",
   "d.............de",
   "d.....TTT.....de",
-  "......T.T......e",
+  "......TST......e",
   "d.....TTT.....de",
   "d.............de",
   ".d...........d.e",
@@ -110,8 +111,9 @@ export function Thud(position?: string): ThudGame {
       for (let i = 0; i <= boardHex210.j1; i++) {
         const j = i + 16 * k;
         if (pos[i] == "e") k += 1;
-        if (pos[i] == DWARF) iboard[j] = DWARF;
+        else if (pos[i] == DWARF) iboard[j] = DWARF;
         else if (pos[i] == TROLL) iboard[j] = TROLL;
+        else if (pos[i] == THUDSTONE) iboard[j] = THUDSTONE;
       }
     }
   }

@@ -101,6 +101,7 @@ export function algebraic(square: number): Square {
 
 // TODO can this be improved?
 export function offTheBoard(square: number): boolean {
+  if (square == 231) return true;
   if (square & 0x210) return true;
   if (square > 462) return true;
   if ((square - 15) % 32 == 0) return true;
